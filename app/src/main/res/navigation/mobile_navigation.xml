@@ -8,23 +8,23 @@
     <fragment
         android:id="@+id/nav_movimiento"
         android:name="com.example.proyecto_moviles.ui.Movimiento.MovimientoFragment"
-        android:label="@string/menu_home"
+        android:label="Movimientos"
         tools:layout="@layout/fragment_movimiento" />
 
     <fragment
         android:id="@+id/nav_presupuesto"
         android:name="com.example.proyecto_moviles.ui.Presupuesto.PresupuestoFragment"
-        android:label="@string/menu_gallery"
+        android:label="Presupuestos"
         tools:layout="@layout/fragment_presupuesto" />
 
     <fragment
         android:id="@+id/nav_visualizacion"
         android:name="com.example.proyecto_moviles.ui.Visualizacion.VisualizacionFragment"
-        android:label="@string/menu_slideshow"
+        android:label="Visualización de Movimientos"
         tools:layout="@layout/fragment_visualizacion" />
     <fragment
         android:id="@+id/nav_perfil"
         android:name="com.example.proyecto_moviles.perfil"
-        android:label="fragment_perfil"
+        android:label="Perfil"
         tools:layout="@layout/fragment_perfil" />
 </navigation>
