@@ -10,28 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.proyecto_moviles.databinding.FragmentHomeBinding;
+import com.example.proyecto_moviles.R;
 
 public class InicioFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        InicioViewModel homeViewModel =
-                new ViewModelProvider(this).get(InicioViewModel.class);
+        View rootView = inflater.inflate(R.layout.fragment_perfil, container, false);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+        return rootView;
     }
 }

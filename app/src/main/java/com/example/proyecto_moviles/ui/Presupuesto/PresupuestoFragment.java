@@ -10,28 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.proyecto_moviles.databinding.FragmentGalleryBinding;
+import com.example.proyecto_moviles.R;
 
 public class PresupuestoFragment extends Fragment {
 
-    private FragmentGalleryBinding binding;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        PresupuestoViewModel galleryViewModel =
-                new ViewModelProvider(this).get(PresupuestoViewModel.class);
+        View rootView = inflater.inflate(R.layout.fragment_presupuesto, container, false);
 
-        binding = FragmentGalleryBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        final TextView textView = binding.textGallery;
-        galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+        return rootView;
     }
 }

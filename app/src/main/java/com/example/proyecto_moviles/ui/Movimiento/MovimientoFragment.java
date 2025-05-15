@@ -10,28 +10,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.proyecto_moviles.databinding.FragmentHomeBinding;
+import com.example.proyecto_moviles.R;
 
 public class MovimientoFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        MovimientoViewModel homeViewModel =
-                new ViewModelProvider(this).get(MovimientoViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        View rootView = inflater.inflate(R.layout.fragment_movimiento, container, false);
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+        return rootView;
     }
 }

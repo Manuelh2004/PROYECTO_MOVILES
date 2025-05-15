@@ -22,4 +22,9 @@
         android:name="com.example.proyecto_moviles.ui.Visualizacion.VisualizacionFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_visualizacion" />
+    <fragment
+        android:id="@+id/nav_perfil"
+        android:name="com.example.proyecto_moviles.perfil"
+        android:label="fragment_perfil"
+        tools:layout="@layout/fragment_perfil" />
 </navigation>
