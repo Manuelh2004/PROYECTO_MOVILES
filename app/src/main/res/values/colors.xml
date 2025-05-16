@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="color_primario">#90a4ae</color>
     <color name="color_botones">#263238</color>
+    <color name="fondo_moviles">#ECEFF1</color>
+    <color name="color_secundario">#C9C9C9</color>
 </resources>

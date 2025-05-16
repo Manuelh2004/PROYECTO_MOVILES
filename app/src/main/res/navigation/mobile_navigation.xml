@@ -15,7 +15,11 @@
         android:id="@+id/nav_presupuesto"
         android:name="com.example.proyecto_moviles.ui.Presupuesto.PresupuestoFragment"
         android:label="Presupuestos"
-        tools:layout="@layout/fragment_presupuesto" />
+        tools:layout="@layout/fragment_presupuesto" >
+        <action
+            android:id="@+id/action_nav_presupuesto_to_vistaPresupuesto"
+            app:destination="@id/vistaPresupuesto" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_visualizacion"
@@ -45,19 +49,20 @@
         android:label="fragment_crear_cuenta"
         tools:layout="@layout/fragment_crear_cuenta" >
         <action
-            android:id="@+id/action_crearCuenta_to_crearCuentaConfirmacion"
+            android:id="@+id/action_nav_crear_cuenta_to_crearCuentaConfirmacion"
             app:destination="@id/nav_crear_cuenta_confirmacion" />
         <action
-            android:id="@+id/action_crearCuenta_to_nav_login"
+            android:id="@+id/action_nav_crear_cuenta_to_nav_login"
             app:destination="@id/nav_login" />
     </fragment>
     <fragment
         android:id="@+id/nav_crear_cuenta_confirmacion"
         android:name="com.example.proyecto_moviles.ui.Inicio.CrearCuentaConfirmacion"
         android:label="fragment_crear_cuenta_confirmacion"
-        tools:layout="@layout/fragment_crear_cuenta_confirmacion" >
-        <action
-            android:id="@+id/action_crearCuentaConfirmacion_to_crearCuenta"
-            app:destination="@id/nav_crear_cuenta" />
-    </fragment>
+        tools:layout="@layout/fragment_crear_cuenta_confirmacion" />
+    <fragment
+        android:id="@+id/vistaPresupuesto"
+        android:name="com.example.proyecto_moviles.ui.Presupuesto.VistaPresupuesto"
+        android:label="fragment_vista_presupuesto"
+        tools:layout="@layout/fragment_vista_presupuesto" />
 </navigation>
