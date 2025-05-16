@@ -59,7 +59,11 @@
         android:id="@+id/nav_crear_cuenta_confirmacion"
         android:name="com.example.proyecto_moviles.ui.Inicio.CrearCuentaConfirmacion"
         android:label="fragment_crear_cuenta_confirmacion"
-        tools:layout="@layout/fragment_crear_cuenta_confirmacion" />
+        tools:layout="@layout/fragment_crear_cuenta_confirmacion" >
+        <action
+            android:id="@+id/action_nav_crear_cuenta_confirmacion_to_nav_presupuesto"
+            app:destination="@id/nav_presupuesto" />
+    </fragment>
     <fragment
         android:id="@+id/vistaPresupuesto"
         android:name="com.example.proyecto_moviles.ui.Presupuesto.VistaPresupuesto"
