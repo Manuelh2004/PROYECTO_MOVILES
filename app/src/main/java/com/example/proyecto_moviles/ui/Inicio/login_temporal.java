@@ -1,9 +1,5 @@
 package com.example.proyecto_moviles.ui.Inicio;
 
-import static java.security.AccessController.getContext;
-
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -19,22 +15,9 @@ import android.widget.Toast;
 
 import com.example.proyecto_moviles.R;
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import cz.msebera.android.httpclient.entity.mime.Header;
 
 public class login_temporal extends Fragment implements View.OnClickListener{
     private Button btnIngresoDirecto, btnCrearCuenta;
@@ -45,7 +28,7 @@ public class login_temporal extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View rootView = inflater.inflate(R.layout.fragment_login_temporal, container, false);
 
         Usuario = rootView.findViewById(R.id.etUsuario);
