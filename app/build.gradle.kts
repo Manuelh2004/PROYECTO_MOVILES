@@ -36,7 +36,7 @@ android {
 
 dependencies {
     implementation("com.loopj.android:android-async-http:1.4.9")
-
+    implementation ("com.google.android.material:material:1.9.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
