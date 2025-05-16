@@ -37,11 +37,27 @@
             app:destination="@id/nav_presupuesto" />
         <action
             android:id="@+id/action_nav_login_to_crearCuenta"
-            app:destination="@id/crearCuenta" />
+            app:destination="@id/nav_crear_cuenta" />
     </fragment>
     <fragment
-        android:id="@+id/crearCuenta"
+        android:id="@+id/nav_crear_cuenta"
         android:name="com.example.proyecto_moviles.ui.Inicio.CrearCuenta"
         android:label="fragment_crear_cuenta"
-        tools:layout="@layout/fragment_crear_cuenta" />
+        tools:layout="@layout/fragment_crear_cuenta" >
+        <action
+            android:id="@+id/action_crearCuenta_to_crearCuentaConfirmacion"
+            app:destination="@id/nav_crear_cuenta_confirmacion" />
+        <action
+            android:id="@+id/action_crearCuenta_to_nav_login"
+            app:destination="@id/nav_login" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_crear_cuenta_confirmacion"
+        android:name="com.example.proyecto_moviles.ui.Inicio.CrearCuentaConfirmacion"
+        android:label="fragment_crear_cuenta_confirmacion"
+        tools:layout="@layout/fragment_crear_cuenta_confirmacion" >
+        <action
+            android:id="@+id/action_crearCuentaConfirmacion_to_crearCuenta"
+            app:destination="@id/nav_crear_cuenta" />
+    </fragment>
 </navigation>

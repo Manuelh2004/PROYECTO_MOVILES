@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         // Escuchar cambios de destino (fragmentos)
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             // Lista de fragmentos donde quieres ocultar el encabezado
-            if (destination.getId() == R.id.nav_login) {
+            if (destination.getId() == R.id.nav_login || destination.getId() == R.id.nav_crear_cuenta) {
                 binding.appBarMain.toolbar.setVisibility(View.GONE);
             } else {
                 binding.appBarMain.toolbar.setVisibility(View.VISIBLE);
