@@ -48,6 +48,16 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        // Escuchar cambios de destino (fragmentos)
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            // Lista de fragmentos donde quieres ocultar el encabezado
+            if (destination.getId() == R.id.nav_login) {
+                binding.appBarMain.toolbar.setVisibility(View.GONE);
+            } else {
+                binding.appBarMain.toolbar.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override

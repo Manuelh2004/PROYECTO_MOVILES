@@ -14,7 +14,7 @@ import android.widget.Button;
 import com.example.proyecto_moviles.R;
 
 public class login_temporal extends Fragment implements View.OnClickListener{
-    private Button btnIngresoDirecto;
+    private Button btnIngresoDirecto, btnCrearCuenta;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -25,6 +25,9 @@ public class login_temporal extends Fragment implements View.OnClickListener{
         btnIngresoDirecto = (Button) rootView.findViewById(R.id.btnIngresoDirecto);
         btnIngresoDirecto.setOnClickListener(this);
 
+        btnCrearCuenta = (Button) rootView.findViewById(R.id.btnCrearCuenta);
+        btnCrearCuenta.setOnClickListener(this);
+
         return rootView;
     }
 
@@ -33,6 +36,10 @@ public class login_temporal extends Fragment implements View.OnClickListener{
         if(v == btnIngresoDirecto){
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_nav_login_to_nav_presupuesto);
+        }
+        if(v == btnCrearCuenta){
+            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.action_nav_login_to_crearCuenta);
         }
     }
 }
