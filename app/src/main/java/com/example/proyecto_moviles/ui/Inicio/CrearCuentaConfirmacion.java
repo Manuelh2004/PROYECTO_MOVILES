@@ -85,9 +85,6 @@ public class CrearCuentaConfirmacion extends Fragment implements View.OnClickLis
         });
     }
 
-
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -116,7 +113,6 @@ public class CrearCuentaConfirmacion extends Fragment implements View.OnClickLis
                     }
                 });
     }
-
 
     private void enviarUsuarioAlServidor(FirebaseUser user) {
         String url = servidor + "crear_usuario.php"; // cambia por tu ruta

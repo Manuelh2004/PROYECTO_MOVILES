@@ -28,20 +28,23 @@
         tools:layout="@layout/fragment_visualizacion" />
     <fragment
         android:id="@+id/nav_perfil"
-        android:name="com.example.proyecto_moviles.ui.Perfil.perfil"
+        android:name="com.example.proyecto_moviles.ui.Perfil.Perfil"
         android:label="Perfil"
         tools:layout="@layout/fragment_perfil" />
     <fragment
         android:id="@+id/nav_login"
         android:name="com.example.proyecto_moviles.ui.Inicio.login_temporal"
         android:label="fragment_login_temporal"
-        tools:layout="@layout/fragment_login_temporal" >
+        tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_nav_login_to_nav_presupuesto"
             app:destination="@id/nav_presupuesto" />
         <action
             android:id="@+id/action_nav_login_to_crearCuenta"
             app:destination="@id/nav_crear_cuenta" />
+        <action
+            android:id="@+id/action_nav_login_to_nav_olvidarPassword"
+            app:destination="@id/nav_olvidarPassword" />
     </fragment>
     <fragment
         android:id="@+id/nav_crear_cuenta"
@@ -49,24 +52,25 @@
         android:label="fragment_crear_cuenta"
         tools:layout="@layout/fragment_crear_cuenta" >
         <action
-            android:id="@+id/action_nav_crear_cuenta_to_crearCuentaConfirmacion"
-            app:destination="@id/nav_crear_cuenta_confirmacion" />
-        <action
             android:id="@+id/action_nav_crear_cuenta_to_nav_login"
             app:destination="@id/nav_login" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_crear_cuenta_confirmacion"
-        android:name="com.example.proyecto_moviles.ui.Inicio.CrearCuentaConfirmacion"
-        android:label="fragment_crear_cuenta_confirmacion"
-        tools:layout="@layout/fragment_crear_cuenta_confirmacion" >
         <action
-            android:id="@+id/action_nav_crear_cuenta_confirmacion_to_nav_presupuesto"
-            app:destination="@id/nav_presupuesto" />
+            android:id="@+id/action_nav_crear_cuenta_to_resumenMovimientos"
+            app:destination="@id/resumenMovimientos" />
     </fragment>
     <fragment
         android:id="@+id/vistaPresupuesto"
         android:name="com.example.proyecto_moviles.ui.Presupuesto.VistaPresupuesto"
         android:label="fragment_vista_presupuesto"
         tools:layout="@layout/fragment_vista_presupuesto" />
+    <fragment
+        android:id="@+id/nav_olvidarPassword"
+        android:name="com.example.proyecto_moviles.ui.Inicio.OlvidarPassword"
+        android:label="fragment_olvidar_password"
+        tools:layout="@layout/fragment_olvidar_password" />
+    <fragment
+        android:id="@+id/resumenMovimientos"
+        android:name="com.example.proyecto_moviles.ui.Perfil.ResumenMovimientos"
+        android:label="fragment_resumen_movimientos"
+        tools:layout="@layout/fragment_resumen_movimientos" />
 </navigation>

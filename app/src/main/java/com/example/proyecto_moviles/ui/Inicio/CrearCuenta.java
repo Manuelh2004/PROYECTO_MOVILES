@@ -145,7 +145,7 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
     public void onClick(View v) {
         if(v == btnSiguiente){
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_crear_cuenta_to_crearCuentaConfirmacion); // action_crearCuenta_to_crearCuentaConfirmacion
+            navController.navigate(R.id.action_nav_crear_cuenta_to_resumenMovimientos); // action_crearCuenta_to_crearCuentaConfirmacion
         }
         if(v == btnCancelar){
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
