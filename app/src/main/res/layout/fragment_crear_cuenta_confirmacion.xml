@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:text="@string/hello_blank_fragment"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="-16dp" />
+        tools:layout_editor_absoluteY="0dp" />
 
     <LinearLayout
         android:id="@+id/btnGoogleLogin"
@@ -46,6 +46,17 @@
             android:layout_marginStart="12dp"
             android:textStyle="bold" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnCerrarSesion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="112dp"
+        android:text="Cerrar sesión"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

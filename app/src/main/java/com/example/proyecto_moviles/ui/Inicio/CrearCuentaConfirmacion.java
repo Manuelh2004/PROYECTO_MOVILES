@@ -29,15 +29,17 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
 
 public class CrearCuentaConfirmacion extends Fragment implements View.OnClickListener{
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/usuarioController";
+    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/usuarioController/";
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
@@ -46,24 +48,46 @@ public class CrearCuentaConfirmacion extends Fragment implements View.OnClickLis
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_crear_cuenta_confirmacion, container, false);
 
+        // Configurar Google Sign-In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id)) // viene del json
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
         mAuth = FirebaseAuth.getInstance();
 
-        LinearLayout googleLoginBtn = rootView.findViewById(R.id.btnGoogleLogin); // tu botón
-        googleLoginBtn.setOnClickListener(v -> signInWithGoogle());
+        Button btnCerrarSesion = rootView.findViewById(R.id.btnCerrarSesion);
+        btnCerrarSesion.setOnClickListener(v -> cerrarSesionCompleta());
 
+
+        // Botón de login con Google
+        LinearLayout googleLoginBtn = rootView.findViewById(R.id.btnGoogleLogin);
+        googleLoginBtn.setOnClickListener(v -> signInWithGoogle());
 
         return rootView;
     }
+
     private void signInWithGoogle() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        mGoogleSignInClient.revokeAccess().addOnCompleteListener(getActivity(), task -> {
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, RC_SIGN_IN);
+        });
     }
+
+    private void cerrarSesionCompleta() {
+        // Cierra sesión en Firebase
+        mAuth.signOut();
+
+        // Revoca el acceso de Google para eliminar la cuenta vinculada
+        mGoogleSignInClient.revokeAccess().addOnCompleteListener(getActivity(), task -> {
+            Toast.makeText(getContext(), "Sesión cerrada", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -85,64 +109,48 @@ public class CrearCuentaConfirmacion extends Fragment implements View.OnClickLis
                 .addOnCompleteListener(getActivity(), task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        String nombreCompleto = user.getDisplayName();
-                        String email = user.getEmail();
-
-                        String[] partesNombre = nombreCompleto.split(" ", 2);
-                        String nombre = partesNombre.length > 0 ? partesNombre[0] : "";
-                        String apellido = partesNombre.length > 1 ? partesNombre[1] : "";
-
-                        Toast.makeText(getContext(), "Bienvenido " + nombreCompleto, Toast.LENGTH_SHORT).show();
-
-                        // 👇 Aquí llamas a tu backend con los datos del usuario
-                        registrarUsuarioEnPHP(nombre, apellido, email);
+                        // Aquí puedes llamar a tu backend para registrar al usuario
+                        enviarUsuarioAlServidor(user);
                     } else {
-                        Toast.makeText(getContext(), "Falló la autenticación", Toast.LENGTH_SHORT).show();
+                        Log.w("FirebaseAuth", "signInWithCredential:failure", task.getException());
                     }
                 });
     }
 
-    private void registrarUsuarioEnPHP(String nombre, String apellido, String email) {
-        String url = servidor + "/registrar_usuario_google.php"; // reemplaza por tu ruta real
+
+    private void enviarUsuarioAlServidor(FirebaseUser user) {
+        String url = servidor + "crear_usuario.php"; // cambia por tu ruta
+
+        RequestParams params = new RequestParams();
+        params.put("nombre", user.getDisplayName() != null ? user.getDisplayName().split(" ")[0] : "");
+        params.put("apellido", user.getDisplayName() != null && user.getDisplayName().split(" ").length > 1 ?
+                user.getDisplayName().split(" ")[1] : "");
+        params.put("email", user.getEmail());
+        params.put("password", "firebase"); // Firebase no devuelve la contraseña. (Valor predeterminado)
 
         AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-
-        params.put("nom_usuario", nombre);
-        params.put("ape_usuario", apellido);
-        params.put("em_usuario", email);
-
-        client.post(url, params, new TextHttpResponseHandler() {
+        client.post(url, params, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.d("Registro", "Respuesta del servidor: " + responseString);
-
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("RESPUESTA_BACKEND", response.toString());  // <-- Esto te ayuda a ver la respuesta JSON
                 try {
-                    JSONObject json = new JSONObject(responseString);
-                    boolean success = json.getBoolean("success");
-                    String message = json.getString("message");
-
-                    Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
-
-                    if (success) {
-                        // Si todo sale bien, quiero que redireccione a esto
-                        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                        navController.navigate(R.id.action_nav_crear_cuenta_confirmacion_to_nav_presupuesto);
-                    }
-
-                } catch (Exception e) {
-                    Log.e("Registro", "Error al parsear JSON: " + e.getMessage());
-                    Toast.makeText(getContext(), "Error inesperado en la respuesta", Toast.LENGTH_SHORT).show();
+                    boolean success = response.getBoolean("success");
+                    String message = response.getString("message");
+                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Error al parsear respuesta", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.e("Registro", "Error en el registro: " + throwable.getMessage());
-                Toast.makeText(getContext(), "Error al registrar", Toast.LENGTH_SHORT).show();
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Toast.makeText(getContext(), "Error de conexión con el servidor", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+
 
     @Override
     public void onClick(View v) {
