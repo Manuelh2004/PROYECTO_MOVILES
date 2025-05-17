@@ -31,7 +31,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class CrearCuenta extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener{
 
-    final String servidor = "http://10.0.2.2/proyecto_moviles/";
+    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
     private EditText etNombres, etApellidos, etTelefono, etFechaNa;
     private Button btnSiguiente, btnCancelar;
     private Spinner spPais;
@@ -73,7 +73,7 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
     }
 
     private void obtenerTipoDoc() {
-        String url =  servidor+"obtener_tipo_doc.php";
+        String url =  servidor+"itemsController/obtener_tipo_doc.php";
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, new JsonHttpResponseHandler() {
@@ -110,7 +110,7 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
     }
 
     private void obtenerGenero() {
-        String url =  servidor+"obtener_genero.php";
+        String url =  servidor+"itemsController/obtener_genero.php";
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, new JsonHttpResponseHandler() {
@@ -147,7 +147,7 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
     }
 
     private void obtenerPais() {
-        String url =  servidor+"obtener_pais.php";
+        String url =  servidor+"itemsController/obtener_pais.php";
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, new JsonHttpResponseHandler() {
