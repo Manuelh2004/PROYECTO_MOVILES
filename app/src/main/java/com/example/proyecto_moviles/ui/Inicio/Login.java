@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.proyecto_moviles.R;
@@ -40,7 +41,7 @@ import org.json.JSONObject;
 import cz.msebera.android.httpclient.Header;
 
 
-public class login_temporal extends Fragment implements View.OnClickListener{
+public class Login extends Fragment implements View.OnClickListener{
     private Button btnIngresoDirecto, btnCrearCuenta;
     private TextInputEditText Contraseña;
     private EditText Usuario;
@@ -49,6 +50,7 @@ public class login_temporal extends Fragment implements View.OnClickListener{
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
+    private TextView txtOlvidarPassword;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,6 +66,9 @@ public class login_temporal extends Fragment implements View.OnClickListener{
 
         btnCrearCuenta = (Button) rootView.findViewById(R.id.btnCrearCuenta);
         btnCrearCuenta.setOnClickListener(this);
+
+        txtOlvidarPassword = (TextView) rootView.findViewById(R.id.txtOlvidarPassword);
+        txtOlvidarPassword.setOnClickListener(this);
 
         // Configurar Google Sign-In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -123,6 +128,11 @@ public class login_temporal extends Fragment implements View.OnClickListener{
         if (v == btnCrearCuenta) {
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_nav_login_to_crearCuenta);
+        }
+
+        if (v == txtOlvidarPassword){
+            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.action_nav_login_to_nav_olvidarPassword);
         }
     }
     @Override

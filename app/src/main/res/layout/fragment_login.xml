@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:padding="24dp"
     android:background="@color/fondo_moviles"
-    tools:context=".ui.Inicio.login_temporal">
+    tools:context=".ui.Inicio.Login">
 
 
     <Button

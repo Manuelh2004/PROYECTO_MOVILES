@@ -33,7 +33,7 @@
         tools:layout="@layout/fragment_perfil" />
     <fragment
         android:id="@+id/nav_login"
-        android:name="com.example.proyecto_moviles.ui.Inicio.login_temporal"
+        android:name="com.example.proyecto_moviles.ui.Inicio.Login"
         android:label="fragment_login_temporal"
         tools:layout="@layout/fragment_login" >
         <action

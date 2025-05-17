@@ -36,7 +36,8 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
     private Button btnSiguiente, btnCancelar;
     private Spinner spPais;
     private Spinner spGenero;
-    int idPais=-1, idGenero = -1;
+    private Spinner spTipoDoc;
+    int idPais=-1, idGenero = -1, idTipoDoc;
 
 
     @Override
@@ -54,6 +55,9 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         spGenero.setOnItemSelectedListener(this);
         spPais = (Spinner) rootView.findViewById(R.id.spPais);
         spPais.setOnItemSelectedListener(this);
+        spTipoDoc = (Spinner) rootView.findViewById(R.id.spTipoDoc);
+        spTipoDoc.setOnItemSelectedListener(this);
+
 
         btnSiguiente = (Button) rootView.findViewById(R.id.btnSiguiente);
         btnSiguiente.setOnClickListener(this);
@@ -63,8 +67,46 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
 
         obtenerPais();
         obtenerGenero();
+        obtenerTipoDoc();
 
         return  rootView;
+    }
+
+    private void obtenerTipoDoc() {
+        String url =  servidor+"obtener_tipo_doc.php";
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+
+                ArrayList<Item> lista = new ArrayList<>();
+
+                lista.add(new Item(-1, "Seleccionar Tipo de Documento"));
+
+                //Respuesta del servidor
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject obj = response.getJSONObject(i);
+                        int id = obj.getInt("id");
+                        String nombre = obj.getString("nombre");
+                        lista.add(new Item(id, nombre));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                //Llena el Spinner
+                ArrayAdapter<Item> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, lista);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spTipoDoc.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Toast.makeText(getActivity(), "Error al cargar datos", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void obtenerGenero() {
@@ -187,6 +229,23 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                 idPais = selectedId;
             }
         }
+        else if(parent==spTipoDoc)
+        {
+            Item selectedItem = (Item) parent.getItemAtPosition(position);
+
+            // Verifica si es el item "Seleccionar marca"
+            if (selectedItem.id == -1) {
+                // No hacer nada si es la opción "Seleccionar marca"
+                //Toast.makeText(getActivity(), "Por favor, seleccione una marca", Toast.LENGTH_SHORT).show();
+            } else {
+                // Si no es el item ficticio, maneja la selección normalmente
+                int selectedId = selectedItem.id;
+                String selectedNombre = selectedItem.nombre;
+                //Toast.makeText(getActivity(), "Seleccionado: " + selectedId + " - " + selectedNombre, Toast.LENGTH_SHORT).show();
+                idTipoDoc = selectedId;
+            }
+        }
+
     }
 
     @Override
