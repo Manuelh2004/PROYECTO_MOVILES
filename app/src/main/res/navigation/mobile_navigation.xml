@@ -61,8 +61,12 @@
     <fragment
         android:id="@+id/vistaPresupuesto"
         android:name="com.example.proyecto_moviles.ui.Presupuesto.VistaPresupuesto"
-        android:label="fragment_vista_presupuesto"
-        tools:layout="@layout/fragment_vista_presupuesto" />
+        android:label="@string/Mostrar_Presupuesto"
+        tools:layout="@layout/fragment_vista_presupuesto">
+        <action
+            android:id="@+id/action_vistaPresupuesto_to_editarPresupuesto"
+            app:destination="@id/editarPresupuesto" />
+    </fragment>
     <fragment
         android:id="@+id/nav_olvidarPassword"
         android:name="com.example.proyecto_moviles.ui.Inicio.OlvidarPassword"
@@ -73,4 +77,16 @@
         android:name="com.example.proyecto_moviles.ui.Perfil.ResumenMovimientos"
         android:label="fragment_resumen_movimientos"
         tools:layout="@layout/fragment_resumen_movimientos" />
+    <fragment
+        android:id="@+id/editarPresupuesto"
+        android:name="com.example.proyecto_moviles.ui.Presupuesto.EditarPresupuesto"
+        android:label="@string/Editar_Presupuesto"
+        tools:layout="@layout/fragment_editar_presupuesto">
+        <argument
+            android:name="idPresupuesto"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_editarPresupuesto_to_vistaPresupuesto"
+            app:destination="@id/vistaPresupuesto" />
+    </fragment>
 </navigation>

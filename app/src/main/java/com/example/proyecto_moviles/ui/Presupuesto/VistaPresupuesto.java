@@ -1,17 +1,22 @@
 package com.example.proyecto_moviles.ui.Presupuesto;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,8 +31,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -38,6 +45,7 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
     private List<Presupuesto> listaOriginal = new ArrayList<>();
     private Spinner categoria;
     final String servidor = "http://10.0.2.2/PHP_PROYECTO_MOVILES/controladores/presupuestoController/";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,7 +58,7 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
 
         List<Categoria> listaCategorias = new ArrayList<>();
         listaCategorias.add(new Categoria(0, "Todos las Categorias"));
-        listaCategorias.add(new Categoria(1, "Alimentación"));
+        listaCategorias.add(new Categoria(1, "Alimentacion"));
         listaCategorias.add(new Categoria(2, "Transporte"));
         listaCategorias.add(new Categoria(3, "Salud"));
 
@@ -79,7 +87,33 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if(parent==lista) //si estoy usando el listview lista
+        {
+            PopupMenu popupMenu = new PopupMenu(getActivity(),view);
+            popupMenu.getMenuInflater().inflate(R.menu.opciones, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
 
+                    // TextView id_contacto = view.findViewById(R.id.tvId);
+                    TextView id_presupuesto = view.findViewById(R.id.tvIdPV);
+
+                    // String idCont = id_paciente.getText().toString();
+                    String idPresupuesto = id_presupuesto.getText().toString();
+
+                    if (item.getItemId() == R.id.opc_editar)
+                    {
+                        EditarPaciente(idPresupuesto);
+                    }
+                    else if (item.getItemId() == R.id.opc_eliminar)
+                    {
+                        EliminarPaciente(idPresupuesto);
+                    }
+                    return false;
+                }
+            });
+            popupMenu.show();
+        }
     }
 
     private void actualizarLista(List<Presupuesto> listaFiltrada) {
@@ -209,6 +243,41 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 String errorMessage = (responseBody != null) ? new String(responseBody) : error.getMessage();
                 Toast.makeText(getActivity(), "Error: " + errorMessage, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void EditarPaciente(String idPresupuesto) {
+
+        Bundle bundle = new Bundle();
+        bundle.putString("idPresupuesto", idPresupuesto);
+
+        NavController navController = Navigation.findNavController(getView());
+        navController.navigate(R.id.action_vistaPresupuesto_to_editarPresupuesto, bundle);
+    }
+
+    private void EliminarPaciente(String idPresupuesto) {
+        // Crear la URL para hacer la solicitud
+        String url = servidor + "eliminar_presupuesto.php";
+
+        // Crear un objeto RequestParams para almacenar los parámetros
+        RequestParams params = new RequestParams();
+        params.put("idPresupuesto",idPresupuesto);
+
+        // Crear una instancia de AsyncHttpClient
+        AsyncHttpClient presupuesto = new AsyncHttpClient();
+
+        presupuesto.get(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                String response = new String(responseBody);  // Obtener la respuesta del servidor como String
+                Toast.makeText(getActivity(), "Respuesta: " + response, Toast.LENGTH_LONG).show();
+                MostrarDatos();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
             }
         });
     }

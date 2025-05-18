@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -56,7 +55,7 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
         f_inicio = (TextView) rootView.findViewById(R.id.tvFInicio);
         f_fin = (TextView) rootView.findViewById(R.id.tvFFin);
         mon = (EditText) rootView.findViewById(R.id.etMonto);
-        agre = (Button) rootView.findViewById(R.id.btnAñadir);
+        agre = (Button) rootView.findViewById(R.id.btnAgregar);
         mos = (Button) rootView.findViewById(R.id.btnMostrar);
         cat = (Spinner) rootView.findViewById(R.id.spCategoria);
         cal = (CalendarView) rootView.findViewById(R.id.cvCalendario);
@@ -103,7 +102,7 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
         //String[] elementos = {"Categoria", "Academia"};
 
         List<Categoria> listaCategorias = new ArrayList<>();
-        listaCategorias.add(new Categoria(1, "Alimentación"));
+        listaCategorias.add(new Categoria(1, "Alimentacion"));
         listaCategorias.add(new Categoria(2, "Transporte"));
         listaCategorias.add(new Categoria(3, "Salud"));
 

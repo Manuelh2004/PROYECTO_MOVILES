@@ -6,6 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".ui.Presupuesto.PresupuestoFragment">
 
+    <Button
+        android:id="@+id/btnMostrar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="90dp"
+        android:layout_marginEnd="90dp"
+        android:backgroundTint="@color/color_botones"
+        android:text="Mostrar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnAgregar"
+        app:layout_constraintVertical_bias="0.24" />
+
     <Spinner
         android:id="@+id/spCategoria"
         android:layout_width="0dp"
@@ -34,34 +49,19 @@
         app:layout_constraintVertical_bias="0.085"/>
 
     <Button
-        android:id="@+id/btnAñadir"
+        android:id="@+id/btnAgregar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="90dp"
         android:layout_marginEnd="90dp"
-        android:text="Agregar"
         android:backgroundTint="@color/color_botones"
+        android:text="Agregar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cvCalendario"
-        app:layout_constraintVertical_bias="0.532"/>
-
-    <Button
-        android:id="@+id/btnMostrar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="90dp"
-        android:layout_marginEnd="90dp"
-        android:text="Mostrar"
-        android:backgroundTint="@color/color_botones"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAñadir"
-        app:layout_constraintVertical_bias="0.13" />
+        app:layout_constraintVertical_bias="0.472" />
 
     <EditText
         android:id="@+id/etMonto"
@@ -86,7 +86,7 @@
         android:layout_marginTop="20dp"
         android:text="Fecha Inicio"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnAñadir"
+        app:layout_constraintBottom_toTopOf="@+id/btnAgregar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cvCalendario"
@@ -98,7 +98,7 @@
         android:layout_height="wrap_content"
         android:text="Fecha Fin"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnAñadir"
+        app:layout_constraintBottom_toTopOf="@+id/btnAgregar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
