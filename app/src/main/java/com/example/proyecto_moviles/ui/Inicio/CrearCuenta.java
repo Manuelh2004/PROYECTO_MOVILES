@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.ui.Clases.Item;
+import com.google.firebase.auth.FirebaseAuth;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import cz.msebera.android.httpclient.Header;
 
 public class CrearCuenta extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, LoginDialogFragment.LoginDialogListener{
-
+    private FirebaseAuth mAuth;
     final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
     private EditText etNombres, etApellidos, etTelefono, etFechaNa, etDocumento;
     private Button btnCrearUsuario, btnCancelar;
@@ -46,6 +47,7 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_crear_cuenta, container, false);
+        mAuth = FirebaseAuth.getInstance();
 
         etNombres = (EditText) rootView.findViewById(R.id.etNombres);
         etApellidos = (EditText) rootView.findViewById(R.id.etApellidos);

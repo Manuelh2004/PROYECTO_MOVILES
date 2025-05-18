@@ -1,6 +1,5 @@
 package com.example.proyecto_moviles.ui.Inicio;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import com.example.proyecto_moviles.R;
 
@@ -36,7 +34,7 @@ public class LoginDialogFragment extends DialogFragment {
 
         etEmail = view.findViewById(R.id.etEmail);
         etPassword = view.findViewById(R.id.etPassword);
-        btnAceptar = view.findViewById(R.id.btnAceptar);
+        btnAceptar = view.findViewById(R.id.btnEnviar);
         btnCancelar = view.findViewById(R.id.btnCancelar);
 
         btnAceptar.setOnClickListener(v -> {
