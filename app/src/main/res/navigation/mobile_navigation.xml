@@ -55,8 +55,8 @@
             android:id="@+id/action_nav_crear_cuenta_to_nav_login"
             app:destination="@id/nav_login" />
         <action
-            android:id="@+id/action_nav_crear_cuenta_to_resumenMovimientos"
-            app:destination="@id/resumenMovimientos" />
+            android:id="@+id/action_nav_crear_cuenta_to_nav_presupuesto"
+            app:destination="@id/nav_presupuesto" />
     </fragment>
     <fragment
         android:id="@+id/vistaPresupuesto"

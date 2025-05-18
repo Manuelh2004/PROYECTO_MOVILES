@@ -20,6 +20,7 @@ import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.ui.Clases.Item;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,11 +30,11 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class CrearCuenta extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener{
+public class CrearCuenta extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, LoginDialogFragment.LoginDialogListener{
 
     final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
-    private EditText etNombres, etApellidos, etTelefono, etFechaNa;
-    private Button btnSiguiente, btnCancelar;
+    private EditText etNombres, etApellidos, etTelefono, etFechaNa, etDocumento;
+    private Button btnCrearUsuario, btnCancelar;
     private Spinner spPais;
     private Spinner spGenero;
     private Spinner spTipoDoc;
@@ -50,6 +51,7 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         etApellidos = (EditText) rootView.findViewById(R.id.etApellidos);
         etTelefono = (EditText) rootView.findViewById(R.id.etTelefono);
         etFechaNa = (EditText) rootView.findViewById(R.id.etFechaNa);
+        etDocumento = (EditText) rootView.findViewById(R.id.etDocumento);
 
         spGenero = (Spinner) rootView.findViewById(R.id.spGenero);
         spGenero.setOnItemSelectedListener(this);
@@ -58,12 +60,10 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         spTipoDoc = (Spinner) rootView.findViewById(R.id.spTipoDoc);
         spTipoDoc.setOnItemSelectedListener(this);
 
-
-        btnSiguiente = (Button) rootView.findViewById(R.id.btnSiguiente);
-        btnSiguiente.setOnClickListener(this);
+        btnCrearUsuario = (Button) rootView.findViewById(R.id.btnCrearUsuario);
+        btnCrearUsuario.setOnClickListener(this);
         btnCancelar = (Button) rootView.findViewById(R.id.btnCancelar);
         btnCancelar.setOnClickListener(this);
-
 
         obtenerPais();
         obtenerGenero();
@@ -145,6 +145,18 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
             }
         });
     }
+    private void LimpiarCampos()
+    {
+        etNombres.setText("");
+        etApellidos.setText("");
+        etTelefono.setText("");
+        etFechaNa.setText("");
+        etDocumento.setText("");
+        spGenero.setSelection(0);
+        spPais.setSelection(0);
+        spTipoDoc.setSelection(0);
+        etNombres.requestFocus();
+    }
 
     private void obtenerPais() {
         String url =  servidor+"itemsController/obtener_pais.php";
@@ -185,14 +197,82 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
 
     @Override
     public void onClick(View v) {
-        if(v == btnSiguiente){
-            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_crear_cuenta_to_resumenMovimientos); // action_crearCuenta_to_crearCuentaConfirmacion
+        if (v == btnCrearUsuario) {
+            // Solo validaciones básicas (puedes validar los EditText directamente sin guardar en variables)
+            if (etNombres.getText().toString().isEmpty() ||
+                    etApellidos.getText().toString().isEmpty() ||
+                    etTelefono.getText().toString().isEmpty() ||
+                    etDocumento.getText().toString().isEmpty() ||
+                    etFechaNa.getText().toString().isEmpty()) {
+                Toast.makeText(getActivity(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (idPais == -1) {
+                Toast.makeText(getActivity(), "Por favor, seleccione un pais", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (idGenero == -1) {
+                Toast.makeText(getActivity(), "Por favor, seleccione un genero", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (idTipoDoc == -1) {
+                Toast.makeText(getActivity(), "Por favor, seleccione un tipo de documento", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Si todo bien, muestra el diálogo para email y password
+            LoginDialogFragment dialog = new LoginDialogFragment();
+            dialog.setLoginDialogListener(this);
+            dialog.show(getParentFragmentManager(), "LoginDialog");
         }
+
         if(v == btnCancelar){
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_nav_crear_cuenta_to_nav_login); // action_crearCuenta_to_nav_login
         }
+    }
+
+    private void RegistrarUsuario(String nombres, String apellidos, String telefono, String documento, String fechaNa, int idPais, int idGenero, int idTipoDoc, String email, String password) {
+        String url = servidor + "usuarioController/crear_usuario.php";
+
+        RequestParams params = new RequestParams();
+        params.put("nombres", nombres);
+        params.put("apellidos", apellidos);
+        params.put("telefono", telefono);
+        params.put("documento", documento);
+        params.put("fechaNa", fechaNa);
+        params.put("idPais", idPais);
+        params.put("idGenero", idGenero);
+        params.put("idTipoDoc", idTipoDoc);
+        params.put("email", email);
+        params.put("password", password);
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.post(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    boolean exito = response.getBoolean("exito");
+                    String mensaje = response.getString("mensaje");
+                    Toast.makeText(getContext(), mensaje, Toast.LENGTH_LONG).show();
+                    if (exito) {
+                        // Limpiar campos y navegar, por ejemplo:
+                        LimpiarCampos();
+                        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+                        navController.navigate(R.id.action_nav_crear_cuenta_to_nav_presupuesto);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Toast.makeText(getContext(), "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @Override
@@ -252,4 +332,19 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+    @Override
+    public void onLoginDataEntered(String email, String password) {
+        String nombres  = etNombres.getText().toString();
+        String apellidos = etApellidos.getText().toString();
+        String telefono = etTelefono.getText().toString();
+        String documento = etDocumento.getText().toString();
+        String fechaNa = etFechaNa.getText().toString();
+
+        RegistrarUsuario(nombres, apellidos, telefono, documento, fechaNa, idPais, idGenero, idTipoDoc, email, password);
+        // Aquí puedes continuar con registro o navegación
+        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+        navController.navigate(R.id.action_nav_crear_cuenta_to_nav_presupuesto);
+    }
+
 }

@@ -168,7 +168,7 @@ public class Login extends Fragment implements View.OnClickListener{
 
 
     private void enviarUsuarioAlServidor(FirebaseUser user) {
-        String url = servidor + "crear_usuario.php"; // cambia por tu ruta
+        String url = servidor + "crear_usuario_google.php";
 
         RequestParams params = new RequestParams();
         params.put("nombre", user.getDisplayName() != null ? user.getDisplayName().split(" ")[0] : "");
