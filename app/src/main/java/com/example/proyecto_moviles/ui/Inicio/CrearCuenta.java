@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.ui.Clases.Item;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -234,7 +235,8 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         }
     }
 
-    private void RegistrarUsuario(String nombres, String apellidos, String telefono, String documento, String fechaNa, int idPais, int idGenero, int idTipoDoc, String email, String password) {
+    private void RegistrarUsuario(String nombres, String apellidos, String telefono, String documento, String fechaNa,
+                                  int idPais, int idGenero, int idTipoDoc, String email, String uidFirebase) {
         String url = servidor + "usuarioController/crear_usuario.php";
 
         RequestParams params = new RequestParams();
@@ -247,7 +249,7 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         params.put("idGenero", idGenero);
         params.put("idTipoDoc", idTipoDoc);
         params.put("email", email);
-        params.put("password", password);
+        params.put("uid_firebase", uidFirebase); // Nuevo parámetro para el UID Firebase
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(url, params, new JsonHttpResponseHandler() {
@@ -258,7 +260,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                     String mensaje = response.getString("mensaje");
                     Toast.makeText(getContext(), mensaje, Toast.LENGTH_LONG).show();
                     if (exito) {
-                        // Limpiar campos y navegar, por ejemplo:
                         LimpiarCampos();
                         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
                         navController.navigate(R.id.action_nav_crear_cuenta_to_nav_presupuesto);
@@ -274,7 +275,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                 Toast.makeText(getContext(), "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     @Override
@@ -343,10 +343,21 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         String documento = etDocumento.getText().toString();
         String fechaNa = etFechaNa.getText().toString();
 
-        RegistrarUsuario(nombres, apellidos, telefono, documento, fechaNa, idPais, idGenero, idTipoDoc, email, password);
-        // Aquí puedes continuar con registro o navegación
-        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-        navController.navigate(R.id.action_nav_crear_cuenta_to_nav_presupuesto);
+        // Crear usuario en Firebase Auth
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        if (firebaseUser != null) {
+                            String uid = firebaseUser.getUid();
+
+                            // Aquí llamas a RegistrarUsuario y le pasas el uid Firebase
+                            RegistrarUsuario(nombres, apellidos, telefono, documento, fechaNa, idPais, idGenero, idTipoDoc, email, uid);
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Error al registrar usuario: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
 }
