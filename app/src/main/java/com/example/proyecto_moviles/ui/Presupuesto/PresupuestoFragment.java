@@ -19,11 +19,14 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.proyecto_moviles.R;
+import com.example.proyecto_moviles.ui.Categoria;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,7 +35,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class PresupuestoFragment extends Fragment implements View.OnClickListener {
 
-    final String servidor = "http://10.0.2.2/presupuesto/";
+    final String servidor = "http://10.0.2.2/PHP_PROYECTO_MOVILES/controladores/presupuestoController/";
     private TextView f_inicio, f_fin;
     private EditText mon;
     private Button agre, mos;
@@ -41,6 +44,7 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
     private String fechaSeleccionada = "";
     private CalendarView cal;
     private String fecha_inicio="", fecha_fin="";
+    private int id_usuario = 1;
 
     SimpleDateFormat formatoEntrada = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     SimpleDateFormat formatoMySQL = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -96,14 +100,16 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
 
         });
 
-        String[] elementos = {"Categoria", "Academia"};
+        //String[] elementos = {"Categoria", "Academia"};
 
-        ArrayAdapter<String> adapterCategoria = new ArrayAdapter<>( getContext(),android.R.layout.simple_spinner_item,elementos);
+        List<Categoria> listaCategorias = new ArrayList<>();
+        listaCategorias.add(new Categoria(1, "Alimentación"));
+        listaCategorias.add(new Categoria(2, "Transporte"));
+        listaCategorias.add(new Categoria(3, "Salud"));
 
+        ArrayAdapter<Categoria> adapterCategoria = new ArrayAdapter<>( getContext(),android.R.layout.simple_spinner_item,listaCategorias);
         adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         cat.setAdapter(adapterCategoria);
-
         mos.setOnClickListener(this);
         agre.setOnClickListener(this);
 
@@ -117,20 +123,23 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
             navController.navigate(R.id.action_nav_presupuesto_to_vistaPresupuesto);
         }else if (v == agre){
 
+            Categoria categoriaSeleccionada = (Categoria) cat.getSelectedItem();
             Float montoP = Float.parseFloat(mon.getText().toString());
-            String categoriaP = cat.getSelectedItem().toString();
+            int categoriaP = categoriaSeleccionada.getId();
             String fechaInicioP = fecha_inicio;
             String fechaFinP = fecha_fin;
 
+            //Toast.makeText(getContext(), "id categoria: " + categoriaP, Toast.LENGTH_SHORT).show();
             RegistrarPresupuesto(montoP, categoriaP, fechaInicioP, fechaFinP);
         }
     }
 
-    private void RegistrarPresupuesto(Float montoP, String categoriaP, String fechaInicioP, String fechaFinP) {
+    private void RegistrarPresupuesto(Float montoP, int categoriaP, String fechaInicioP, String fechaFinP) {
 
         String url = servidor + "presupuesto_registrar.php";
 
         RequestParams params = new RequestParams();
+        params.put("id_usuario", id_usuario);
         params.put("montoP", montoP);
         params.put("categoriaP", categoriaP);
         params.put("fechaInicioP", fechaInicioP);
