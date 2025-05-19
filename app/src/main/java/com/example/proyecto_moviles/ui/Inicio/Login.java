@@ -61,7 +61,7 @@ public class Login extends Fragment implements View.OnClickListener{
         Usuario = rootView.findViewById(R.id.etUsuario);
         Contraseña = rootView.findViewById(R.id.etPassword);
 
-        btnIngresoDirecto = (Button) rootView.findViewById(R.id.btnEnviar);
+        btnIngresoDirecto = (Button) rootView.findViewById(R.id.btnIngresar);
         btnIngresoDirecto.setOnClickListener(this);
 
         btnCrearCuenta = (Button) rootView.findViewById(R.id.btnCrearCuenta);

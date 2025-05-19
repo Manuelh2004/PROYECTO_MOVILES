@@ -34,7 +34,7 @@ public class LoginDialogFragment extends DialogFragment {
 
         etEmail = view.findViewById(R.id.etEmail);
         etPassword = view.findViewById(R.id.etPassword);
-        btnAceptar = view.findViewById(R.id.btnEnviar);
+        btnAceptar = view.findViewById(R.id.btnIngresar);
         btnCancelar = view.findViewById(R.id.btnCancelar);
 
         btnAceptar.setOnClickListener(v -> {

@@ -11,12 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.proyecto_moviles.R;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class OlvidarPassword extends Fragment implements View.OnClickListener{
@@ -31,7 +28,7 @@ public class OlvidarPassword extends Fragment implements View.OnClickListener{
 
         etEmailRecuperar = (EditText) rootView.findViewById(R.id.etEmailRecuperar);
 
-        btnEnviar = (Button) rootView.findViewById(R.id.btnEnviar);
+        btnEnviar = (Button) rootView.findViewById(R.id.btnIngresar);
         btnEnviar.setOnClickListener(this);
         btnCancelar = (Button) rootView.findViewById(R.id.btnCancelar);
         btnCancelar.setOnClickListener(this);
@@ -42,7 +39,7 @@ public class OlvidarPassword extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.btnEnviar) {
+        if (id == R.id.btnIngresar) {
             enviarCorreoRestablecimiento();
         } else if (id == R.id.btnCancelar) {
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
