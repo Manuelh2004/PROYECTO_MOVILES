@@ -262,8 +262,13 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                     if (exito) {
                         LimpiarCampos();
                         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+/*
+                        Bundle bundle = new Bundle();
+                        bundle.putString("email", email);  // Pasas el email que recibiste en el método RegistrarUsuario
+*/
                         navController.navigate(R.id.action_nav_crear_cuenta_to_nav_presupuesto);
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(getContext(), "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
@@ -349,10 +354,20 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
-                            String uid = firebaseUser.getUid();
+                            // Enviar correo de verificación
+                            firebaseUser.sendEmailVerification()
+                                    .addOnCompleteListener(verifyTask -> {
+                                        if (verifyTask.isSuccessful()) {
+                                            String uid = firebaseUser.getUid();
 
-                            // Aquí llamas a RegistrarUsuario y le pasas el uid Firebase
-                            RegistrarUsuario(nombres, apellidos, telefono, documento, fechaNa, idPais, idGenero, idTipoDoc, email, uid);
+                                            // Guardar usuario en BD solo si el email de verificación se envió OK
+                                            RegistrarUsuario(nombres, apellidos, telefono, documento, fechaNa, idPais, idGenero, idTipoDoc, email, uid);
+
+                                            Toast.makeText(getContext(), "Cuenta creada. Revisa tu correo para verificar tu cuenta.", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(getContext(), "No se pudo enviar el correo de verificación. Intenta de nuevo.", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
                         }
                     } else {
                         Toast.makeText(getContext(), "Error al registrar usuario: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
