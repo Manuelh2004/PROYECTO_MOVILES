@@ -235,53 +235,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         }
     }
 
-    private void RegistrarUsuario(String nombres, String apellidos, String telefono, String documento, String fechaNa,
-                                  int idPais, int idGenero, int idTipoDoc, String email, String uidFirebase) {
-        String url = servidor + "usuarioController/crear_usuario.php";
-
-        RequestParams params = new RequestParams();
-        params.put("nombres", nombres);
-        params.put("apellidos", apellidos);
-        params.put("telefono", telefono);
-        params.put("documento", documento);
-        params.put("fechaNa", fechaNa);
-        params.put("idPais", idPais);
-        params.put("idGenero", idGenero);
-        params.put("idTipoDoc", idTipoDoc);
-        params.put("email", email);
-        params.put("uid_firebase", uidFirebase); // Nuevo parámetro para el UID Firebase
-
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.post(url, params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    boolean exito = response.getBoolean("exito");
-                    String mensaje = response.getString("mensaje");
-                    Toast.makeText(getContext(), mensaje, Toast.LENGTH_LONG).show();
-                    if (exito) {
-                        LimpiarCampos();
-                        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-/*
-                        Bundle bundle = new Bundle();
-                        bundle.putString("email", email);  // Pasas el email que recibiste en el método RegistrarUsuario
-*/
-                        navController.navigate(R.id.action_nav_crear_cuenta_to_nav_presupuesto);
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(getContext(), "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Toast.makeText(getContext(), "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(parent==spGenero)
@@ -342,37 +295,41 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
 
     @Override
     public void onLoginDataEntered(String email, String password) {
-        String nombres  = etNombres.getText().toString();
+        String nombres = etNombres.getText().toString();
         String apellidos = etApellidos.getText().toString();
         String telefono = etTelefono.getText().toString();
         String documento = etDocumento.getText().toString();
         String fechaNa = etFechaNa.getText().toString();
 
-        // Crear usuario en Firebase Auth
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
-                            // Enviar correo de verificación
-                            firebaseUser.sendEmailVerification()
-                                    .addOnCompleteListener(verifyTask -> {
-                                        if (verifyTask.isSuccessful()) {
-                                            String uid = firebaseUser.getUid();
+                            firebaseUser.sendEmailVerification().addOnCompleteListener(verifyTask -> {
+                                if (verifyTask.isSuccessful()) {
+                                    Toast.makeText(getContext(), "Correo de verificación enviado", Toast.LENGTH_LONG).show();
 
-                                            // Guardar usuario en BD solo si el email de verificación se envió OK
-                                            RegistrarUsuario(nombres, apellidos, telefono, documento, fechaNa, idPais, idGenero, idTipoDoc, email, uid);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("nombres", nombres);
+                                    bundle.putString("apellidos", apellidos);
+                                    bundle.putInt("idPais", idPais);
+                                    bundle.putInt("idGenero", idGenero);
+                                    bundle.putInt("idTipoDoc", idTipoDoc);
+                                    bundle.putString("telefono", telefono);
+                                    bundle.putString("documento", documento);
+                                    bundle.putString("fechaNa", fechaNa);
 
-                                            Toast.makeText(getContext(), "Cuenta creada. Revisa tu correo para verificar tu cuenta.", Toast.LENGTH_LONG).show();
-                                        } else {
-                                            Toast.makeText(getContext(), "No se pudo enviar el correo de verificación. Intenta de nuevo.", Toast.LENGTH_LONG).show();
-                                        }
-                                    });
+                                    NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+                                    navController.navigate(R.id.action_nav_crear_cuenta_to_verificacionEmail, bundle);
+                                } else {
+                                    Toast.makeText(getContext(), "No se pudo enviar el correo de verificación.", Toast.LENGTH_LONG).show();
+                                }
+                            });
                         }
                     } else {
                         Toast.makeText(getContext(), "Error al registrar usuario: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }
-
 }
