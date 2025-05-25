@@ -104,4 +104,9 @@
             android:id="@+id/action_verificacionEmail_to_nav_presupuesto"
             app:destination="@id/nav_presupuesto" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_diseño_con_google"
+        android:name="com.example.proyecto_moviles.BlankFragment2"
+        android:label="fragment_blank2"
+        tools:layout="@layout/fragment_blank2" />
 </navigation>

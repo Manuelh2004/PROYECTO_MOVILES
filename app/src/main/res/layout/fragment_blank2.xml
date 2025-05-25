@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D9E1E6"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- Nombres -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Nombres"
+            app:boxBackgroundMode="filled"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp"
+            app:boxStrokeWidth="0dp"
+            app:boxBackgroundColor="#8CA3AA">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/nombres"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#D0D8DD"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Apellidos -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Apellidos"
+            app:boxBackgroundMode="filled"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxStrokeWidth="0dp"
+            app:boxBackgroundColor="#8CA3AA">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/apellidos"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#D0D8DD"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Género Dropdown -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Género"
+            app:endIconMode="dropdown_menu"
+            app:boxBackgroundMode="filled"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp"
+            app:boxStrokeWidth="0dp"
+            app:boxBackgroundColor="#8CA3AA">
+
+            <AutoCompleteTextView
+                android:id="@+id/genero"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#D0D8DD"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- País Dropdown -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="País"
+            app:endIconMode="dropdown_menu"
+            app:boxBackgroundMode="filled"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp"
+            app:boxStrokeWidth="0dp"
+            app:boxBackgroundColor="#8CA3AA">
+
+            <AutoCompleteTextView
+                android:id="@+id/pais"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#D0D8DD"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Tipo de Documento Dropdown -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Tipo de Documento"
+            app:endIconMode="dropdown_menu"
+            app:boxBackgroundMode="filled"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp"
+            app:boxStrokeWidth="0dp"
+            app:boxBackgroundColor="#8CA3AA">
+
+            <AutoCompleteTextView
+                android:id="@+id/tipo_documento"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#D0D8DD"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Número de Documento -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Número de Documento"
+            app:boxBackgroundMode="filled"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp"
+            app:boxStrokeWidth="0dp"
+            app:boxBackgroundColor="#8CA3AA">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/numero_documento"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#D0D8DD"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Fecha de Nacimiento -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Fecha de Nacimiento"
+            app:boxBackgroundMode="filled"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp"
+            app:boxStrokeWidth="0dp"
+            app:boxBackgroundColor="#8CA3AA">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fecha_nacimiento"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#D0D8DD"
+                android:inputType="date" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Teléfono -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Teléfono"
+            app:boxBackgroundMode="filled"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp"
+            app:boxStrokeWidth="0dp"
+            app:boxBackgroundColor="#8CA3AA">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/telefono"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#D0D8DD"
+                android:inputType="phone" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Botón Crear -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_crear"
+            android:layout_width="200dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="24dp"
+            android:text="Crear"
+            android:textStyle="bold"
+            app:cornerRadius="24dp"
+            android:backgroundTint="#20232B"
+            android:textColor="#FFFFFF" />
+
+        <!-- Botón Cancelar -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancelar"
+            android:layout_width="200dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:text="Cancelar"
+            android:textStyle="bold"
+            app:cornerRadius="24dp"
+            android:backgroundTint="#853B3B"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+
+</ScrollView>

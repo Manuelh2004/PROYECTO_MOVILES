@@ -95,34 +95,43 @@ public class Login extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         if (v == btnIngresoDirecto) {
-            String usuario = Usuario.getText().toString().trim();
-            String contrasena = Contraseña.getText().toString().trim();
+            String email = Usuario.getText().toString().trim();
+            String password = Contraseña.getText().toString().trim();
 
-            if (usuario.isEmpty() || contrasena.isEmpty()) {
+            if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(getContext(), "Por favor, complete los campos", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            String url = servidor + "consultar_usuario.php?em_usuario=" + usuario + "&pas_usuario=" + contrasena;
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null) {
+                                if (user.isEmailVerified()) {
+                                    Toast.makeText(getContext(), "Ingreso exitoso", Toast.LENGTH_SHORT).show();
 
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.get(url, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, org.json.JSONArray response) {
-                    if (response.length() > 0) {
-                        // Usuario encontrado, navegar
-                        Toast.makeText(getContext(), "Ingreso exitoso", Toast.LENGTH_SHORT).show();
-                        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                        navController.navigate(R.id.action_nav_login_to_nav_presupuesto);
-                    } else {
-                        Toast.makeText(getContext(), "Correo y/o contraseña incorrectos", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                @Override
-                public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, Throwable throwable, org.json.JSONObject errorResponse) {
-                    Toast.makeText(getContext(), "Error de conexión con el servidor", Toast.LENGTH_SHORT).show();
-                }
-            });
+                                    // Opcional: enviar datos al servidor o realizar lógica adicional
+
+                                    NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+                                    navController.navigate(R.id.action_nav_login_to_nav_presupuesto);
+
+                                } else {
+                                    Toast.makeText(getContext(), "Por favor, verifica tu correo antes de ingresar.", Toast.LENGTH_LONG).show();
+                                    mAuth.signOut();
+                                }
+                            }
+                        } else {
+                            Toast.makeText(getContext(), "Correo y/o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+        } else if (v == btnCrearCuenta) {
+            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.action_nav_login_to_crearCuenta);
+        } else if (v == txtOlvidarPassword) {
+            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.action_nav_login_to_nav_olvidarPassword);
         }
 
         if (v == btnCrearCuenta) {
