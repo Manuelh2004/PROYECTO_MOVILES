@@ -20,5 +20,10 @@
             android:id="@+id/nav_perfil"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Perfil" />
+        <!-- Item para cerrar sesión -->
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logo_cerrar_sesion"
+            android:title="Cerrar sesión" />
     </group>
 </menu>

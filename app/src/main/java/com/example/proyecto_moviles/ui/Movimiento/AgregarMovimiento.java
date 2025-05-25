@@ -1,6 +1,7 @@
 package com.example.proyecto_moviles.ui.Movimiento;
 
 import android.app.DatePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -253,12 +257,19 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
         String descripcion = etDescripcion.getText().toString();
         String montoStr = etMonto.getText().toString();
 
-        // Convertir monto a decimal
         double monto;
         try {
             monto = Double.parseDouble(montoStr);
         } catch (NumberFormatException e) {
             Toast.makeText(getActivity(), "Monto inválido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Obtener id_usuario numérico guardado en SharedPreferences
+        SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
+        int idUsuario = prefs.getInt("id_usuario", -1);
+        if (idUsuario == -1) {
+            Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -268,9 +279,8 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
         params.put("mon_movimiento", monto);
         params.put("fech_movimiento", fecha);
         params.put("des_movimiento", descripcion);
-        // Por ejemplo, si tienes usuario logueado puedes pasar id_usuario, aquí lo dejo null o fijo
-        params.put("id_usuario", "1"); // Cambia esto según el usuario actual
-        params.put("est_movimiento", "1"); // Ejemplo de estado activo
+        params.put("id_usuario", idUsuario);  // Usamos ID numérico aquí
+        params.put("est_movimiento", "1");
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(url, params, new AsyncHttpResponseHandler() {
@@ -291,6 +301,8 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
             }
         });
     }
+
+
 
 
 
