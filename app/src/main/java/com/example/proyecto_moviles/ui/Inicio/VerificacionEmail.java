@@ -134,7 +134,7 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
                     if (exito) {
                         // Navegar a la pantalla principal o donde desees
                         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                        navController.navigate(R.id.action_nav_crear_cuenta_to_nav_presupuesto);
+                        navController.navigate(R.id.action_verificacionEmail_to_nav_presupuesto);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

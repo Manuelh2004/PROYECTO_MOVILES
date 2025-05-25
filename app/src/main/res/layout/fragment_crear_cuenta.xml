@@ -7,7 +7,7 @@
     tools:context=".ui.Inicio.CrearCuenta">
 
     <EditText
-        android:id="@+id/etDocumento"
+        android:id="@+id/etMonto"
         android:layout_width="0dp"
         android:layout_height="46dp"
         android:layout_marginLeft="20dp"
@@ -18,10 +18,10 @@
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spTipoDoc" />
+        app:layout_constraintTop_toBottomOf="@+id/spCategoria" />
 
     <Spinner
-        android:id="@+id/spTipoDoc"
+        android:id="@+id/spCategoria"
         android:layout_width="0dp"
         android:layout_height="44dp"
         android:layout_marginLeft="20dp"
@@ -29,10 +29,10 @@
         android:layout_marginRight="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spPais" />
+        app:layout_constraintTop_toBottomOf="@+id/spTipoMovimiento" />
 
     <Spinner
-        android:id="@+id/spPais"
+        android:id="@+id/spTipoMovimiento"
         android:layout_width="0dp"
         android:layout_height="44dp"
         android:layout_marginLeft="20dp"
@@ -43,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@+id/spGenero" />
 
     <EditText
-        android:id="@+id/etFechaNa"
+        android:id="@+id/etFecha"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
@@ -54,7 +54,7 @@
         android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etDocumento" />
+        app:layout_constraintTop_toBottomOf="@+id/etMonto" />
 
     <EditText
         android:id="@+id/etTelefono"
@@ -68,7 +68,7 @@
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etFechaNa" />
+        app:layout_constraintTop_toBottomOf="@+id/etFecha" />
 
     <Button
         android:id="@+id/btnCancelar"

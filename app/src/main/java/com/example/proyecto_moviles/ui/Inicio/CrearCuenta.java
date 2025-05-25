@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,14 +52,14 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         etNombres = (EditText) rootView.findViewById(R.id.etNombres);
         etApellidos = (EditText) rootView.findViewById(R.id.etApellidos);
         etTelefono = (EditText) rootView.findViewById(R.id.etTelefono);
-        etFechaNa = (EditText) rootView.findViewById(R.id.etFechaNa);
-        etDocumento = (EditText) rootView.findViewById(R.id.etDocumento);
+        etFechaNa = (EditText) rootView.findViewById(R.id.etFecha);
+        etDocumento = (EditText) rootView.findViewById(R.id.etMonto);
 
         spGenero = (Spinner) rootView.findViewById(R.id.spGenero);
         spGenero.setOnItemSelectedListener(this);
-        spPais = (Spinner) rootView.findViewById(R.id.spPais);
+        spPais = (Spinner) rootView.findViewById(R.id.spTipoMovimiento);
         spPais.setOnItemSelectedListener(this);
-        spTipoDoc = (Spinner) rootView.findViewById(R.id.spTipoDoc);
+        spTipoDoc = (Spinner) rootView.findViewById(R.id.spCategoria);
         spTipoDoc.setOnItemSelectedListener(this);
 
         btnCrearUsuario = (Button) rootView.findViewById(R.id.btnCrearUsuario);
@@ -232,6 +231,7 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         if(v == btnCancelar){
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_nav_crear_cuenta_to_nav_login); // action_crearCuenta_to_nav_login
+            LimpiarCampos();
         }
     }
 

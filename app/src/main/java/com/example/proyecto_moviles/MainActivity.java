@@ -7,6 +7,7 @@ import android.view.Menu;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -39,6 +40,19 @@ public class MainActivity extends AppCompatActivity {
         });
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
+
+        View headerView = navigationView.getHeaderView(0);  // obtener el header del nav drawer
+        headerView.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+
+            // Navegar al fragmento deseado (reemplaza R.id.nav_perfil por el id de destino que quieras)
+            navController.navigate(R.id.nav_resumen_finanzas);
+
+            // Cerrar el drawer
+            binding.drawerLayout.closeDrawer(GravityCompat.START);
+        });
+
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(

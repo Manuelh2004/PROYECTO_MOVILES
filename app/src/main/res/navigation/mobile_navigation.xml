@@ -7,9 +7,13 @@
 
     <fragment
         android:id="@+id/nav_movimiento"
-        android:name="com.example.proyecto_moviles.ui.Movimiento.MovimientoFragment"
+        android:name="com.example.proyecto_moviles.ui.Movimiento.AgregarMovimiento"
         android:label="Movimientos"
-        tools:layout="@layout/fragment_movimiento" />
+        tools:layout="@layout/fragment_movimiento" >
+        <action
+            android:id="@+id/action_nav_movimiento_to_listarMovimientos"
+            app:destination="@id/nav_listar_movimientos" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_presupuesto"
@@ -37,14 +41,14 @@
         android:label="fragment_login_temporal"
         tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_nav_login_to_nav_presupuesto"
-            app:destination="@id/nav_presupuesto" />
-        <action
             android:id="@+id/action_nav_login_to_crearCuenta"
             app:destination="@id/nav_crear_cuenta" />
         <action
             android:id="@+id/action_nav_login_to_nav_olvidarPassword"
             app:destination="@id/nav_olvidarPassword" />
+        <action
+            android:id="@+id/action_nav_login_to_nav_presupuesto"
+            app:destination="@id/nav_presupuesto" />
     </fragment>
     <fragment
         android:id="@+id/nav_crear_cuenta"
@@ -56,10 +60,7 @@
             app:destination="@id/nav_login" />
         <action
             android:id="@+id/action_nav_crear_cuenta_to_verificacionEmail"
-            app:destination="@id/verificacionEmail" />
-        <action
-            android:id="@+id/action_nav_crear_cuenta_to_nav_presupuesto"
-            app:destination="@id/nav_presupuesto" />
+            app:destination="@id/nav_verificar_email" />
     </fragment>
     <fragment
         android:id="@+id/vistaPresupuesto"
@@ -97,7 +98,7 @@
             app:destination="@id/vistaPresupuesto" />
     </fragment>
     <fragment
-        android:id="@+id/verificacionEmail"
+        android:id="@+id/nav_verificar_email"
         android:name="com.example.proyecto_moviles.ui.Inicio.VerificacionEmail"
         android:label="VerificacionEmail" >
         <action
@@ -109,4 +110,14 @@
         android:name="com.example.proyecto_moviles.BlankFragment2"
         android:label="fragment_blank2"
         tools:layout="@layout/fragment_blank2" />
+    <fragment
+        android:id="@+id/nav_resumen_finanzas"
+        android:name="com.example.proyecto_moviles.ui.Perfil.ResumenFinanzas"
+        android:label="Mis finanzas"
+        tools:layout="@layout/fragment_resumen_finanzas" />
+    <fragment
+        android:id="@+id/nav_listar_movimientos"
+        android:name="com.example.proyecto_moviles.ui.Movimiento.ListarMovimientos"
+        android:label="fragment_listar_movimientos"
+        tools:layout="@layout/fragment_listar_movimientos" />
 </navigation>

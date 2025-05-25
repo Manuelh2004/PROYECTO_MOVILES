@@ -133,16 +133,6 @@ public class Login extends Fragment implements View.OnClickListener{
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_nav_login_to_nav_olvidarPassword);
         }
-
-        if (v == btnCrearCuenta) {
-            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_login_to_crearCuenta);
-        }
-
-        if (v == txtOlvidarPassword){
-            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_login_to_nav_olvidarPassword);
-        }
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -174,7 +164,6 @@ public class Login extends Fragment implements View.OnClickListener{
                     }
                 });
     }
-
 
     private void enviarUsuarioAlServidor(FirebaseUser user) {
         String url = servidor + "crear_usuario_google.php";
