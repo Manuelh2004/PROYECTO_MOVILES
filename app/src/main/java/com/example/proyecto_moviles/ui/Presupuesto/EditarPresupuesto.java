@@ -48,7 +48,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
     private String modoSeleccion = "";
     private String fechaSeleccionada = "";
     private String fecha_inicio="", fecha_fin="";
-    private int id_usuario = 1;
+    private int id_usuario = 2;
     SimpleDateFormat formatoMySQLEP = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     SimpleDateFormat formatoDeseadoEP = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 

@@ -43,7 +43,7 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
     private String fechaSeleccionada = "";
     private CalendarView cal;
     private String fecha_inicio="", fecha_fin="";
-    private int id_usuario = 1;
+    private int id_usuario = 2;
 
     SimpleDateFormat formatoEntrada = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     SimpleDateFormat formatoMySQL = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
