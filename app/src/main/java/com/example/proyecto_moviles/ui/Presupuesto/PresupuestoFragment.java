@@ -23,6 +23,10 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +48,8 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
     private CalendarView cal;
     private String fecha_inicio="", fecha_fin="";
     private int id_usuario = 1;
+    private List<Categoria> listaCategorias;
+    private ArrayAdapter<Categoria> adapterCategoria;
 
     SimpleDateFormat formatoEntrada = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     SimpleDateFormat formatoMySQL = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -101,18 +107,56 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
 
         //String[] elementos = {"Categoria", "Academia"};
 
-        List<Categoria> listaCategorias = new ArrayList<>();
-        listaCategorias.add(new Categoria(1, "Alimentacion"));
-        listaCategorias.add(new Categoria(2, "Transporte"));
-        listaCategorias.add(new Categoria(3, "Salud"));
+        listaCategorias = new ArrayList<>();
+        cargarCategoriasDesdeServidor();
 
-        ArrayAdapter<Categoria> adapterCategoria = new ArrayAdapter<>( getContext(),android.R.layout.simple_spinner_item,listaCategorias);
-        adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        cat.setAdapter(adapterCategoria);
         mos.setOnClickListener(this);
         agre.setOnClickListener(this);
 
         return rootView;
+    }
+
+    private void cargarCategoriasDesdeServidor() {
+        String url = servidor + "obtener_categorias.php";
+
+        RequestParams params = new RequestParams();
+
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.get(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                String response = new String(responseBody);  // Obtener la respuesta del servidor como String
+
+                try {
+                    // Parsear el JSON recibido
+                    JSONArray jsonArray = new JSONArray(response);
+
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        int id_categoria = jsonObject.getInt("id_categoria");
+                        String nombre_categoria = jsonObject.getString("nom_categoria");
+
+                        Categoria categoria = new Categoria(id_categoria, nombre_categoria);
+                        listaCategorias.add(categoria);
+                    }
+
+                    adapterCategoria = new ArrayAdapter<>( getContext(),android.R.layout.simple_spinner_item,listaCategorias);
+                    adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    cat.setAdapter(adapterCategoria);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(), "Error al parsear el JSON", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(getContext(), "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
