@@ -166,6 +166,7 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_nav_presupuesto_to_vistaPresupuesto);
         }else if (v == agre){
+            if (!validarCampos()) return;
 
             Categoria categoriaSeleccionada = (Categoria) cat.getSelectedItem();
             Float montoP = Float.parseFloat(mon.getText().toString());
@@ -175,7 +176,58 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
 
             //Toast.makeText(getContext(), "id categoria: " + categoriaP, Toast.LENGTH_SHORT).show();
             RegistrarPresupuesto(montoP, categoriaP, fechaInicioP, fechaFinP);
+            limpiarCampos();
         }
+    }
+
+    private boolean validarCampos() {
+        if (cat.getSelectedItem() == null) {
+            Toast.makeText(getContext(), "Seleccione una categoría", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        String montoTexto = mon.getText().toString().trim();
+        if (montoTexto.isEmpty()) {
+            Toast.makeText(getContext(), "Ingrese un monto válido", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        try {
+            float monto = Float.parseFloat(montoTexto);
+            if (monto <= 0) {
+                Toast.makeText(getContext(), "El monto debe ser mayor a cero", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "Monto no válido", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (fecha_inicio == null || fecha_inicio.isEmpty() || fecha_fin == null || fecha_fin.isEmpty()) {
+            Toast.makeText(getContext(), "Seleccione las fechas de inicio y fin", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Validar que fecha de inicio sea menor o igual a fecha fin (opcional)
+        if (fecha_inicio.compareTo(fecha_fin) > 0) {
+            Toast.makeText(getContext(), "La fecha de inicio no puede ser mayor que la fecha de fin", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
+    private void limpiarCampos() {
+        mon.setText("");  // Limpiar el campo de monto
+        cat.setSelection(0);  // Seleccionar la primera categoría (índice 0)
+
+        // Reiniciar las variables de fecha
+        fecha_inicio = "";
+        fecha_fin = "";
+
+        // Si tienes TextViews donde se muestran las fechas, también límpialos
+        f_inicio.setText("Fecha inicio"); // Usa el ID correcto del TextView
+        f_fin.setText("Fecha fin");
     }
 
     private void RegistrarPresupuesto(Float montoP, int categoriaP, String fechaInicioP, String fechaFinP) {
