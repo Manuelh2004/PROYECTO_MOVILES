@@ -2,6 +2,7 @@ package com.example.proyecto_moviles.ui.Presupuesto;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -44,6 +45,10 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
 
     private List<Presupuesto> listaOriginal = new ArrayList<>();
     private Spinner categoria;
+    ArrayAdapter<Categoria> adapterCategoria;
+    List<Categoria> listaCategorias;
+    private int id_usuario = 0;
+
     final String servidor = "http://10.0.2.2/PHP_PROYECTO_MOVILES/controladores/presupuestoController/";
 
 
@@ -56,13 +61,11 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
         lista = (ListView) rootView.findViewById(R.id.lstPresupuestoMostrar);
         categoria = (Spinner) rootView.findViewById(R.id.spCategoriaM);
 
-        List<Categoria> listaCategorias = new ArrayList<>();
+        listaCategorias = new ArrayList<>();
         listaCategorias.add(new Categoria(0, "Todos las Categorias"));
-        listaCategorias.add(new Categoria(1, "Alimentacion"));
-        listaCategorias.add(new Categoria(2, "Transporte"));
-        listaCategorias.add(new Categoria(3, "Salud"));
+        cargarCategoriasDesdeServidor();
 
-        ArrayAdapter<Categoria> adapterCategoria = new ArrayAdapter<>( getContext(),android.R.layout.simple_spinner_item,listaCategorias);
+        adapterCategoria = new ArrayAdapter<>( getContext(),android.R.layout.simple_spinner_item,listaCategorias);
         adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categoria.setAdapter(adapterCategoria);
 
@@ -80,9 +83,58 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
 
         lista.setOnItemClickListener(this);
 
+        SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
+        id_usuario = prefs.getInt("id_usuario", -1);
+        if (id_usuario == -1) {
+            Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
+        }
+
         MostrarDatos();
 
         return rootView;
+    }
+
+    private void cargarCategoriasDesdeServidor() {
+        String url = servidor + "obtener_categorias.php";
+
+        RequestParams params = new RequestParams();
+
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.get(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                String response = new String(responseBody);  // Obtener la respuesta del servidor como String
+
+                try {
+                    // Parsear el JSON recibido
+                    JSONArray jsonArray = new JSONArray(response);
+
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        int id_categoria = jsonObject.getInt("id_categoria");
+                        String nombre_categoria = jsonObject.getString("nom_categoria");
+
+                        Categoria categoria = new Categoria(id_categoria, nombre_categoria);
+                        listaCategorias.add(categoria);
+                    }
+
+                    adapterCategoria = new ArrayAdapter<>( getContext(),android.R.layout.simple_spinner_item,listaCategorias);
+                    adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    categoria.setAdapter(adapterCategoria);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(), "Error al parsear el JSON", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(getContext(), "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -191,6 +243,7 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
 
         // Crear un objeto RequestParams para almacenar los parámetros
         RequestParams params = new RequestParams();
+        params.put("id_Usuario",id_usuario);
 
         // Crear una instancia de AsyncHttpClient
         AsyncHttpClient client = new AsyncHttpClient();

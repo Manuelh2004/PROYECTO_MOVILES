@@ -1,5 +1,6 @@
 package com.example.proyecto_moviles.ui.Presupuesto;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -48,7 +49,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
     private String modoSeleccion = "";
     private String fechaSeleccionada = "";
     private String fecha_inicio="", fecha_fin="";
-    private int id_usuario = 1;
+    private int id_usuario = 0;
     private List<Categoria> listaCategorias;
     private ArrayAdapter<Categoria> adapterCategoria;
     SimpleDateFormat formatoMySQLEP = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -115,7 +116,11 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
 
         });
 
-        ConsultarPresupuesto(idPresupuesto);
+        SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
+        id_usuario = prefs.getInt("id_usuario", -1);
+        if (id_usuario == -1) {
+            Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
+        }
 
         act.setOnClickListener(this);
         return rootView;
@@ -150,6 +155,8 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
                     adapterCategoria = new ArrayAdapter<>( getContext(),android.R.layout.simple_spinner_item,listaCategorias);
                     adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     catEP.setAdapter(adapterCategoria);
+
+                    ConsultarPresupuesto(idPresupuesto);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -200,7 +207,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
                         monEP.setText(pres_presupuesto);
                         FfinEP.setText("Fin: " + formatoDeseadoEP.format(fechaFin));
                         FiniEP.setText("Inicio: " + formatoDeseadoEP.format(fechaInicio));
-                        catEP.setSelection(id_categoria);
+                        catEP.setSelection(id_categoria-1);
 
                         fecha_inicio =  fini_presupuesto;
                         fecha_fin = ffin_presupuesto;

@@ -1,5 +1,6 @@
 package com.example.proyecto_moviles.ui.Presupuesto;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +48,7 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
     private String fechaSeleccionada = "";
     private CalendarView cal;
     private String fecha_inicio="", fecha_fin="";
-    private int id_usuario = 1;
+    private int id_usuario = 0;
     private List<Categoria> listaCategorias;
     private ArrayAdapter<Categoria> adapterCategoria;
 
@@ -178,6 +179,15 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
     }
 
     private void RegistrarPresupuesto(Float montoP, int categoriaP, String fechaInicioP, String fechaFinP) {
+
+
+        // Obtener id_usuario numérico guardado en SharedPreferences
+        SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
+        id_usuario = prefs.getInt("id_usuario", -1);
+        if (id_usuario == -1) {
+            Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         String url = servidor + "presupuesto_registrar.php";
 

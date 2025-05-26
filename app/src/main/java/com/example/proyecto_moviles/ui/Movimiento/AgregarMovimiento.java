@@ -43,7 +43,7 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
 
     private EditText etFecha, etDescripcion, etMonto;
     private Spinner spCategoria, spTipoMovimiento;
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
+    final String servidor = "http://10.0.2.2/PHP_PROYECTO_MOVILES/controladores/";
     private Button btnRegistrarMovimiento, btnMostrarMovimientos;
     int idCategoria=-1, idTipoMovimiento = -1;
 
