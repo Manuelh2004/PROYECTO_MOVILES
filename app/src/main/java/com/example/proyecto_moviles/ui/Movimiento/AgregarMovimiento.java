@@ -135,18 +135,28 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
     }
 
     private void obtenerCategoriaConPresupuesto() {
-        String url =  servidor+"itemsController/obtener_categoria_presupuesto.php";
+        // Obtener id_usuario desde SharedPreferences
+        SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
+        int idUsuario = prefs.getInt("id_usuario", -1);
+
+        if (idUsuario == -1) {
+            Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String url = servidor + "itemsController/obtener_categoria_presupuesto.php";
+
+        // Enviar el id_usuario como parámetro
+        RequestParams params = new RequestParams();
+        params.put("id_usuario", idUsuario);
 
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(url, new JsonHttpResponseHandler() {
+        client.post(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-
                 ArrayList<Item> lista = new ArrayList<>();
-
                 lista.add(new Item(-1, "Seleccionar una categoria"));
 
-                //Respuesta del servidor
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject obj = response.getJSONObject(i);
@@ -158,7 +168,6 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
                     }
                 }
 
-                //Llena el Spinner
                 ArrayAdapter<Item> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, lista);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spCategoria.setAdapter(adapter);
@@ -166,10 +175,11 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Toast.makeText(getActivity(), "Error al cargar datos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Error al cargar categorías", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
     private void LimpiarCampos()
     {
         etMonto.setText("");

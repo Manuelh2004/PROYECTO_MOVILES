@@ -1,5 +1,6 @@
 package com.example.proyecto_moviles.ui.Inicio;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -66,6 +69,32 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         btnCrearUsuario.setOnClickListener(this);
         btnCancelar = (Button) rootView.findViewById(R.id.btnCancelar);
         btnCancelar.setOnClickListener(this);
+
+        // Desactivamos edición directa y ponemos listener para abrir DatePicker
+        etFechaNa.setFocusable(false);
+        etFechaNa.setClickable(true);
+
+        etFechaNa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                String formattedDate = String.format("%02d/%02d/%02d", dayOfMonth, monthOfYear + 1, year % 100);
+                                etFechaNa.setText(formattedDate);
+                            }
+                        }, year, month, day);
+
+                datePickerDialog.show();
+            }
+        });
+
 
         obtenerPais();
         obtenerGenero();
