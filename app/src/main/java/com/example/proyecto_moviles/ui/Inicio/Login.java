@@ -46,7 +46,7 @@ public class Login extends Fragment implements View.OnClickListener{
     private Button btnIngresoDirecto, btnCrearCuenta;
     private TextInputEditText Contraseña;
     private EditText Usuario;
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/usuarioController/";
+    final String servidor = "http://10.0.2.2/PHP_PROYECTO_MOVILES/controladores/usuarioController/";
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;

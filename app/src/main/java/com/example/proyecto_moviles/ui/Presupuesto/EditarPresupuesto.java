@@ -1,5 +1,6 @@
 package com.example.proyecto_moviles.ui.Presupuesto;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -48,7 +49,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
     private String modoSeleccion = "";
     private String fechaSeleccionada = "";
     private String fecha_inicio="", fecha_fin="";
-    private int id_usuario = 1;
+    private int id_usuario = 0;
     private List<Categoria> listaCategorias;
     private ArrayAdapter<Categoria> adapterCategoria;
     SimpleDateFormat formatoMySQLEP = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -115,7 +116,11 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
 
         });
 
-        ConsultarPresupuesto(idPresupuesto);
+        SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
+        id_usuario = prefs.getInt("id_usuario", -1);
+        if (id_usuario == -1) {
+            Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
+        }
 
         act.setOnClickListener(this);
         return rootView;
@@ -150,6 +155,8 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
                     adapterCategoria = new ArrayAdapter<>( getContext(),android.R.layout.simple_spinner_item,listaCategorias);
                     adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     catEP.setAdapter(adapterCategoria);
+
+                    ConsultarPresupuesto(idPresupuesto);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -200,7 +207,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
                         monEP.setText(pres_presupuesto);
                         FfinEP.setText("Fin: " + formatoDeseadoEP.format(fechaFin));
                         FiniEP.setText("Inicio: " + formatoDeseadoEP.format(fechaInicio));
-                        catEP.setSelection(id_categoria);
+                        catEP.setSelection(id_categoria-1);
 
                         fecha_inicio =  fini_presupuesto;
                         fecha_fin = ffin_presupuesto;
@@ -222,6 +229,9 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         if(v == act){
+
+            if (!validarCampos()) return;
+
             Categoria categoriaSeleccionada = (Categoria) catEP.getSelectedItem();
             Float montop = Float.parseFloat(monEP.getText().toString());
             int categoriaP = categoriaSeleccionada.getId();
@@ -230,6 +240,43 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
 
             ActualizarPresupuesto(idPresupuesto,id_usuario, categoriaP, montop, fechaInicioP, fechaFinP);
         }
+    }
+
+    private boolean validarCampos() {
+        if (catEP.getSelectedItem() == null) {
+            Toast.makeText(getContext(), "Seleccione una categoría", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        String montoTexto = monEP.getText().toString().trim();
+        if (montoTexto.isEmpty()) {
+            Toast.makeText(getContext(), "Ingrese un monto válido", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        try {
+            float monto = Float.parseFloat(montoTexto);
+            if (monto <= 0) {
+                Toast.makeText(getContext(), "El monto debe ser mayor a cero", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "Monto no válido", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (fecha_inicio == null || fecha_inicio.isEmpty() || fecha_fin == null || fecha_fin.isEmpty()) {
+            Toast.makeText(getContext(), "Seleccione las fechas de inicio y fin", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Validar que fecha de inicio sea menor o igual a fecha fin (opcional)
+        if (fecha_inicio.compareTo(fecha_fin) > 0) {
+            Toast.makeText(getContext(), "La fecha de inicio no puede ser mayor que la fecha de fin", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 
     private void ActualizarPresupuesto(String idPresupuesto, int idUsuario, int categoriaP, Float montoP, String fechaInicioP, String fechaFinP) {

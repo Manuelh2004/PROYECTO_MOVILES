@@ -36,7 +36,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class CrearCuenta extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, LoginDialogFragment.LoginDialogListener{
     private FirebaseAuth mAuth;
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
+    final String servidor = "http://10.0.2.2/PHP_PROYECTO_MOVILES/controladores/";
     private EditText etNombres, etApellidos, etTelefono, etFechaNa, etDocumento;
     private Button btnCrearUsuario, btnCancelar;
     private Spinner spPais;
