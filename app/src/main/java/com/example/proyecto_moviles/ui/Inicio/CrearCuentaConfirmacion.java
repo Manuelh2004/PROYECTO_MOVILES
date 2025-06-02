@@ -39,7 +39,7 @@ import org.json.JSONObject;
 import cz.msebera.android.httpclient.Header;
 
 public class CrearCuentaConfirmacion extends Fragment implements View.OnClickListener{
-    final String servidor = "http://10.0.2.2/PHP_PROYECTO_MOVILES/controladores/usuarioController/";
+    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/usuarioController/";
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;

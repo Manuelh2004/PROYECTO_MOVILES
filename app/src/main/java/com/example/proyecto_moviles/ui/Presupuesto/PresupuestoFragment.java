@@ -39,7 +39,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class PresupuestoFragment extends Fragment implements View.OnClickListener {
 
-    final String servidor = "http://10.0.2.2/PHP_PROYECTO_MOVILES/controladores/presupuestoController/";
+    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/presupuestoController/";
     private TextView f_inicio, f_fin;
     private EditText mon;
     private Button agre, mos;

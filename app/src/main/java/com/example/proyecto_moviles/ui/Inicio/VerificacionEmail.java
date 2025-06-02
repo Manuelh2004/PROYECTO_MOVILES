@@ -28,7 +28,7 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
     private Button btnRevisarVerificacion, btnReenviarCorreo;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
-    final String servidor = "http://10.0.2.2/PHP_PROYECTO_MOVILES/controladores/";
+    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
 
     // Variables para almacenar datos recibidos
     private String nombres, apellidos, telefono, documento, fechaNa, email;

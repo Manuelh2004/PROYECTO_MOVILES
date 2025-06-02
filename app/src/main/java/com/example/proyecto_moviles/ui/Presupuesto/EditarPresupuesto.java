@@ -45,7 +45,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
     private CalendarView calenderEP;
     private Spinner catEP;
     private String idPresupuesto = "";
-    final String servidor = "http://10.0.2.2/PHP_PROYECTO_MOVILES/controladores/presupuestoController/";
+    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/presupuestoController/";
     private String modoSeleccion = "";
     private String fechaSeleccionada = "";
     private String fecha_inicio="", fecha_fin="";

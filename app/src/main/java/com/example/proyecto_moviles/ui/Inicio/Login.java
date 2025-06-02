@@ -46,7 +46,7 @@ public class Login extends Fragment implements View.OnClickListener{
     private Button btnIngresoDirecto, btnCrearCuenta;
     private TextInputEditText Contraseña;
     private EditText Usuario;
-    final String servidor = "http://10.0.2.2/PHP_PROYECTO_MOVILES/controladores/usuarioController/";
+    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/usuarioController/";
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
@@ -124,6 +124,9 @@ public class Login extends Fragment implements View.OnClickListener{
 
                                     Toast.makeText(getContext(), "Ingreso exitoso", Toast.LENGTH_SHORT).show();
                                     obtenerIdUsuarioBackend(email);
+
+                                    NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+                                    navController.navigate(R.id.action_nav_login_to_nav_presupuesto); // action_crearCuenta_to_nav_login
                                 } else {
                                     Toast.makeText(getContext(), "Por favor, verifica tu correo antes de ingresar.", Toast.LENGTH_LONG).show();
                                     mAuth.signOut();
@@ -236,8 +239,8 @@ public class Login extends Fragment implements View.OnClickListener{
                         editor.putInt("id_usuario", idUsuarioDelBackend);
                         editor.apply();
 
-                        NavController navController = Navigation.findNavController(getView());
-                        navController.navigate(R.id.action_nav_login_to_nav_presupuesto);
+                        // Log para confirmar guardado
+                        Log.d("Login", "Guardado id_usuario en SharedPreferences: " + idUsuarioDelBackend);
 
                         Toast.makeText(getContext(), "Ingreso exitoso", Toast.LENGTH_SHORT).show();
                     } else {
@@ -255,4 +258,5 @@ public class Login extends Fragment implements View.OnClickListener{
             }
         });
     }
+
 }

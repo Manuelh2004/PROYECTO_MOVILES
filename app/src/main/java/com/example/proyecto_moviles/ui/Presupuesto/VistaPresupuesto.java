@@ -49,7 +49,7 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
     List<Categoria> listaCategorias;
     private int id_usuario = 0;
 
-    final String servidor = "http://10.0.2.2/PHP_PROYECTO_MOVILES/controladores/presupuestoController/";
+    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/presupuestoController/";
 
 
     @Override
