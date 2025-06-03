@@ -44,7 +44,7 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
 
     private List<Presupuesto> listaOriginal = new ArrayList<>();
     private Spinner categoria;
-    final String servidor = "http://10.0.2.2/PHP_PROYECTO_MOVILES/controladores/presupuestoController/";
+    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/presupuestoController/";
 
 
     @Override
