@@ -243,7 +243,6 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
 
         // Crear un objeto RequestParams para almacenar los parámetros
         RequestParams params = new RequestParams();
-        params.put("id_Usuario",id_usuario);
 
         // Crear una instancia de AsyncHttpClient
         AsyncHttpClient client = new AsyncHttpClient();
