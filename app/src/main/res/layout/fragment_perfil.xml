@@ -60,11 +60,11 @@
 
                 <!-- Botón Editar Perfil -->
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_edit_profile"
+                    android:id="@+id/btnEditar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="Edit Profile"
+                    android:text="Editar perfil"
                     android:textColor="@android:color/white"
                     app:backgroundTint="@color/color_botones"
                     app:cornerRadius="24dp" />
@@ -74,7 +74,7 @@
                     android:id="@+id/btn_logout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Log Out"
+                    android:text="Cerrar Sesión"
                     android:textColor="@android:color/white"
                     app:backgroundTint="@color/color_purple"
                     app:cornerRadius="24dp" />
@@ -87,6 +87,7 @@
             android:id="@+id/cardComment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:layout_marginTop="24dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
@@ -164,6 +165,7 @@
             android:id="@+id/cardDownloadHistory"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:layout_marginTop="24dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
