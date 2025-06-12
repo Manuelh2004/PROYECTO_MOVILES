@@ -111,7 +111,7 @@
     <fragment
         android:id="@+id/nav_editar_perfil"
         android:name="com.example.proyecto_moviles.ui.Perfil.EditarPerfil"
-        android:label="EDITAR PERFIL"
+        android:label="Editar Perfil"
         tools:layout="@layout/fragment_editar_perfil" />
     <fragment
         android:id="@+id/nav_verificar_email"
