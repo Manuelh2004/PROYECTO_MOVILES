@@ -39,7 +39,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
     final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
     private EditText etNombres, etApellidos, etTelefono, etFechaNa, etDocumento;
     private Button btnCrearUsuario, btnCancelar;
-    private Spinner spPais;
     private Spinner spGenero;
     private Spinner spTipoDoc;
     int idPais=-1, idGenero = -1, idTipoDoc;
@@ -52,23 +51,19 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         View rootView = inflater.inflate(R.layout.fragment_crear_cuenta, container, false);
         mAuth = FirebaseAuth.getInstance();
 
-        etNombres = (EditText) rootView.findViewById(R.id.etNombresEd);
-        etApellidos = (EditText) rootView.findViewById(R.id.etApellidosEd);
-        etTelefono = (EditText) rootView.findViewById(R.id.etTelefonoEd);
-        etFechaNa = (EditText) rootView.findViewById(R.id.etFechaEd);
-        etDocumento = (EditText) rootView.findViewById(R.id.etDocumentoEd);
+        etNombres = (EditText) rootView.findViewById(R.id.etNombres);
+        etApellidos = (EditText) rootView.findViewById(R.id.etApellidos);
+        etTelefono = (EditText) rootView.findViewById(R.id.etTelefono);
+        etFechaNa = (EditText) rootView.findViewById(R.id.etFecha);
+        etDocumento = (EditText) rootView.findViewById(R.id.etDocumento);
 
-        spGenero = (Spinner) rootView.findViewById(R.id.spGeneroEd);
+        spGenero = (Spinner) rootView.findViewById(R.id.spGenero);
         spGenero.setOnItemSelectedListener(this);
-        spPais = (Spinner) rootView.findViewById(R.id.spPais);
-        spPais.setOnItemSelectedListener(this);
-        spTipoDoc = (Spinner) rootView.findViewById(R.id.spTipoDocumentoEd);
+        spTipoDoc = (Spinner) rootView.findViewById(R.id.spTipoDocumento);
         spTipoDoc.setOnItemSelectedListener(this);
 
         btnCrearUsuario = (Button) rootView.findViewById(R.id.btnCrearUsuario);
         btnCrearUsuario.setOnClickListener(this);
-        btnCancelar = (Button) rootView.findViewById(R.id.btnCancelar);
-        btnCancelar.setOnClickListener(this);
 
         // Desactivamos edición directa y ponemos listener para abrir DatePicker
         etFechaNa.setFocusable(false);
@@ -95,8 +90,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
             }
         });
 
-
-        obtenerPais();
         obtenerGenero();
         obtenerTipoDoc();
 
@@ -184,46 +177,8 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         etFechaNa.setText("");
         etDocumento.setText("");
         spGenero.setSelection(0);
-        spPais.setSelection(0);
         spTipoDoc.setSelection(0);
         etNombres.requestFocus();
-    }
-
-    private void obtenerPais() {
-        String url =  servidor+"itemsController/obtener_pais.php";
-
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(url, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-
-                ArrayList<Item> lista = new ArrayList<>();
-
-                lista.add(new Item(-1, "Seleccionar pais"));
-
-                //Respuesta del servidor
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-                        JSONObject obj = response.getJSONObject(i);
-                        int id = obj.getInt("id");
-                        String nombre = obj.getString("nombre");
-                        lista.add(new Item(id, nombre));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                //Llena el Spinner
-                ArrayAdapter<Item> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, lista);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spPais.setAdapter(adapter);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Toast.makeText(getActivity(), "Error al cargar datos", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
@@ -236,10 +191,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                     etDocumento.getText().toString().isEmpty() ||
                     etFechaNa.getText().toString().isEmpty()) {
                 Toast.makeText(getActivity(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (idPais == -1) {
-                Toast.makeText(getActivity(), "Por favor, seleccione un pais", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (idGenero == -1) {
@@ -280,22 +231,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                 String selectedNombre = selectedItem.nombre;
                 //Toast.makeText(getActivity(), "Seleccionado: " + selectedId + " - " + selectedNombre, Toast.LENGTH_SHORT).show();
                 idGenero = selectedId;
-            }
-        }
-        else if(parent==spPais)
-        {
-            Item selectedItem = (Item) parent.getItemAtPosition(position);
-
-            // Verifica si es el item "Seleccionar marca"
-            if (selectedItem.id == -1) {
-                // No hacer nada si es la opción "Seleccionar marca"
-                //Toast.makeText(getActivity(), "Por favor, seleccione una marca", Toast.LENGTH_SHORT).show();
-            } else {
-                // Si no es el item ficticio, maneja la selección normalmente
-                int selectedId = selectedItem.id;
-                String selectedNombre = selectedItem.nombre;
-                //Toast.makeText(getActivity(), "Seleccionado: " + selectedId + " - " + selectedNombre, Toast.LENGTH_SHORT).show();
-                idPais = selectedId;
             }
         }
         else if(parent==spTipoDoc)
