@@ -106,7 +106,6 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
 
                 lista.add(new Item(-1, "Seleccionar un tipo de movimiento"));
 
-                //Respuesta del servidor
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject obj = response.getJSONObject(i);
@@ -117,7 +116,6 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
                         e.printStackTrace();
                     }
                 }
-
                 //Llena el Spinner
                 ArrayAdapter<Item> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, lista);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -143,7 +141,6 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
 
         String url = servidor + "itemsController/obtener_categoria_presupuesto.php";
 
-        // Enviar el id_usuario como parámetro
         RequestParams params = new RequestParams();
         params.put("id_usuario", idUsuario);
 
@@ -190,7 +187,6 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
     @Override
     public void onClick(View v) {
         if (v == btnRegistrarMovimiento) {
-            // Solo validaciones básicas (puedes validar los EditText directamente sin guardar en variables)
             if (etMonto.getText().toString().isEmpty() ||
                     etDescripcion.getText().toString().isEmpty() ||
                     etFecha.getText().toString().isEmpty()){
@@ -205,7 +201,6 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
                 Toast.makeText(getActivity(), "Por favor, seleccione un tipo de movimiento", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             agregarMovimiento();
         }
 
@@ -229,32 +224,22 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
         if(parent==spCategoria)
         {
             Item selectedItem = (Item) parent.getItemAtPosition(position);
-
-            // Verifica si es el item "Seleccionar categoría"
             if (selectedItem.id == -1) {
-                // No hacer nada si es la opción "Seleccionar categoría"
-                //Toast.makeText(getActivity(), "Por favor, seleccione una categoría", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getActivity(), "Por favor, seleccione una categoría", Toast.LENGTH_SHORT).show();
             } else {
-                // Si no es el item ficticio, maneja la selección normalmente
                 int selectedId = selectedItem.id;
                 String selectedNombre = selectedItem.nombre;
-                //Toast.makeText(getActivity(), "Seleccionado: " + selectedId + " - " + selectedNombre, Toast.LENGTH_SHORT).show();
                 idCategoria = selectedId;
             }
         }
         else if(parent==spTipoMovimiento)
         {
             Item selectedItem = (Item) parent.getItemAtPosition(position);
-
-            // Verifica si es el item "Seleccionar marca"
             if (selectedItem.id == -1) {
-                // No hacer nada si es la opción "Seleccionar marca"
                 //Toast.makeText(getActivity(), "Por favor, seleccione una marca", Toast.LENGTH_SHORT).show();
             } else {
-                // Si no es el item ficticio, maneja la selección normalmente
                 int selectedId = selectedItem.id;
                 String selectedNombre = selectedItem.nombre;
-                //Toast.makeText(getActivity(), "Seleccionado: " + selectedId + " - " + selectedNombre, Toast.LENGTH_SHORT).show();
                 idTipoMovimiento = selectedId;
             }
         }
@@ -305,6 +290,7 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
                 if(response.contains("success")) {
                     Toast.makeText(getActivity(), "Movimiento agregado correctamente", Toast.LENGTH_SHORT).show();
                     LimpiarCampos();
+                    actualizarPresupuesto(monto);
                 } else {
                     Toast.makeText(getActivity(), "Error al agregar movimiento", Toast.LENGTH_SHORT).show();
                 }
@@ -317,8 +303,44 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
         });
     }
 
+    private void actualizarPresupuesto(double monto) {
+        // Obtener id_usuario desde SharedPreferences
+        SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
+        int idUsuario = prefs.getInt("id_usuario", -1);
+        if (idUsuario == -1) {
+            Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Operar sobre el presupuesto según el tipo de movimiento
+        String url = servidor + "presupuestoController/actualizar_presupuesto_movimiento.php";
 
+        // Si el tipo de movimiento es un ingreso (idTipoMovimiento == 1), sumamos el monto al presupuesto
+        // Si el tipo de movimiento es un egreso (idTipoMovimiento == 2), restamos el monto al presupuesto
+        double operacionPresupuesto = (idTipoMovimiento == 1) ? monto : -monto;
 
+        RequestParams params = new RequestParams();
+        params.put("id_categoria", idCategoria);
+        params.put("id_usuario", idUsuario);
+        params.put("monto_actualizado", operacionPresupuesto);
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.post(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                String response = new String(responseBody);
+                if (response.contains("success")) {
+                    // El presupuesto se actualizó correctamente, no hacemos nada más.
+                } else {
+                    Toast.makeText(getActivity(), "Error al actualizar el presupuesto", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(getActivity(), "Error en la conexión al actualizar el presupuesto", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 
 }

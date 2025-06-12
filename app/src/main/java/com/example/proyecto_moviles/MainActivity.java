@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.proyecto_moviles.ui.BaseActivity;
 import com.google.android.material.snackbar.Snackbar;
@@ -20,6 +22,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.proyecto_moviles.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends BaseActivity {
 
@@ -43,7 +46,7 @@ public class MainActivity extends BaseActivity {
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
 
-        // Configura top level destinations (agrega todos tus destinos principales)
+        // Configura top level destinations
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_movimiento, R.id.nav_presupuesto, R.id.nav_visualizacion, R.id.nav_perfil)
                 .setOpenableLayout(drawer)
@@ -53,7 +56,24 @@ public class MainActivity extends BaseActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        // Aquí interceptamos los clicks del menú para manejar logout manualmente
+        // Obtener el usuario logueado y actualizar el header
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // Usuario logueado, actualizar el encabezado
+            View headerView = navigationView.getHeaderView(0);
+            TextView navHeaderTitle = headerView.findViewById(R.id.nav_header_title);
+            TextView navHeaderSubtitle = headerView.findViewById(R.id.nav_header_subtitle);
+            ImageView logoImageView = headerView.findViewById(R.id.logoImageView); // Obtener la ImageView
+
+            // Establecer los valores del usuario en el encabezado
+            navHeaderTitle.setText("Abraham Manuel Hilario Fernández");
+            navHeaderSubtitle.setText(user.getEmail());
+
+            // Cambiar el logo de manera dinámica
+            logoImageView.setImageResource(R.drawable.ic_user_logo); // Cambia el logo a uno nuevo (asegúrate de tener esta imagen en res/drawable)
+        }
+
+        // Manejo de clicks en el menú
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
@@ -72,7 +92,7 @@ public class MainActivity extends BaseActivity {
 
                 // Cerrar drawer
                 drawer.closeDrawer(GravityCompat.START);
-                return true; // evento consumido
+                return true;
             } else {
                 // Para otros items, usar navegación normal
                 boolean handled = NavigationUI.onNavDestinationSelected(item, navController);
@@ -83,12 +103,12 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        // Control de visibilidad toolbar según fragmento (opcional)
+        // Control de visibilidad toolbar según fragmento
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() == R.id.nav_login ||
                     destination.getId() == R.id.nav_crear_cuenta ||
                     destination.getId() == R.id.nav_olvidarPassword ||
-                destination.getId() == R.id.nav_verificar_email) {
+                    destination.getId() == R.id.nav_verificar_email) {
                 binding.appBarMain.toolbar.setVisibility(View.GONE);
             } else {
                 binding.appBarMain.toolbar.setVisibility(View.VISIBLE);

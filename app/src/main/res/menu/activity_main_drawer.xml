@@ -6,24 +6,24 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_presupuesto"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_menu_presupuesto"
             android:title="Presupuestos" />
         <item
             android:id="@+id/nav_movimiento"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_menu_movimiento"
             android:title="Movimientos" />
         <item
             android:id="@+id/nav_visualizacion"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_menu_grafico"
             android:title="Visualización de Movimientos" />
         <item
             android:id="@+id/nav_perfil"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_menu_perfil"
             android:title="Perfil" />
         <!-- Item para cerrar sesión -->
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_logo_cerrar_sesion"
+            android:icon="@drawable/ic_menu_logout"
             android:title="Cerrar sesión" />
     </group>
 </menu>

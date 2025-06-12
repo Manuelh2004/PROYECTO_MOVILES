@@ -34,17 +34,6 @@
                 android:padding="16dp"
                 android:spacing="16dp">
 
-                <!-- Titulo Editar perfil -->
-                <TextView
-                    android:id="@+id/tvEditProfileTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:text="EDITAR PERFIL"
-                    android:textColor="@color/color_primario"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
                 <!-- Campo EditText para nombre -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilEditName"
