@@ -52,17 +52,17 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         View rootView = inflater.inflate(R.layout.fragment_crear_cuenta, container, false);
         mAuth = FirebaseAuth.getInstance();
 
-        etNombres = (EditText) rootView.findViewById(R.id.etNombres);
-        etApellidos = (EditText) rootView.findViewById(R.id.etApellidos);
-        etTelefono = (EditText) rootView.findViewById(R.id.etTelefono);
-        etFechaNa = (EditText) rootView.findViewById(R.id.etFecha);
-        etDocumento = (EditText) rootView.findViewById(R.id.etMonto);
+        etNombres = (EditText) rootView.findViewById(R.id.etNombresEd);
+        etApellidos = (EditText) rootView.findViewById(R.id.etApellidosEd);
+        etTelefono = (EditText) rootView.findViewById(R.id.etTelefonoEd);
+        etFechaNa = (EditText) rootView.findViewById(R.id.etFechaEd);
+        etDocumento = (EditText) rootView.findViewById(R.id.etDocumentoEd);
 
-        spGenero = (Spinner) rootView.findViewById(R.id.spGenero);
+        spGenero = (Spinner) rootView.findViewById(R.id.spGeneroEd);
         spGenero.setOnItemSelectedListener(this);
-        spPais = (Spinner) rootView.findViewById(R.id.spTipoMovimiento);
+        spPais = (Spinner) rootView.findViewById(R.id.spPais);
         spPais.setOnItemSelectedListener(this);
-        spTipoDoc = (Spinner) rootView.findViewById(R.id.spCategoria);
+        spTipoDoc = (Spinner) rootView.findViewById(R.id.spTipoDocumentoEd);
         spTipoDoc.setOnItemSelectedListener(this);
 
         btnCrearUsuario = (Button) rootView.findViewById(R.id.btnCrearUsuario);

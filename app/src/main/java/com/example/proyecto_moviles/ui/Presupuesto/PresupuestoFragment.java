@@ -61,10 +61,10 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
 
         f_inicio = (TextView) rootView.findViewById(R.id.tvFInicio);
         f_fin = (TextView) rootView.findViewById(R.id.tvFFin);
-        mon = (EditText) rootView.findViewById(R.id.etMonto);
+        mon = (EditText) rootView.findViewById(R.id.etDocumentoEd);
         agre = (Button) rootView.findViewById(R.id.btnAgregar);
         mos = (Button) rootView.findViewById(R.id.btnMostrar);
-        cat = (Spinner) rootView.findViewById(R.id.spCategoria);
+        cat = (Spinner) rootView.findViewById(R.id.spTipoDocumentoEd);
         cal = (CalendarView) rootView.findViewById(R.id.cvCalendario);
 
         // Establecer modo al tocar cada campo

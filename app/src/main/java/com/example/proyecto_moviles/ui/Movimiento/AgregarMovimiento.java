@@ -21,7 +21,6 @@ import androidx.navigation.Navigation;
 
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.ui.Clases.Item;
-import com.example.proyecto_moviles.ui.Inicio.LoginDialogFragment;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -33,9 +32,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -51,13 +47,13 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_movimiento, container, false);
-        etFecha = (EditText) rootView.findViewById(R.id.etFecha);
+        etFecha = (EditText) rootView.findViewById(R.id.etFechaEd);
         etDescripcion = (EditText) rootView.findViewById(R.id.etDescripcion);
-        etMonto = (EditText) rootView.findViewById(R.id.etMonto);
+        etMonto = (EditText) rootView.findViewById(R.id.etDocumentoEd);
 
-        spCategoria = (Spinner) rootView.findViewById(R.id.spCategoria);
+        spCategoria = (Spinner) rootView.findViewById(R.id.spTipoDocumentoEd);
         spCategoria.setOnItemSelectedListener(this);
-        spTipoMovimiento = (Spinner) rootView.findViewById(R.id.spTipoMovimiento);
+        spTipoMovimiento = (Spinner) rootView.findViewById(R.id.spPais);
         spTipoMovimiento.setOnItemSelectedListener(this);
 
         btnRegistrarMovimiento = (Button) rootView.findViewById(R.id.btnRegistrarMovimiento);

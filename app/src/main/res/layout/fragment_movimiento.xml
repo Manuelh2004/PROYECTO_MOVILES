@@ -21,10 +21,10 @@
         android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etFecha" />
+        app:layout_constraintTop_toBottomOf="@+id/etFechaEd" />
 
     <Spinner
-        android:id="@+id/spCategoria"
+        android:id="@+id/spTipoDocumentoEd"
         android:layout_width="0dp"
         android:layout_height="44dp"
         android:layout_marginLeft="20dp"
@@ -33,10 +33,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spTipoMovimiento" />
+        app:layout_constraintTop_toBottomOf="@+id/spPais" />
 
     <EditText
-        android:id="@+id/etMonto"
+        android:id="@+id/etDocumentoEd"
         android:layout_width="0dp"
         android:layout_height="46dp"
         android:layout_marginLeft="20dp"
@@ -51,7 +51,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/spTipoMovimiento"
+        android:id="@+id/spPais"
         android:layout_width="0dp"
         android:layout_height="44dp"
         android:layout_marginLeft="20dp"
@@ -60,10 +60,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etMonto" />
+        app:layout_constraintTop_toBottomOf="@+id/etDocumentoEd" />
 
     <EditText
-        android:id="@+id/etFecha"
+        android:id="@+id/etFechaEd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
@@ -76,7 +76,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spCategoria" />
+        app:layout_constraintTop_toBottomOf="@+id/spTipoDocumentoEd" />
 
 
     <Button

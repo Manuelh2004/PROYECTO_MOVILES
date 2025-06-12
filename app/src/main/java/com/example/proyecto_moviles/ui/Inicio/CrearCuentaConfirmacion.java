@@ -60,7 +60,6 @@ public class CrearCuentaConfirmacion extends Fragment implements View.OnClickLis
         Button btnCerrarSesion = rootView.findViewById(R.id.btnCerrarSesion);
         btnCerrarSesion.setOnClickListener(v -> cerrarSesionCompleta());
 
-
         // Botón de login con Google
         LinearLayout googleLoginBtn = rootView.findViewById(R.id.btnGoogleLogin);
         googleLoginBtn.setOnClickListener(v -> signInWithGoogle());
@@ -145,8 +144,6 @@ public class CrearCuentaConfirmacion extends Fragment implements View.OnClickLis
             }
         });
     }
-
-
 
     @Override
     public void onClick(View v) {

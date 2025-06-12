@@ -22,7 +22,7 @@
         app:layout_constraintVertical_bias="0.24" />
 
     <Spinner
-        android:id="@+id/spCategoria"
+        android:id="@+id/spTipoDocumentoEd"
         android:layout_width="0dp"
         android:layout_height="32dp"
         android:layout_marginStart="32dp"
@@ -32,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etMonto"
+        app:layout_constraintTop_toBottomOf="@+id/etDocumentoEd"
         app:layout_constraintVertical_bias="0.254" />
 
     <CalendarView
@@ -45,7 +45,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spCategoria"
+        app:layout_constraintTop_toBottomOf="@+id/spTipoDocumentoEd"
         app:layout_constraintVertical_bias="0.085"/>
 
     <Button
@@ -64,7 +64,7 @@
         app:layout_constraintVertical_bias="0.472" />
 
     <EditText
-        android:id="@+id/etMonto"
+        android:id="@+id/etDocumentoEd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
