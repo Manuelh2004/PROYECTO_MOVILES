@@ -87,7 +87,8 @@ public class MainActivity extends BaseActivity {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() == R.id.nav_login ||
                     destination.getId() == R.id.nav_crear_cuenta ||
-                    destination.getId() == R.id.nav_olvidarPassword) {
+                    destination.getId() == R.id.nav_olvidarPassword ||
+                destination.getId() == R.id.nav_verificar_email) {
                 binding.appBarMain.toolbar.setVisibility(View.GONE);
             } else {
                 binding.appBarMain.toolbar.setVisibility(View.VISIBLE);

@@ -207,12 +207,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
             dialog.setLoginDialogListener(this);
             dialog.show(getParentFragmentManager(), "LoginDialog");
         }
-
-        if(v == btnCancelar){
-            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_crear_cuenta_to_nav_login); // action_crearCuenta_to_nav_login
-            LimpiarCampos();
-        }
     }
 
     @Override
@@ -285,7 +279,7 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                                     bundle.putString("fechaNa", fechaNa);
 
                                     NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                                    navController.navigate(R.id.action_nav_crear_cuenta_to_verificacionEmail, bundle);
+                                    navController.navigate(R.id.action_nav_crear_cuenta_to_nav_verificar_email, bundle);
                                 } else {
                                     Toast.makeText(getContext(), "No se pudo enviar el correo de verificación.", Toast.LENGTH_LONG).show();
                                 }

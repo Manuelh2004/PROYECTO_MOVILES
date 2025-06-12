@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,32 +7,32 @@
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        tools:context=".ui.Perfil.EditarPerfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/fondo_moviles"
-        android:padding="16dp">
+        android:padding="16dp"
+        tools:context=".ui.Perfil.EditarPerfil">
 
-        <!-- Card para Editar Perfil -->
+        <!-- Card para Editar Perfil centrado -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardEditProfile"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_margin="16dp"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="16dp"
+                android:spacing="16dp">
 
                 <!-- Titulo Editar perfil -->
                 <TextView
@@ -41,7 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="Edita tu perfil"
+                    android:text="EDITAR PERFIL"
                     android:textColor="@color/color_primario"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -52,6 +51,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:hint="Nombre"
                     app:boxBackgroundColor="@color/white"
                     app:boxCornerRadiusBottomEnd="12dp"
@@ -61,7 +61,7 @@
                     app:boxStrokeColor="@color/color_primario">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etEditName"
+                        android:id="@+id/etNombresEd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black" />
@@ -73,7 +73,8 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Correo Electrónico"
+                    android:layout_marginTop="16dp"
+                    android:hint="Apellidos"
                     app:boxBackgroundColor="@color/white"
                     app:boxCornerRadiusBottomEnd="12dp"
                     app:boxCornerRadiusBottomStart="12dp"
@@ -82,30 +83,19 @@
                     app:boxStrokeColor="@color/color_primario">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etEditEmail"
+                        android:id="@+id/etApellidosEd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress"
                         android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Spinner para seleccionar el género -->
-                <TextView
-                    android:id="@+id/tvGenderLabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="Selecciona tu género"
-                    android:textColor="@color/color_primario"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
+                <!-- Spinner para Tipo de Documento -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilGender"
+                    android:id="@+id/tilGenero"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     app:boxBackgroundColor="@color/white"
                     app:boxCornerRadiusBottomEnd="12dp"
                     app:boxCornerRadiusBottomStart="12dp"
@@ -114,14 +104,100 @@
                     app:boxStrokeColor="@color/color_primario">
 
                     <android.widget.Spinner
-                        android:id="@+id/spinnerGender"
+                        android:id="@+id/spGeneroEd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilTipoDocumento"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="@color/color_primario">
+
+                    <android.widget.Spinner
+                        android:id="@+id/spTipoDocumentoEd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Campo EditText para Documento -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilDocumento"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Número de Documento"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="@color/color_primario">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etDocumentoEd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Campo EditText para Fecha de Nacimiento -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilFecha"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Fecha de Nacimiento"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="@color/color_primario">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etFechaEd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="date"
+                        android:textColor="@color/black" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Campo EditText para Teléfono -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilTelefono"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Teléfono"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="@color/color_primario">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etTelefonoEd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black" />
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <!-- Botón para guardar cambios -->
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSaveChanges"
+                    android:id="@+id/btnGuardarCambios"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
