@@ -3,6 +3,7 @@ package com.example.proyecto_moviles.ui.Movimiento;
 import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,13 +48,13 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_movimiento, container, false);
-        etFecha = (EditText) rootView.findViewById(R.id.etFechaEd);
+        etFecha = (EditText) rootView.findViewById(R.id.etFecha);
         etDescripcion = (EditText) rootView.findViewById(R.id.etDescripcion);
-        etMonto = (EditText) rootView.findViewById(R.id.etDocumentoEd);
+        etMonto = (EditText) rootView.findViewById(R.id.etMonto);
 
-        spCategoria = (Spinner) rootView.findViewById(R.id.spTipoDocumentoEd);
+        spCategoria = (Spinner) rootView.findViewById(R.id.spCategoria);
         spCategoria.setOnItemSelectedListener(this);
-        spTipoMovimiento = (Spinner) rootView.findViewById(R.id.spPais);
+        spTipoMovimiento = (Spinner) rootView.findViewById(R.id.spTipoMovimiento);
         spTipoMovimiento.setOnItemSelectedListener(this);
 
         btnRegistrarMovimiento = (Button) rootView.findViewById(R.id.btnRegistrarMovimiento);
@@ -208,11 +209,19 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
             agregarMovimiento();
         }
 
-        if(v == btnMostrarMovimientos){
-            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_movimiento_to_listarMovimientos); // action_crearCuenta_to_nav_login
-            LimpiarCampos();
+        if (v == btnMostrarMovimientos) {
+            Log.d("MiApp", "Botón Mostrar Movimientos presionado");
+            try {
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+                Log.d("MiApp", "NavController encontrado");
+                navController.navigate(R.id.action_nav_movimiento_to_nav_listar_movimientos);
+                Log.d("MiApp", "Navegación a Listar Movimientos realizada");
+                LimpiarCampos();
+            } catch (Exception e) {
+                Log.e("MiApp", "Error en la navegación", e);
+            }
         }
+
     }
 
     @Override

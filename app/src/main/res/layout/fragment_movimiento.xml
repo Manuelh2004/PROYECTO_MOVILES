@@ -1,107 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.Movimiento.AgregarMovimiento">
+    android:fillViewport="true">
 
-    <EditText
-        android:id="@+id/etDescripcion"
-        android:layout_width="371dp"
-        android:layout_height="207dp"
-        android:layout_marginTop="25dp"
-        android:gravity="top|start"
-        android:hint="Descripción"
-        android:inputType="textMultiLine"
-        android:lines="6"
-        android:maxLines="10"
-        android:minLines="4"
-        android:overScrollMode="always"
-        android:scrollbars="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etFechaEd" />
-
-    <Spinner
-        android:id="@+id/spTipoDocumentoEd"
-        android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginRight="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spPais" />
-
-    <EditText
-        android:id="@+id/etDocumentoEd"
-        android:layout_width="0dp"
-        android:layout_height="46dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginRight="20dp"
-        android:ems="10"
-        android:hint="Monto"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Spinner
-        android:id="@+id/spPais"
-        android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginRight="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etDocumentoEd" />
-
-    <EditText
-        android:id="@+id/etFechaEd"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginRight="20dp"
-        android:ems="10"
-        android:hint="Fecha de Registro"
-        android:focusable="false"
-        android:clickable="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spTipoDocumentoEd" />
+        android:background="@color/fondo_moviles"
+        android:padding="16dp"
+        tools:context=".ui.Movimiento.AgregarMovimiento">
 
+        <!-- Card para agregar movimiento centrado -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardAgregarMovimiento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/btnRegistrarMovimiento"
-        android:layout_width="194dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="32dp"
-        android:backgroundTint="@color/color_botones"
-        android:text="REGISTRAR"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etDescripcion" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:spacing="16dp">
 
-    <Button
-        android:id="@+id/btnMostrarMovimientos"
-        android:layout_width="194dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="28dp"
-        android:backgroundTint="@color/color_botones"
-        android:text="MOSTRAR "
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnRegistrarMovimiento" />
+                <!-- Campo Monto -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilMonto"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Monto"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="@color/color_primario">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMonto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- Spinner para Tipo Movimiento -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilTipoMovimiento"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="@color/color_primario">
+
+                    <android.widget.Spinner
+                        android:id="@+id/spTipoMovimiento"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Spinner para Categoria -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilCategoria"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="@color/color_primario">
+
+                    <android.widget.Spinner
+                        android:id="@+id/spCategoria"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Campo Fecha -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilFecha"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Fecha de Registro"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="@color/color_primario">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etFecha"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:textColor="@color/black" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Campo Descripción -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilDescripcion"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Descripción"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="@color/color_primario">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etDescripcion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top|start"
+                        android:inputType="textMultiLine"
+                        android:lines="6"
+                        android:maxLines="10"
+                        android:minLines="4"
+                        android:overScrollMode="always"
+                        android:scrollbars="vertical"
+                        android:textColor="@color/black" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Botón Registrar Movimiento -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRegistrarMovimiento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="REGISTRAR"
+                    android:textColor="@android:color/white"
+                    app:backgroundTint="@color/color_botones"
+                    app:cornerRadius="24dp" />
+
+                <!-- Botón Mostrar Movimientos -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnMostrarMovimientos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="MOSTRAR"
+                    android:textColor="@android:color/white"
+                    app:backgroundTint="@color/color_botones"
+                    app:cornerRadius="24dp" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

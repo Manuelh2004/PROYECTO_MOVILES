@@ -11,7 +11,7 @@
         android:label="Movimientos"
         tools:layout="@layout/fragment_movimiento" >
         <action
-            android:id="@+id/action_nav_movimiento_to_listarMovimientos"
+            android:id="@+id/action_nav_movimiento_to_nav_listar_movimientos"
             app:destination="@id/nav_listar_movimientos" />
     </fragment>
 
