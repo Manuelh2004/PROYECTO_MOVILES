@@ -70,8 +70,8 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
 
         monEP = (EditText) rootView.findViewById(R.id.etMontoEP);
         act = (Button) rootView.findViewById(R.id.btnActualizarEP);
-        FfinEP = (EditText) rootView.findViewById(R.id.etFechaFinE);
-        FiniEP = (EditText) rootView.findViewById(R.id.etFechaInicioE);
+        FfinEP = (EditText) rootView.findViewById(R.id.etFechaFinEP);
+        FiniEP = (EditText) rootView.findViewById(R.id.etFechaInicioEP);
         catEP = (Spinner) rootView.findViewById(R.id.spCategoriaEP);
 
         listaCategorias = new ArrayList<>();

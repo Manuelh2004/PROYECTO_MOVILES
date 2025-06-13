@@ -62,10 +62,10 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
 
         f_inicio = (EditText) rootView.findViewById(R.id.etFechaInicio);
         f_fin = (EditText) rootView.findViewById(R.id.etFechaFin);
-        mon = (EditText) rootView.findViewById(R.id.etDocumentoEd);
+        mon = (EditText) rootView.findViewById(R.id.etMonto);
         agre = (Button) rootView.findViewById(R.id.btnAgregar);
         mos = (Button) rootView.findViewById(R.id.btnMostrar);
-        cat = (Spinner) rootView.findViewById(R.id.spTipoDocumentoEd);
+        cat = (Spinner) rootView.findViewById(R.id.spCategoria);
 
         // Establecer modo al tocar cada campo
         f_inicio.setOnClickListener(v -> {
