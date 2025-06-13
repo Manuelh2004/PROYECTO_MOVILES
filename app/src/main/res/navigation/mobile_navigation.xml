@@ -121,4 +121,9 @@
             android:id="@+id/action_nav_verificar_email_to_nav_presupuesto"
             app:destination="@id/nav_presupuesto" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_administrador"
+        android:name="com.example.proyecto_moviles.ui.Administrador.Administrador"
+        android:label="Panel de Administrador"
+        tools:layout="@layout/fragment_administrador" />
 </navigation>

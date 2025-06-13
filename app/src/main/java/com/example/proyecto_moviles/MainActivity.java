@@ -48,7 +48,7 @@ public class MainActivity extends BaseActivity {
 
         // Configura top level destinations
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_movimiento, R.id.nav_presupuesto, R.id.nav_visualizacion, R.id.nav_perfil)
+                R.id.nav_movimiento, R.id.nav_presupuesto, R.id.nav_visualizacion, R.id.nav_perfil, R.id.nav_administrador)
                 .setOpenableLayout(drawer)
                 .build();
 
