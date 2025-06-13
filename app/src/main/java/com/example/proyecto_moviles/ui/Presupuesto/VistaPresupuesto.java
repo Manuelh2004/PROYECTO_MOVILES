@@ -24,8 +24,10 @@ import android.widget.Toast;
 
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.ui.Categoria;
+import com.example.proyecto_moviles.ui.Clases.Item;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
@@ -63,7 +65,7 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
 
         listaCategorias = new ArrayList<>();
         listaCategorias.add(new Categoria(0, "Todos las Categorias"));
-        cargarCategoriasDesdeServidor();
+
 
         adapterCategoria = new ArrayAdapter<>( getContext(),android.R.layout.simple_spinner_item,listaCategorias);
         adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -88,16 +90,16 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
         if (id_usuario == -1) {
             Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
         }
-
+        cargarCategoriasDesdeServidor();
         MostrarDatos();
 
         return rootView;
     }
-
     private void cargarCategoriasDesdeServidor() {
-        String url = servidor + "obtener_categorias.php";
+        String url = servidor + "obtener_categorias_pre.php";
 
         RequestParams params = new RequestParams();
+        params.put("id_usuario",id_usuario);
 
         AsyncHttpClient client = new AsyncHttpClient();
 

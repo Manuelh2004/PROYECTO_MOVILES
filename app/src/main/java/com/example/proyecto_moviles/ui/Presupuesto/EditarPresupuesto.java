@@ -1,5 +1,6 @@
 package com.example.proyecto_moviles.ui.Presupuesto;
 
+import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -41,8 +44,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
 
     private Button act;
     private EditText monEP;
-    private TextView FiniEP, FfinEP;
-    private CalendarView calenderEP;
+    private EditText FiniEP, FfinEP;
     private Spinner catEP;
     private String idPresupuesto = "";
     final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/presupuestoController/";
@@ -68,9 +70,8 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
 
         monEP = (EditText) rootView.findViewById(R.id.etMontoEP);
         act = (Button) rootView.findViewById(R.id.btnActualizarEP);
-        FfinEP = (TextView) rootView.findViewById(R.id.tvFfinEP);
-        FiniEP = (TextView) rootView.findViewById(R.id.tvFIniEP);
-        calenderEP = (CalendarView) rootView.findViewById(R.id.cvCalendarioEP);
+        FfinEP = (EditText) rootView.findViewById(R.id.etFechaFinE);
+        FiniEP = (EditText) rootView.findViewById(R.id.etFechaInicioE);
         catEP = (Spinner) rootView.findViewById(R.id.spCategoriaEP);
 
         listaCategorias = new ArrayList<>();
@@ -88,33 +89,62 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
             Toast.makeText(getContext(), "Selecciona la nueva fecha de fin", Toast.LENGTH_SHORT).show();
         });
 
-        calenderEP.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            fechaSeleccionada = String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, month + 1, year);
+        FiniEP.setFocusable(false);
+        FiniEP.setClickable(true);
 
-            try{
-                Date fecha = formatoDeseadoEP.parse(fechaSeleccionada);
+        FiniEP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-                if (modoSeleccion.equals("inicio")) {
-                    FiniEP.setText("Inicio: " + fechaSeleccionada);
-                    modoSeleccion = "";
-                    fecha_inicio = formatoMySQLEP.format(fecha);// reiniciar
+                final Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                } else if (modoSeleccion.equals("fin")) {
-                    FfinEP.setText("Fin: " + fechaSeleccionada);
-                    modoSeleccion = ""; // reiniciar
-                    fecha_fin = formatoMySQLEP.format(fecha);
-                } else {
-                    Toast.makeText(getContext(), "Toca una fecha a editar primero", Toast.LENGTH_SHORT).show();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                Calendar selectedDate = Calendar.getInstance();
+                                fecha_inicio = String.format("%02d/%02d/%02d", dayOfMonth, monthOfYear + 1, year % 100);
+                                FiniEP.setText(fecha_inicio);
+                                selectedDate.set(year, monthOfYear, dayOfMonth);
+                                fecha_inicio = formatoMySQLEP.format(selectedDate.getTime());
+                            }
+                        }, year, month, day);
 
-                    //prueba de valores de fecha inicio y fin
-                    //Toast.makeText(getContext(), "Inicio: "+fecha_inicio +" // " +fecha_fin, Toast.LENGTH_SHORT).show();
-                }
-            }catch (ParseException e){
-                e.printStackTrace();
-                Toast.makeText(getContext(), "Error al convertir la fecha", Toast.LENGTH_SHORT).show();
+                datePickerDialog.show();
             }
-
         });
+
+        FfinEP.setFocusable(false);
+        FfinEP.setClickable(true);
+
+        FfinEP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                Calendar selectedDate = Calendar.getInstance();
+                                fecha_fin = String.format("%02d/%02d/%02d", dayOfMonth, monthOfYear + 1, year % 100);
+                                FfinEP.setText(fecha_fin);
+                                selectedDate.set(year, monthOfYear, dayOfMonth);
+                                fecha_fin = formatoMySQLEP.format(selectedDate.getTime());
+                            }
+                        }, year, month, day);
+
+                datePickerDialog.show();
+            }
+        });
+
 
         SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
         id_usuario = prefs.getInt("id_usuario", -1);
@@ -205,8 +235,8 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
 
                         //Colocar datos en los EditText
                         monEP.setText(pres_presupuesto);
-                        FfinEP.setText("Fin: " + formatoDeseadoEP.format(fechaFin));
-                        FiniEP.setText("Inicio: " + formatoDeseadoEP.format(fechaInicio));
+                        FfinEP.setText(formatoDeseadoEP.format(fechaFin));
+                        FiniEP.setText(formatoDeseadoEP.format(fechaInicio));
                         catEP.setSelection(id_categoria-1);
 
                         fecha_inicio =  fini_presupuesto;
@@ -234,11 +264,12 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
 
             Categoria categoriaSeleccionada = (Categoria) catEP.getSelectedItem();
             Float montop = Float.parseFloat(monEP.getText().toString());
+            Float montoActualp = Float.parseFloat(monEP.getText().toString());
             int categoriaP = categoriaSeleccionada.getId();
             String fechaInicioP = fecha_inicio;
             String fechaFinP = fecha_fin;
 
-            ActualizarPresupuesto(idPresupuesto,id_usuario, categoriaP, montop, fechaInicioP, fechaFinP);
+            ActualizarPresupuesto(idPresupuesto,id_usuario, categoriaP, montop, montoActualp, fechaInicioP, fechaFinP);
         }
     }
 
@@ -279,7 +310,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
         return true;
     }
 
-    private void ActualizarPresupuesto(String idPresupuesto, int idUsuario, int categoriaP, Float montoP, String fechaInicioP, String fechaFinP) {
+    private void ActualizarPresupuesto(String idPresupuesto, int idUsuario, int categoriaP, Float montoP, Float montoActualp, String fechaInicioP, String fechaFinP) {
         String url = servidor + "presupuesto_actualizar.php";
 
         RequestParams params = new RequestParams();
@@ -287,6 +318,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
         params.put("idUsuario", idUsuario);
         params.put("categoriaP", categoriaP);
         params.put("montoP", montoP);
+        params.put("montoActualp", montoActualp);
         params.put("fechaInicioP", fechaInicioP);
         params.put("fechaFinP", fechaFinP);
 
