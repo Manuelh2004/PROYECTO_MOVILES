@@ -5,16 +5,29 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="@string/menu_home" />
+            android:id="@+id/nav_presupuesto"
+            android:icon="@drawable/ic_menu_presupuesto"
+            android:title="Presupuestos" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+            android:id="@+id/nav_movimiento"
+            android:icon="@drawable/ic_menu_movimiento"
+            android:title="Movimientos" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
+            android:id="@+id/nav_visualizacion"
+            android:icon="@drawable/ic_menu_grafico"
+            android:title="Visualización de Movimientos" />
+        <item
+            android:id="@+id/nav_perfil"
+            android:icon="@drawable/ic_menu_perfil"
+            android:title="Perfil" />
+        <item
+            android:id="@+id/nav_administrador"
+            android:icon="@drawable/ic_menu_administrador"
+            android:title="Administrador" />
+        <!-- Item para cerrar sesión -->
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_menu_logout"
+            android:title="Cerrar sesión" />
     </group>
 </menu>

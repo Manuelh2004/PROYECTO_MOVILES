@@ -1,22 +1,30 @@
 package com.example.proyecto_moviles;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.example.proyecto_moviles.ui.BaseActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.proyecto_moviles.databinding.ActivityMainBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -29,30 +37,87 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        binding.appBarMain.fab.setOnClickListener(view ->
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null)
-                        .setAnchorView(R.id.fab).show();
-            }
-        });
+                        .setAnchorView(R.id.fab).show()
+        );
+
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
+        // Configura top level destinations
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_movimiento, R.id.nav_presupuesto, R.id.nav_visualizacion, R.id.nav_perfil, R.id.nav_administrador)
                 .setOpenableLayout(drawer)
                 .build();
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        // Obtener el usuario logueado y actualizar el header
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // Usuario logueado, actualizar el encabezado
+            View headerView = navigationView.getHeaderView(0);
+            TextView navHeaderTitle = headerView.findViewById(R.id.nav_header_title);
+            TextView navHeaderSubtitle = headerView.findViewById(R.id.nav_header_subtitle);
+            ImageView logoImageView = headerView.findViewById(R.id.logoImageView); // Obtener la ImageView
+
+            // Establecer los valores del usuario en el encabezado
+            navHeaderTitle.setText("Abraham Manuel Hilario Fernández");
+            navHeaderSubtitle.setText(user.getEmail());
+
+            // Cambiar el logo de manera dinámica
+            logoImageView.setImageResource(R.drawable.ic_user_logo); // Cambia el logo a uno nuevo (asegúrate de tener esta imagen en res/drawable)
+        }
+
+        // Manejo de clicks en el menú
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_logout) {
+                // Limpiar SharedPreferences
+                SharedPreferences prefs = getSharedPreferences("MisPreferencias", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.clear();
+                editor.apply();
+
+                // Cerrar sesión Firebase
+                FirebaseAuth.getInstance().signOut();
+
+                // Navegar a login manualmente
+                navController.navigate(R.id.nav_login);
+
+                // Cerrar drawer
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
+            } else {
+                // Para otros items, usar navegación normal
+                boolean handled = NavigationUI.onNavDestinationSelected(item, navController);
+                if (handled) {
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+                return handled;
+            }
+        });
+
+        // Control de visibilidad toolbar según fragmento
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (destination.getId() == R.id.nav_login ||
+                    destination.getId() == R.id.nav_crear_cuenta ||
+                    destination.getId() == R.id.nav_olvidarPassword ||
+                    destination.getId() == R.id.nav_verificar_email) {
+                binding.appBarMain.toolbar.setVisibility(View.GONE);
+            } else {
+                binding.appBarMain.toolbar.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }

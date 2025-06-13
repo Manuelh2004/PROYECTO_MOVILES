@@ -3,23 +3,127 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@id/nav_login">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.example.proyecto_moviles.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/nav_movimiento"
+        android:name="com.example.proyecto_moviles.ui.Movimiento.AgregarMovimiento"
+        android:label="Movimientos"
+        tools:layout="@layout/fragment_movimiento" >
+        <action
+            android:id="@+id/action_nav_movimiento_to_nav_listar_movimientos"
+            app:destination="@id/nav_listar_movimientos" />
+    </fragment>
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.proyecto_moviles.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_presupuesto"
+        android:name="com.example.proyecto_moviles.ui.Presupuesto.PresupuestoFragment"
+        android:label="Presupuestos"
+        tools:layout="@layout/fragment_presupuesto" >
+        <action
+            android:id="@+id/action_nav_presupuesto_to_vistaPresupuesto"
+            app:destination="@id/vistaPresupuesto" />
+    </fragment>
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.proyecto_moviles.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_visualizacion"
+        android:name="com.example.proyecto_moviles.ui.Visualizacion.VisualizacionFragment"
+        android:label="Visualización de Movimientos"
+        tools:layout="@layout/fragment_visualizacion" />
+    <fragment
+        android:id="@+id/nav_perfil"
+        android:name="com.example.proyecto_moviles.ui.Perfil.Perfil"
+        android:label="Perfil"
+        tools:layout="@layout/fragment_perfil" >
+        <action
+            android:id="@+id/action_nav_perfil_to_editarPerfil"
+            app:destination="@id/nav_editar_perfil" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.example.proyecto_moviles.ui.Inicio.Login"
+        android:label="fragment_login_temporal"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_nav_login_to_crearCuenta"
+            app:destination="@id/nav_crear_cuenta" />
+        <action
+            android:id="@+id/action_nav_login_to_nav_olvidarPassword"
+            app:destination="@id/nav_olvidarPassword" />
+        <action
+            android:id="@+id/action_nav_login_to_nav_presupuesto"
+            app:destination="@id/nav_presupuesto" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_crear_cuenta"
+        android:name="com.example.proyecto_moviles.ui.Inicio.CrearCuenta"
+        android:label="fragment_crear_cuenta"
+        tools:layout="@layout/fragment_crear_cuenta" >
+        <action
+            android:id="@+id/action_nav_crear_cuenta_to_nav_verificar_email"
+            app:destination="@id/nav_verificar_email" />
+    </fragment>
+    <fragment
+        android:id="@+id/vistaPresupuesto"
+        android:name="com.example.proyecto_moviles.ui.Presupuesto.VistaPresupuesto"
+        android:label="@string/Mostrar_Presupuesto"
+        tools:layout="@layout/fragment_vista_presupuesto">
+        <action
+            android:id="@+id/action_vistaPresupuesto_to_editarPresupuesto"
+            app:destination="@id/editarPresupuesto" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_olvidarPassword"
+        android:name="com.example.proyecto_moviles.ui.Inicio.OlvidarPassword"
+        android:label="fragment_olvidar_password"
+        tools:layout="@layout/fragment_olvidar_password" >
+        <action
+            android:id="@+id/action_nav_olvidarPassword_to_nav_login"
+            app:destination="@id/nav_login" />
+    </fragment>
+    <fragment
+        android:id="@+id/resumenMovimientos"
+        android:name="com.example.proyecto_moviles.ui.Perfil.ResumenMovimientos"
+        android:label="fragment_resumen_movimientos"
+        tools:layout="@layout/fragment_resumen_movimientos" />
+    <fragment
+        android:id="@+id/editarPresupuesto"
+        android:name="com.example.proyecto_moviles.ui.Presupuesto.EditarPresupuesto"
+        android:label="@string/Editar_Presupuesto"
+        tools:layout="@layout/fragment_editar_presupuesto">
+        <argument
+            android:name="idPresupuesto"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_editarPresupuesto_to_vistaPresupuesto"
+            app:destination="@id/vistaPresupuesto" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_resumen_finanzas"
+        android:name="com.example.proyecto_moviles.ui.Perfil.ResumenFinanzas"
+        android:label="Mis finanzas"
+        tools:layout="@layout/fragment_resumen_finanzas" />
+    <fragment
+        android:id="@+id/nav_listar_movimientos"
+        android:name="com.example.proyecto_moviles.ui.Movimiento.ListarMovimientos"
+        android:label="fragment_listar_movimientos"
+        tools:layout="@layout/fragment_listar_movimientos" />
+    <fragment
+        android:id="@+id/nav_editar_perfil"
+        android:name="com.example.proyecto_moviles.ui.Perfil.EditarPerfil"
+        android:label="Editar Perfil"
+        tools:layout="@layout/fragment_editar_perfil" />
+    <fragment
+        android:id="@+id/nav_verificar_email"
+        android:name="com.example.proyecto_moviles.ui.Inicio.VerificacionEmail"
+        android:label="VerificacionEmail" >
+        <action
+            android:id="@+id/action_nav_verificar_email_to_nav_presupuesto"
+            app:destination="@id/nav_presupuesto" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_administrador"
+        android:name="com.example.proyecto_moviles.ui.Administrador.Administrador"
+        android:label="Panel de Administrador"
+        tools:layout="@layout/fragment_administrador" />
 </navigation>
