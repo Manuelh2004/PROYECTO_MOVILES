@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -23,9 +24,10 @@ import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
 
-public class EditarPerfil extends Fragment {
-    private EditText etNombresEd, etApellidosEd, etDocumentoEd, etFechaEd, etTelefonoEd, etPasswordEd;
+public class EditarPerfil extends Fragment implements View.OnClickListener{
+    private EditText etNombresEd, etApellidosEd, etDocumentoEd, etFechaEd, etTelefonoEd;
     private Spinner spGeneroEd, spTipoDocumentoEd;
+    private Button btnGuardarCambios;
     final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
 
     @Override
@@ -40,10 +42,12 @@ public class EditarPerfil extends Fragment {
         etDocumentoEd = rootView.findViewById(R.id.etDocumentoEd);
         etFechaEd = rootView.findViewById(R.id.etFechaEd);
         etTelefonoEd = rootView.findViewById(R.id.etTelefonoEd);
-        etPasswordEd = rootView.findViewById(R.id.etPasswordEd);
 
         spGeneroEd = rootView.findViewById(R.id.spGeneroEd);
         spTipoDocumentoEd = rootView.findViewById(R.id.spTipoDocumentoEd);
+
+        btnGuardarCambios = rootView.findViewById(R.id.btnGuardarCambios);
+        btnGuardarCambios.setOnClickListener(this);
 
         // Cargar los datos del perfil del usuario logueado
         cargarDatosPerfil();
@@ -88,7 +92,6 @@ public class EditarPerfil extends Fragment {
                     etDocumentoEd.setText(documento);
                     etFechaEd.setText(fechaNacimiento);
                     etTelefonoEd.setText(telefono);
-                    etPasswordEd.setText("");  // No mostramos la contraseña por seguridad, solo se edita en el backend
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -111,7 +114,6 @@ public class EditarPerfil extends Fragment {
         String documento = etDocumentoEd.getText().toString();
         String fechaNacimiento = etFechaEd.getText().toString();
         String telefono = etTelefonoEd.getText().toString();
-        String password = etPasswordEd.getText().toString();
 
         // Validar que los campos no estén vacíos
         if (nombres.isEmpty() || apellidos.isEmpty() || documento.isEmpty() || fechaNacimiento.isEmpty() || telefono.isEmpty()) {
@@ -136,7 +138,6 @@ public class EditarPerfil extends Fragment {
         params.put("documento", documento);
         params.put("fecha_nacimiento", fechaNacimiento);
         params.put("telefono", telefono);
-        params.put("password", password);  // Se puede enviar en blanco si no se cambia
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(servidor + "perfilController/actualizar_perfil.php", params, new AsyncHttpResponseHandler() {
@@ -155,5 +156,12 @@ public class EditarPerfil extends Fragment {
                 Toast.makeText(getActivity(), "Error en la conexión", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == btnGuardarCambios){
+            guardarCambios();
+        }
     }
 }
