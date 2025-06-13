@@ -1,5 +1,6 @@
 package com.example.proyecto_moviles.ui.Presupuesto;
 
+import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,6 +32,7 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.text.SimpleDateFormat;
@@ -40,18 +43,16 @@ import cz.msebera.android.httpclient.Header;
 public class PresupuestoFragment extends Fragment implements View.OnClickListener {
 
     final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/presupuestoController/";
-    private TextView f_inicio, f_fin;
+    private EditText f_inicio, f_fin;
     private EditText mon;
     private Button agre, mos;
     private Spinner cat;
     private String modoSeleccion = "";
     private String fechaSeleccionada = "";
-    private CalendarView cal;
     private String fecha_inicio="", fecha_fin="";
     private int id_usuario = 0;
     private List<Categoria> listaCategorias;
     private ArrayAdapter<Categoria> adapterCategoria;
-
     SimpleDateFormat formatoEntrada = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     SimpleDateFormat formatoMySQL = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
@@ -59,13 +60,12 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
                              ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_presupuesto, container, false);
 
-        f_inicio = (TextView) rootView.findViewById(R.id.tvFInicio);
-        f_fin = (TextView) rootView.findViewById(R.id.tvFFin);
+        f_inicio = (EditText) rootView.findViewById(R.id.etFechaInicio);
+        f_fin = (EditText) rootView.findViewById(R.id.etFechaFin);
         mon = (EditText) rootView.findViewById(R.id.etDocumentoEd);
         agre = (Button) rootView.findViewById(R.id.btnAgregar);
         mos = (Button) rootView.findViewById(R.id.btnMostrar);
         cat = (Spinner) rootView.findViewById(R.id.spTipoDocumentoEd);
-        cal = (CalendarView) rootView.findViewById(R.id.cvCalendario);
 
         // Establecer modo al tocar cada campo
         f_inicio.setOnClickListener(v -> {
@@ -78,32 +78,60 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
             Toast.makeText(getContext(), "Selecciona la nueva fecha de fin", Toast.LENGTH_SHORT).show();
         });
 
-        cal.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            fechaSeleccionada = String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, month + 1, year);
+        f_inicio.setFocusable(false);
+        f_inicio.setClickable(true);
 
-            try{
-                Date fecha = formatoEntrada.parse(fechaSeleccionada);
+        f_inicio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-                if (modoSeleccion.equals("inicio")) {
-                    f_inicio.setText("Inicio: " + fechaSeleccionada);
-                    modoSeleccion = "";
-                    fecha_inicio = formatoMySQL.format(fecha);// reiniciar
+                final Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                } else if (modoSeleccion.equals("fin")) {
-                    f_fin.setText("Fin: " + fechaSeleccionada);
-                    modoSeleccion = ""; // reiniciar
-                    fecha_fin = formatoMySQL.format(fecha);
-                } else {
-                    Toast.makeText(getContext(), "Toca una fecha a editar primero", Toast.LENGTH_SHORT).show();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                Calendar selectedDate = Calendar.getInstance();
+                                fecha_inicio = String.format("%02d/%02d/%02d", dayOfMonth, monthOfYear + 1, year % 100);
+                                f_inicio.setText(fecha_inicio);
+                                selectedDate.set(year, monthOfYear, dayOfMonth);
+                                fecha_inicio = formatoMySQL.format(selectedDate.getTime());
+                            }
+                        }, year, month, day);
 
-                    //prueba de valores de fecha inicio y fin
-                    //Toast.makeText(getContext(), "Inicio: "+fecha_inicio +" // " +fecha_fin, Toast.LENGTH_SHORT).show();
-                }
-            }catch (ParseException e){
-                e.printStackTrace();
-                Toast.makeText(getContext(), "Error al convertir la fecha", Toast.LENGTH_SHORT).show();
+                datePickerDialog.show();
             }
+        });
 
+        f_fin.setFocusable(false);
+        f_fin.setClickable(true);
+
+        f_fin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                Calendar selectedDate = Calendar.getInstance();
+                                fecha_fin = String.format("%02d/%02d/%02d", dayOfMonth, monthOfYear + 1, year % 100);
+                                f_fin.setText(fecha_fin);
+                                selectedDate.set(year, monthOfYear, dayOfMonth);
+                                fecha_fin = formatoMySQL.format(selectedDate.getTime());
+                            }
+                        }, year, month, day);
+
+                datePickerDialog.show();
+            }
         });
 
         //String[] elementos = {"Categoria", "Academia"};
@@ -170,12 +198,13 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
 
             Categoria categoriaSeleccionada = (Categoria) cat.getSelectedItem();
             Float montoP = Float.parseFloat(mon.getText().toString());
+            Float montoActualP = Float.parseFloat(mon.getText().toString());
             int categoriaP = categoriaSeleccionada.getId();
             String fechaInicioP = fecha_inicio;
             String fechaFinP = fecha_fin;
 
             //Toast.makeText(getContext(), "id categoria: " + categoriaP, Toast.LENGTH_SHORT).show();
-            RegistrarPresupuesto(montoP, categoriaP, fechaInicioP, fechaFinP);
+            RegistrarPresupuesto(montoP, montoActualP, categoriaP, fechaInicioP, fechaFinP);
             limpiarCampos();
         }
     }
@@ -230,7 +259,7 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
         f_fin.setText("Fecha fin");
     }
 
-    private void RegistrarPresupuesto(Float montoP, int categoriaP, String fechaInicioP, String fechaFinP) {
+    private void RegistrarPresupuesto(Float montoP, Float montoActualP, int categoriaP, String fechaInicioP, String fechaFinP) {
 
 
         // Obtener id_usuario numérico guardado en SharedPreferences
@@ -246,6 +275,7 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
         RequestParams params = new RequestParams();
         params.put("id_usuario", id_usuario);
         params.put("montoP", montoP);
+        params.put("montoActualP", montoActualP);
         params.put("categoriaP", categoriaP);
         params.put("fechaInicioP", fechaInicioP);
         params.put("fechaFinP", fechaFinP);
