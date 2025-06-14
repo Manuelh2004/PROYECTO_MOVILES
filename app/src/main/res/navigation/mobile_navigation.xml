@@ -125,5 +125,30 @@
         android:id="@+id/nav_administrador"
         android:name="com.example.proyecto_moviles.ui.Administrador.Administrador"
         android:label="Panel de Administrador"
-        tools:layout="@layout/fragment_administrador" />
+        tools:layout="@layout/fragment_administrador" >
+        <action
+            android:id="@+id/action_nav_administrador_to_itemsCRUD"
+            app:destination="@id/nav_item" />
+        <action
+            android:id="@+id/action_nav_administrador_to_nav_comentario"
+            app:destination="@id/nav_comentario" />
+        <action
+            android:id="@+id/action_nav_administrador_to_nav_usuario"
+            app:destination="@id/nav_usuario" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_item"
+        android:name="com.example.proyecto_moviles.ui.Administrador.Item.ItemCRUD"
+        android:label="fragment_items"
+        tools:layout="@layout/fragment_items" />
+    <fragment
+        android:id="@+id/nav_comentario"
+        android:name="com.example.proyecto_moviles.ui.Administrador.Comentario.ComentarioCRUD"
+        android:label="fragment_comentario_c_r_u_d"
+        tools:layout="@layout/fragment_comentario_c_r_u_d" />
+    <fragment
+        android:id="@+id/nav_usuario"
+        android:name="com.example.proyecto_moviles.ui.Administrador.Usuario.UsuarioCRUD"
+        android:label="fragment_usuario"
+        tools:layout="@layout/fragment_usuario" />
 </navigation>
