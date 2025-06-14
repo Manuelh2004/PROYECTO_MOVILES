@@ -12,4 +12,8 @@
     <color name="fondo_moviles">#ECEFF1</color>
     <color name="color_secundario">#C9C9C9</color>
     <color name="color_purple">#9C27B0</color>
+    <color name="color_texto">#000000</color> <!-- Color negro para el texto -->
+    <color name="color_fondo">#FFFFFF</color>
+    <color name="color_rojo">#AF0606</color> <!-- Color para el botón eliminar -->
+    <color name="color_fondo_card">#F5F5F5</color> <!-- Color de fondo para los cards --><!-- Color blanco para el fondo -->
 </resources>

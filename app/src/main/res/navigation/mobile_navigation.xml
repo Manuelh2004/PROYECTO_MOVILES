@@ -107,7 +107,11 @@
         android:id="@+id/nav_listar_movimientos"
         android:name="com.example.proyecto_moviles.ui.Movimiento.ListarMovimientos"
         android:label="fragment_listar_movimientos"
-        tools:layout="@layout/fragment_listar_movimientos" />
+        tools:layout="@layout/fragment_listar_movimientos" >
+        <action
+            android:id="@+id/action_nav_listar_movimientos_to_nav_editar_movimiento"
+            app:destination="@id/nav_editar_movimiento" />
+    </fragment>
     <fragment
         android:id="@+id/nav_editar_perfil"
         android:name="com.example.proyecto_moviles.ui.Perfil.EditarPerfil"
@@ -126,4 +130,15 @@
         android:name="com.example.proyecto_moviles.ui.Administrador.Administrador"
         android:label="Panel de Administrador"
         tools:layout="@layout/fragment_administrador" />
+
+    <fragment
+        android:id="@+id/nav_editar_movimiento"
+        android:name="com.example.proyecto_moviles.ui.Movimiento.EditarMovimiento"
+        android:label="Editar Movimientos"
+        tools:layout="@layout/fragment_editar_movimiento" >
+        <action
+            android:id="@+id/action_nav_editar_movimiento_to_nav_listar_movimientos"
+            app:destination="@id/nav_listar_movimientos" />
+    </fragment>
+
 </navigation>

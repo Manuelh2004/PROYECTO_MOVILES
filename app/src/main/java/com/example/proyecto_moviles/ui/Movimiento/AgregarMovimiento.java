@@ -57,7 +57,7 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
         spTipoMovimiento = (Spinner) rootView.findViewById(R.id.spTipoMovimiento);
         spTipoMovimiento.setOnItemSelectedListener(this);
 
-        btnRegistrarMovimiento = (Button) rootView.findViewById(R.id.btnRegistrarMovimiento);
+        btnRegistrarMovimiento = (Button) rootView.findViewById(R.id.btnActualizarMovimiento);
         btnRegistrarMovimiento.setOnClickListener(this);
         btnMostrarMovimientos = (Button) rootView.findViewById(R.id.btnMostrarMovimientos);
         btnMostrarMovimientos.setOnClickListener(this);
