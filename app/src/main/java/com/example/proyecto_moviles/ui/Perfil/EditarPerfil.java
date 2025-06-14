@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -162,6 +164,8 @@ public class EditarPerfil extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         if (v == btnGuardarCambios){
             guardarCambios();
+            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.action_nav_editar_perfil_to_nav_perfil);
         }
     }
 }
