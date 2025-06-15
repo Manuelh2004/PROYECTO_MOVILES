@@ -83,7 +83,7 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
                         RegistrarUsuario(nombres, apellidos, telefono, documento, fechaNa, idPais, idGenero, idTipoDoc, email, uid);
 
                         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                        navController.navigate(R.id.action_nav_verificar_email_to_nav_presupuesto);
+                        navController.navigate(R.id.action_nav_verificar_email_to_nav_resumen_finanzas);
                     } else {
                         Toast.makeText(getContext(), "Correo no verificado aún. Revisa tu bandeja.", Toast.LENGTH_LONG).show();
                     }
@@ -133,7 +133,7 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
                     if (exito) {
                         // Navegar a la pantalla principal o donde desees
                         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                        navController.navigate(R.id.action_nav_verificar_email_to_nav_presupuesto);
+                        navController.navigate(R.id.action_nav_verificar_email_to_nav_resumen_finanzas);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
