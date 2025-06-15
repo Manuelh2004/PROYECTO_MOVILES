@@ -146,9 +146,17 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
     }
 
     private void cargarCategoriasDesdeServidor() {
+        SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
+        id_usuario = prefs.getInt("id_usuario", -1);
+        if (id_usuario == -1) {
+            Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String url = servidor + "obtener_categorias.php";
 
         RequestParams params = new RequestParams();
+        params.put("id_usuario",id_usuario);
 
         AsyncHttpClient client = new AsyncHttpClient();
 
