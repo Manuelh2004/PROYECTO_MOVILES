@@ -32,7 +32,7 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:text="Resumen de movimientos"
+                    android:text="Resumen de Movimientos"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/black"

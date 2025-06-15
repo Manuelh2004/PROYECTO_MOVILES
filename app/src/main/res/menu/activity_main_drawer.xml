@@ -5,6 +5,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_resumen_finanzas"
+            android:icon="@drawable/ic_menu_resumen_finanzas"
+            android:title="Resumen de Finanzas"/>
+        <item
             android:id="@+id/nav_presupuesto"
             android:icon="@drawable/ic_menu_presupuesto"
             android:title="Presupuestos" />
@@ -13,9 +17,9 @@
             android:icon="@drawable/ic_menu_movimiento"
             android:title="Movimientos" />
         <item
-            android:id="@+id/nav_visualizacion"
+            android:id="@+id/nav_analisis_visual_egresos"
             android:icon="@drawable/ic_menu_grafico"
-            android:title="Visualización de Movimientos" />
+            android:title="Análisis Visual de Egresos" />
         <item
             android:id="@+id/nav_perfil"
             android:icon="@drawable/ic_menu_perfil"
