@@ -50,7 +50,7 @@ public class Administrador extends Fragment implements View.OnClickListener{
         }
         if(v == btnConfiguracionNotificaciones){
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_administrador_to_nav_item);
+            navController.navigate(R.id.action_nav_administrador_to_nav_usuario);
         }
 
     }

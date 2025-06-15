@@ -89,7 +89,7 @@ public class Login extends Fragment implements View.OnClickListener{
         boolean logueado = prefs.getBoolean("logueado", false);
         if (logueado) {
             NavController navController = Navigation.findNavController(view);
-            navController.navigate(R.id.action_nav_login_to_nav_presupuesto);
+            navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
         }
     }
 
@@ -126,7 +126,7 @@ public class Login extends Fragment implements View.OnClickListener{
                                     obtenerIdUsuarioBackend(email);
 
                                     NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                                    navController.navigate(R.id.action_nav_login_to_nav_presupuesto); // action_crearCuenta_to_nav_login
+                                    navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas); // action_crearCuenta_to_nav_login
                                 } else {
                                     Toast.makeText(getContext(), "Por favor, verifica tu correo antes de ingresar.", Toast.LENGTH_LONG).show();
                                     mAuth.signOut();
@@ -170,7 +170,7 @@ public class Login extends Fragment implements View.OnClickListener{
                         enviarUsuarioAlServidor(user);
 
                         NavController navController = Navigation.findNavController(getView());
-                        navController.navigate(R.id.action_nav_login_to_nav_presupuesto);
+                        navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
                     } else {
                         Log.w("FirebaseAuth", "signInWithCredential:failure", task.getException());
                     }
@@ -203,7 +203,7 @@ public class Login extends Fragment implements View.OnClickListener{
                         editor.apply();
 
                         NavController navController = Navigation.findNavController(getView());
-                        navController.navigate(R.id.action_nav_login_to_nav_presupuesto);
+                        navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
                     }
                     Toast.makeText(getContext(), response.getString("message"), Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {

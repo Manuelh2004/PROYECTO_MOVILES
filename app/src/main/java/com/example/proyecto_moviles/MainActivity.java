@@ -48,7 +48,7 @@ public class MainActivity extends BaseActivity {
 
         // Configura top level destinations
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_movimiento, R.id.nav_presupuesto, R.id.nav_visualizacion, R.id.nav_perfil, R.id.nav_administrador)
+                R.id.nav_resumen_finanzas,R.id.nav_movimiento, R.id.nav_presupuesto, R.id.nav_analisis_visual_egresos, R.id.nav_perfil, R.id.nav_administrador)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -93,7 +93,9 @@ public class MainActivity extends BaseActivity {
                 // Cerrar drawer
                 drawer.closeDrawer(GravityCompat.START);
                 return true;
-            } else {
+            }
+
+            else {
                 // Para otros items, usar navegación normal
                 boolean handled = NavigationUI.onNavDestinationSelected(item, navController);
                 if (handled) {
@@ -115,13 +117,11 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);

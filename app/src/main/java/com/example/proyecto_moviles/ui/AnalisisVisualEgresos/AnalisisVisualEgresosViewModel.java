@@ -1,14 +1,14 @@
-package com.example.proyecto_moviles.ui.Visualizacion;
+package com.example.proyecto_moviles.ui.AnalisisVisualEgresos;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class VisualizacionViewModel extends ViewModel {
+public class AnalisisVisualEgresosViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public VisualizacionViewModel() {
+    public AnalisisVisualEgresosViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is slideshow fragment");
     }
