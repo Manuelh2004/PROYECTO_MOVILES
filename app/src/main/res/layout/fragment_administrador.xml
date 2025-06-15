@@ -203,74 +203,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- CardView 4 debajo del 3 -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="12dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="6dp"
-            app:cardUseCompatPadding="true"
-            app:layout_constraintTop_toBottomOf="@id/cardView3"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center_horizontal">
-
-                <!-- Sección de icono + textos -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_icono_items"
-                        android:layout_marginEnd="12dp" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Notificaciones del sistema"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="4dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Revisa las alertas y novedades del sistema"
-                            android:textSize="14sp"
-                            android:textColor="@android:color/darker_gray" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btnConfiguracionNotificaciones"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ver notificaciones"
-                    android:layout_marginTop="8dp"
-                    android:onClick="onSubmodule4Click" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
         <!-- Tarjeta completa para dashboard debajo de todo -->
         <androidx.cardview.widget.CardView
@@ -283,7 +216,7 @@
             app:cardCornerRadius="12dp"
             app:cardElevation="6dp"
             app:cardUseCompatPadding="true"
-            app:layout_constraintTop_toBottomOf="@id/cardView4"
+            app:layout_constraintTop_toBottomOf="@id/cardView3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 

@@ -40,17 +40,6 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UsuarioV
         holder.txtNombreUsuario.setText(usuario.getNombre());
         holder.txtCorreoUsuario.setText(usuario.getCorreo());
         holder.txtEstado.setText(usuario.getEstado());
-
-        // Configuración del botón para cambiar el estado
-        holder.btnCambiarEstado.setOnClickListener(v -> {
-            // Cambiar el estado del usuario
-            if (usuario.getEstado().equals("Activo")) {
-                usuario.setEstado("Inactivo");
-            } else {
-                usuario.setEstado("Activo");
-            }
-            notifyItemChanged(position); // Actualizar el item en la vista
-        });
     }
 
     @Override
@@ -60,14 +49,13 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UsuarioV
 
     public static class UsuarioViewHolder extends RecyclerView.ViewHolder {
         TextView txtNombreUsuario, txtCorreoUsuario, txtEstado;
-        Button btnCambiarEstado;
+
 
         public UsuarioViewHolder(View itemView) {
             super(itemView);
             txtNombreUsuario = itemView.findViewById(R.id.txtNombreUsuario);
             txtCorreoUsuario = itemView.findViewById(R.id.txtCorreoUsuario);
             txtEstado = itemView.findViewById(R.id.txtEstado);
-            btnCambiarEstado = itemView.findViewById(R.id.btnCambiarEstado);
         }
     }
 }

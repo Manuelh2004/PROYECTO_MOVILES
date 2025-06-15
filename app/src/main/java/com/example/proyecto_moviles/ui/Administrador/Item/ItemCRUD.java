@@ -53,13 +53,13 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
         editTextCategoria = rootView.findViewById(R.id.editTextCategoria);
         btnAgregarCategoria = rootView.findViewById(R.id.btnAgregarCategoria);
 
-        RecyclerView recyclerViewCategorias = rootView.findViewById(R.id.recyclerViewCategorias);
+        // RecyclerView recyclerViewCategorias = rootView.findViewById(R.id.recyclerViewCategorias);
         CardView cardView1 = rootView.findViewById(R.id.card_view_1);  // Cambiado a CardView
 
         // Configura el RecyclerView
         categoriasAdapter = new CategoriasAdapter(categorias);
-        recyclerViewCategorias.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewCategorias.setAdapter(categoriasAdapter);
+        // recyclerViewCategorias.setLayoutManager(new LinearLayoutManager(getContext()));
+        // recyclerViewCategorias.setAdapter(categoriasAdapter);
 
         // Manejador del botón Agregar
         btnAgregarCategoria.setOnClickListener(this);

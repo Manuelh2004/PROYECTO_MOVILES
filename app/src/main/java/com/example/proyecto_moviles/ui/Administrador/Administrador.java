@@ -27,9 +27,6 @@ public class Administrador extends Fragment implements View.OnClickListener{
         btnVisualizacionComentarios.setOnClickListener(this);
         btnGestionUsuarios = rootView.findViewById(R.id.btnGestionUsuarios);
         btnGestionUsuarios.setOnClickListener(this);
-        btnConfiguracionNotificaciones = rootView.findViewById(R.id.btnConfiguracionNotificaciones);
-        btnConfiguracionNotificaciones.setOnClickListener(this);
-
 
         return rootView;
     }
@@ -45,10 +42,6 @@ public class Administrador extends Fragment implements View.OnClickListener{
             navController.navigate(R.id.action_nav_administrador_to_nav_comentario);
         }
         if(v == btnGestionUsuarios){
-            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_administrador_to_nav_usuario);
-        }
-        if(v == btnConfiguracionNotificaciones){
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_nav_administrador_to_nav_usuario);
         }

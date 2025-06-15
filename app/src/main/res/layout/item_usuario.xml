@@ -52,28 +52,5 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp" />
 
-        <!-- Botón de cambiar estado -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="end">
-
-            <Button
-                android:id="@+id/btnCambiarEstado"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:backgroundTint="@color/teal_700"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:text="Cambiar estado"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:layout_gravity="center_vertical"/>
-
-        </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

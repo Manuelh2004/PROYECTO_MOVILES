@@ -57,15 +57,8 @@
                     android:text="Agregar" />
             </LinearLayout>
 
-            <!-- Detalle 2: Lista de categorías -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewCategorias"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
 
     <!-- Card 2 -->
     <androidx.cardview.widget.CardView
@@ -80,42 +73,44 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
-
-        <TextView
-            android:id="@+id/title_card_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Generos"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
         <LinearLayout
-            android:id="@+id/details_card_2"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"> <!-- Invisible by default -->
+            android:padding="16dp">
 
             <TextView
+                android:id="@+id/title_card_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Detalle 1 del Módulo"
-                android:textSize="14sp" />
+                android:text="Generos"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Detalle 1: EditText + Button -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Detalle 2 del Módulo"
-                android:textSize="14sp" />
+                android:layout_marginTop="16dp">
+
+                <EditText
+                    android:id="@+id/editTextGenero"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Ingrese un género"
+                    android:padding="8dp"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/btnAgregarGenero"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agregar" />
+            </LinearLayout>
 
         </LinearLayout>
-
-    </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <!-- Card 3 -->
@@ -132,39 +127,41 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
-
-        <TextView
-            android:id="@+id/title_card_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tipo Documentos"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:id="@+id/details_card_3"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"> <!-- Invisible by default -->
+            android:padding="16dp">
 
             <TextView
+                android:id="@+id/title_card_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Detalle 1 del Módulo"
-                android:textSize="14sp" />
+                android:text="Tipo Documentos"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Detalle 1: EditText + Button -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Detalle 2 del Módulo"
-                android:textSize="14sp" />
+                android:layout_marginTop="16dp">
 
-        </LinearLayout>
+                <EditText
+                    android:id="@+id/editTextTipoDocumento"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Ingrese un tipo de documento"
+                    android:padding="8dp"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/btnAgregarTipoDocumento"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Agregar" />
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
