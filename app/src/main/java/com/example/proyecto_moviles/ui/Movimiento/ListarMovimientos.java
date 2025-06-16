@@ -2,6 +2,7 @@ package com.example.proyecto_moviles.ui.Movimiento;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,9 +15,13 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
@@ -53,6 +59,9 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    Spinner spCategoriaFiltro;
+    EditText etFechaFiltro;
+    private String fechaFiltro = null, categoriaFiltro = null;
     public class MovimientoAdapter extends BaseAdapter {
 
         private Context context;
@@ -122,30 +131,35 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
                 .show();
     }
     @SuppressLint("NotConstructor")
-    private void ListarMovimientos() {
-        SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
-        int idUsuario = prefs.getInt("id_usuario", -1);
-        String url = servidor + "movimientoController/mostrar_movimiento.php";
-
+    private void ListarMovimientos(int idUsuario) {
+        String url = servidor + "movimientoController/mostrar_movimiento.php"; // Asegúrate de que esta URL esté correcta
         RequestParams params = new RequestParams();
         params.put("id_usuario", idUsuario);
 
-        AsyncHttpClient client = new AsyncHttpClient();
+        // Filtros de fecha
+        if (fechaFiltro != null) {
+            params.put("fecha_inicio", fechaFiltro);
+            params.put("fecha_fin", fechaFiltro);
+        }
 
+        // Filtro de categoría
+        if (categoriaFiltro != null) {
+            params.put("id_categoria", categoriaFiltro);
+        }
+
+        AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 String response = new String(responseBody);
-
                 try {
                     JSONArray jsonArray = new JSONArray(response);
                     List<Movimiento> movimientos = new ArrayList<>();
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject obj = jsonArray.getJSONObject(i);
-
                         String id_movimiento = obj.getString("id_movimiento");
-                        String usuario = obj.optString("usuario", "N/A"); // Si devuelves nombre usuario en JSON
+                        String usuario = obj.optString("usuario", "N/A");
                         String tipo_movimiento = obj.getString("nom_tipo_movimiento");
                         String categoria = obj.getString("nom_categoria");
                         String monto = obj.getString("mon_movimiento");
@@ -157,14 +171,14 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
                                 monto, fecha, descripcion, estado));
                     }
 
+                    // Adapter para los movimientos
                     MovimientoAdapter adapter = new MovimientoAdapter(getActivity(), movimientos);
                     listaMovimientos.setAdapter(adapter);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getActivity(), "Error al procesar datos JSON", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Error al procesar datos de movimientos", Toast.LENGTH_SHORT).show();
                 }
-
             }
 
             @Override
@@ -173,8 +187,8 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
                 Toast.makeText(getActivity(), "Error: " + errorMsg, Toast.LENGTH_LONG).show();
             }
         });
-
     }
+
 
     /**
      * Use this factory method to create a new instance of
@@ -206,11 +220,20 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_listar_movimientos, container, false);
-        listaMovimientos = rootView.findViewById(R.id.lstMovimientos);
 
-        ListarMovimientos();
+        listaMovimientos = rootView.findViewById(R.id.lstMovimientos);
+        spCategoriaFiltro = rootView.findViewById(R.id.spCategoriaFiltro);
+        etFechaFiltro = rootView.findViewById(R.id.etFechaFiltro);
+
+        etFechaFiltro.setOnClickListener(v -> openDatePicker());
+        // Obtener el id_usuario desde SharedPreferences
+        SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+        int idUsuario = prefs.getInt("id_usuario", -1);  // Obtén el id_usuario desde SharedPreferences
+
+        cargarCategoriasFiltro(idUsuario);
+        ListarMovimientos(idUsuario);
+
         return rootView;
     }
 
@@ -249,7 +272,9 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
                 if (response.contains("success")) {
                     Toast.makeText(getActivity(), "Movimiento eliminado correctamente", Toast.LENGTH_SHORT).show();
                     // Después de eliminar, puedes actualizar la lista de movimientos
-                    ListarMovimientos();
+                    SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+                    int idUsuario = prefs.getInt("id_usuario", -1);
+                    ListarMovimientos(idUsuario);
                 } else {
                     Toast.makeText(getActivity(), "Error al eliminar el movimiento", Toast.LENGTH_SHORT).show();
                 }
@@ -267,6 +292,77 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
 
         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
         navController.navigate(R.id.action_nav_listar_movimientos_to_nav_editar_movimiento, bundle);
+    }
+
+    private void cargarCategoriasFiltro(int idUsuario) {
+        String url = servidor + "itemsController/obtener_categoria_presupuesto.php";  // URL correcta
+        RequestParams params = new RequestParams();
+        params.put("id_usuario", idUsuario);  // El id del usuario se obtiene de SharedPreferences correctamente
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.post(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                try {
+                    JSONArray jsonArray = new JSONArray(new String(responseBody));
+                    List<String> categorias = new ArrayList<>();
+                    categorias.add("Seleccionar categoría");
+
+                    // Recoger las categorías de la respuesta JSON
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject obj = jsonArray.getJSONObject(i);
+                        categorias.add(obj.getString("nombre"));  // Asegúrate de que el campo JSON sea 'nombre'
+                    }
+
+                    // Adaptador para el Spinner
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, categorias);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spCategoriaFiltro.setAdapter(adapter);
+
+                    // Establecer listener para que al seleccionar una categoría, la aplicación filtre los movimientos
+                    spCategoriaFiltro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                            categoriaFiltro = position > 0 ? String.valueOf(position) : null;  // Asignar el filtro de categoría
+                            ListarMovimientos(idUsuario);  // Llamar a la función para actualizar la lista de movimientos
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parentView) {
+                            // Opcional: manejar el caso de "ninguna categoría seleccionada"
+                        }
+                    });
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(), "Error al cargar las categorías", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(getActivity(), "Error al obtener categorías", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void openDatePicker() {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    String formattedDate = String.format("%02d/%02d/%02d", selectedDay, selectedMonth + 1, selectedYear % 100);
+                    etFechaFiltro.setText(formattedDate);
+                    fechaFiltro = formattedDate;
+                    SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+                    int idUsuario = prefs.getInt("id_usuario", -1);
+                    ListarMovimientos(idUsuario);
+                }, year, month, day);
+        datePickerDialog.show();
     }
 
     @Override

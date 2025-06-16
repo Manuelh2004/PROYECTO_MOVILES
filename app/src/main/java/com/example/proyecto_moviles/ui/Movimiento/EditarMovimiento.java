@@ -1,5 +1,6 @@
 package com.example.proyecto_moviles.ui.Movimiento;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -30,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -70,6 +73,32 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
         if (idUsuario == -1) {
             Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
         }
+
+        // Desactivamos edición directa y ponemos listener para abrir DatePicker
+        etFecha.setFocusable(false);
+        etFecha.setClickable(true);
+
+        etFecha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                String formattedDate = String.format("%02d/%02d/%02d", dayOfMonth, monthOfYear + 1, year % 100);
+                                etFecha.setText(formattedDate);
+                            }
+                        }, year, month, day);
+
+                datePickerDialog.show();
+            }
+        });
 
         // Cargar los tipos de movimiento y categorías
         cargarTiposMovimiento();
@@ -130,7 +159,30 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
                     // Obtener y configurar los valores de Spinner (Categoría y Tipo de Movimiento)
                     idCategoria = responseJson.getInt("id_categoria");
                     idTipoMovimiento = responseJson.getInt("id_tipo_movimiento");
+                    etFecha.setFocusable(false);
+                    etFecha.setClickable(true);
 
+                    etFecha.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            final Calendar calendar = Calendar.getInstance();
+                            int year = calendar.get(Calendar.YEAR);
+                            int month = calendar.get(Calendar.MONTH);
+                            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                                    new DatePickerDialog.OnDateSetListener() {
+                                        @Override
+                                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                            String formattedDate = String.format("%02d/%02d/%02d", dayOfMonth, monthOfYear + 1, year % 100);
+                                            etFecha.setText(formattedDate);
+                                        }
+                                    }, year, month, day);
+
+                            datePickerDialog.show();
+                        }
+                    });
                     // Cargar los Spinners con los datos correspondientes
                     cargarCategorias();
                     cargarTiposMovimiento();
@@ -287,6 +339,7 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
         params.put("id_usuario", idUsuario);
         params.put("est_movimiento",1);   // Estado del movimiento, asumimos que es "activo"
 
+
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
@@ -297,6 +350,10 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
                 // Si la respuesta es "success", mostramos un mensaje de éxito
                 if (response.contains("success")) {
                     Toast.makeText(getActivity(), "Movimiento actualizado correctamente", Toast.LENGTH_SHORT).show();
+
+                    // Actualizamos el presupuesto
+                    double monto = Double.parseDouble(etMonto.getText().toString()); // Obtener el monto del campo de texto
+                    actualizarPresupuesto(monto);
 
                     // Navegar de vuelta a la lista de movimientos después de la actualización
                     NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
@@ -315,10 +372,50 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
             }
         });
     }
+    private void actualizarPresupuesto(double monto) {
+        // Obtener id_usuario desde SharedPreferences
+        SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
+        int idUsuario = prefs.getInt("id_usuario", -1);
+        if (idUsuario == -1) {
+            Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Operar sobre el presupuesto según el tipo de movimiento
+        String url = servidor + "presupuestoController/actualizar_presupuesto_movimiento.php";
+
+        // Si el tipo de movimiento es un ingreso (idTipoMovimiento == 1), sumamos el monto al presupuesto
+        // Si el tipo de movimiento es un egreso (idTipoMovimiento == 2), restamos el monto al presupuesto
+        double operacionPresupuesto = (idTipoMovimiento == 1) ? monto : -monto;
+
+        RequestParams params = new RequestParams();
+        params.put("id_categoria", idCategoria);
+        params.put("id_usuario", idUsuario);
+        params.put("monto_actualizado", operacionPresupuesto);
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.post(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                String response = new String(responseBody);
+                if (response.contains("success")) {
+                    // El presupuesto se actualizó correctamente, no hacemos nada más.
+                } else {
+                    Toast.makeText(getActivity(), "Error al actualizar el presupuesto", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(getActivity(), "Error en la conexión al actualizar el presupuesto", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     @Override
     public void onClick(View v) {
         if (v == btnActualizarMovimiento) {
             actualizarMovimiento();
+
+
         }
     }
 }
