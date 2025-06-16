@@ -1,17 +1,21 @@
 package com.example.proyecto_moviles.ui.Movimiento;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +53,6 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     public class MovimientoAdapter extends BaseAdapter {
 
         private Context context;
@@ -90,6 +93,8 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
             TextView tvFecha = convertView.findViewById(R.id.tvFecha);
             TextView tvDescripcion = convertView.findViewById(R.id.tvDescripcion);
             TextView tvEstado = convertView.findViewById(R.id.tvEstado);
+            Button editar = convertView.findViewById(R.id.btnEditar);
+            Button eliminar = convertView.findViewById(R.id.btnEliminar);
 
             Movimiento mov = movimientoList.get(position);
 
@@ -101,12 +106,21 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
             tvFecha.setText("Fecha: " + mov.fecha);
             tvDescripcion.setText("Descripción: " + mov.descripcion);
             tvEstado.setText("Estado: " + (mov.estado.equals("1") ? "Activo" : "Inactivo"));
-
+            editar.setOnClickListener(v -> EditarMovimiento(mov.id_movimiento));
+            eliminar.setOnClickListener(v -> EliminarMovimiento(mov.id_movimiento));
             return convertView;
         }
     }
 
-
+    private void showConfirmationDialog(String idMovimiento) {
+        // Crear un cuadro de diálogo de confirmación
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Confirmar Eliminación")
+                .setMessage("¿Estás seguro de que deseas eliminar este movimiento?")
+                .setPositiveButton("Eliminar", (dialog, which) -> EliminarMovimiento(idMovimiento))
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
     @SuppressLint("NotConstructor")
     private void ListarMovimientos() {
         SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
@@ -198,6 +212,61 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
 
         ListarMovimientos();
         return rootView;
+    }
+
+    private void EliminarMovimiento(String idMovimiento) {
+        // Asegurarse de obtener el contexto correcto (usando getContext() o getActivity())
+        Context context = getActivity(); // Asegúrate de que esto no sea nulo
+
+        if (context != null) {
+            new AlertDialog.Builder(context)
+                    .setTitle("Eliminar Movimiento")
+                    .setMessage("¿Estás seguro de que deseas eliminar este movimiento?")
+                    .setPositiveButton("Eliminar", (dialog, which) -> {
+                        // Llamar al método para eliminar el movimiento
+                        eliminarMovimiento(idMovimiento);
+                    })
+                    .setNegativeButton("Cancelar", (dialog, which) -> {
+                        // Si el usuario cancela, no hacer nada
+                        dialog.dismiss();
+                    })
+                    .show();
+        } else {
+            // Si el contexto es nulo, mostrar un error
+            Toast.makeText(getActivity(), "Error: Contexto no disponible", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void eliminarMovimiento(String idMovimiento) {
+        String url = servidor + "movimientoController/eliminar_movimiento.php";
+        RequestParams params = new RequestParams();
+        params.put("id_movimiento", idMovimiento);
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.post(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                String response = new String(responseBody);
+                if (response.contains("success")) {
+                    Toast.makeText(getActivity(), "Movimiento eliminado correctamente", Toast.LENGTH_SHORT).show();
+                    // Después de eliminar, puedes actualizar la lista de movimientos
+                    ListarMovimientos();
+                } else {
+                    Toast.makeText(getActivity(), "Error al eliminar el movimiento", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(getActivity(), "Error de conexión: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void EditarMovimiento(String idMovimiento) {
+        Bundle bundle = new Bundle();
+        bundle.putString("id_movimiento", idMovimiento);  // Pasa el id_movimiento
+
+        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+        navController.navigate(R.id.action_nav_listar_movimientos_to_nav_editar_movimiento, bundle);
     }
 
     @Override
