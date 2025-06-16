@@ -41,7 +41,7 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
     private Button btnCrearUsuario, btnCancelar;
     private Spinner spGenero;
     private Spinner spTipoDoc;
-    int idPais=-1, idGenero = -1, idTipoDoc;
+    int idGenero = -1, idTipoDoc;
 
 
     @Override
@@ -227,7 +227,7 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                 idGenero = selectedId;
             }
         }
-        else if(parent==spTipoDoc)
+        if(parent==spTipoDoc)
         {
             Item selectedItem = (Item) parent.getItemAtPosition(position);
 
@@ -271,7 +271,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                                     Bundle bundle = new Bundle();
                                     bundle.putString("nombres", nombres);
                                     bundle.putString("apellidos", apellidos);
-                                    bundle.putInt("idPais", idPais);
                                     bundle.putInt("idGenero", idGenero);
                                     bundle.putInt("idTipoDoc", idTipoDoc);
                                     bundle.putString("telefono", telefono);

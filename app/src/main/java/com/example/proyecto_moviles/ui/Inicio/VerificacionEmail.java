@@ -31,7 +31,7 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
 
     // Variables para almacenar datos recibidos
     private String nombres, apellidos, telefono, documento, fechaNa, email;
-    private int idPais, idGenero, idTipoDoc;
+    private int idGenero, idTipoDoc;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,7 +55,6 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
             telefono = args.getString("telefono");
             documento = args.getString("documento");
             fechaNa = args.getString("fechaNa");
-            idPais = args.getInt("idPais", -1);
             idGenero = args.getInt("idGenero", -1);
             idTipoDoc = args.getInt("idTipoDoc", -1);
             // email no se pasa, lo tomamos del usuario actual para mayor seguridad
@@ -80,10 +79,8 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
                         String uid = currentUser.getUid();
 
                         // Llamar al método para registrar en BD
-                        RegistrarUsuario(nombres, apellidos, telefono, documento, fechaNa, idPais, idGenero, idTipoDoc, email, uid);
+                        RegistrarUsuario(nombres, apellidos, telefono, documento, fechaNa, idGenero, idTipoDoc, email, uid);
 
-                        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                        navController.navigate(R.id.action_nav_verificar_email_to_nav_resumen_finanzas);
                     } else {
                         Toast.makeText(getContext(), "Correo no verificado aún. Revisa tu bandeja.", Toast.LENGTH_LONG).show();
                     }
@@ -107,7 +104,7 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
     }
 
     private void RegistrarUsuario(String nombres, String apellidos, String telefono, String documento, String fechaNa,
-                                  int idPais, int idGenero, int idTipoDoc, String email, String uidFirebase) {
+                                  int idGenero, int idTipoDoc, String email, String uidFirebase) {
         String url = servidor + "usuarioController/crear_usuario.php";
 
         RequestParams params = new RequestParams();
@@ -116,7 +113,6 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
         params.put("telefono", telefono);
         params.put("documento", documento);
         params.put("fechaNa", fechaNa);
-        params.put("idPais", idPais);
         params.put("idGenero", idGenero);
         params.put("idTipoDoc", idTipoDoc);
         params.put("email", email);
@@ -133,7 +129,7 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
                     if (exito) {
                         // Navegar a la pantalla principal o donde desees
                         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                        navController.navigate(R.id.action_nav_verificar_email_to_nav_resumen_finanzas);
+                        navController.navigate(R.id.action_nav_verificar_email_to_nav_login);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

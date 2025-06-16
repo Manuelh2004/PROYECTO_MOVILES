@@ -134,8 +134,8 @@
         android:name="com.example.proyecto_moviles.ui.Inicio.VerificacionEmail"
         android:label="VerificacionEmail" >
         <action
-            android:id="@+id/action_nav_verificar_email_to_nav_resumen_finanzas"
-            app:destination="@id/nav_resumen_finanzas" />
+            android:id="@+id/action_nav_verificar_email_to_nav_login"
+            app:destination="@id/nav_login" />
     </fragment>
     <fragment
         android:id="@+id/nav_administrador"

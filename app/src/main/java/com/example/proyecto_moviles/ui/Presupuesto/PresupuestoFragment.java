@@ -206,13 +206,12 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
 
             Categoria categoriaSeleccionada = (Categoria) cat.getSelectedItem();
             Float montoP = Float.parseFloat(mon.getText().toString());
-            Float montoActualP = Float.parseFloat(mon.getText().toString());
             int categoriaP = categoriaSeleccionada.getId();
             String fechaInicioP = fecha_inicio;
             String fechaFinP = fecha_fin;
 
             //Toast.makeText(getContext(), "id categoria: " + categoriaP, Toast.LENGTH_SHORT).show();
-            RegistrarPresupuesto(montoP, montoActualP, categoriaP, fechaInicioP, fechaFinP);
+            RegistrarPresupuesto(montoP, categoriaP, fechaInicioP, fechaFinP);
             limpiarCampos();
         }
     }
@@ -267,7 +266,7 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
         f_fin.setText("Fecha fin");
     }
 
-    private void RegistrarPresupuesto(Float montoP, Float montoActualP, int categoriaP, String fechaInicioP, String fechaFinP) {
+    private void RegistrarPresupuesto(Float montoP, int categoriaP, String fechaInicioP, String fechaFinP) {
 
 
         // Obtener id_usuario numérico guardado en SharedPreferences
@@ -283,14 +282,13 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
         RequestParams params = new RequestParams();
         params.put("id_usuario", id_usuario);
         params.put("montoP", montoP);
-        params.put("montoActualP", montoActualP);
         params.put("categoriaP", categoriaP);
         params.put("fechaInicioP", fechaInicioP);
         params.put("fechaFinP", fechaFinP);
 
         AsyncHttpClient client = new AsyncHttpClient();
 
-        client.get(url, params, new AsyncHttpResponseHandler() {
+        client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 String response = new String(responseBody);  // Obtener la respuesta del servidor como String
