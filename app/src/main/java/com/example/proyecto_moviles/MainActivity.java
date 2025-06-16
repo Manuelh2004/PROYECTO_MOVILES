@@ -161,20 +161,37 @@ public class MainActivity extends BaseActivity {
         if (opc_resumen_finanzas == 0){
             navigationView.getMenu().findItem(R.id.nav_resumen_finanzas).setVisible(false);
         }
+        else{
+            navigationView.getMenu().findItem(R.id.nav_resumen_finanzas).setVisible(true);
+        }
         if (opc_presupuesto == 0){
             navigationView.getMenu().findItem(R.id.nav_presupuesto).setVisible(false);
         }
+        else{
+            navigationView.getMenu().findItem(R.id.nav_presupuesto).setVisible(true);
+        }
         if (opc_movimientos == 0){
             navigationView.getMenu().findItem(R.id.nav_movimiento).setVisible(false);
+        }else{
+            navigationView.getMenu().findItem(R.id.nav_movimiento).setVisible(true);
         }
         if (opc_visual == 0){
             navigationView.getMenu().findItem(R.id.nav_analisis_visual_egresos).setVisible(false);
         }
+        else {
+            navigationView.getMenu().findItem(R.id.nav_analisis_visual_egresos).setVisible(true);
+        }
         if (opc_perfil == 0){
             navigationView.getMenu().findItem(R.id.nav_perfil).setVisible(false);
         }
+        else {
+            navigationView.getMenu().findItem(R.id.nav_perfil).setVisible(true);
+        }
         if (opc_administrador == 0){
             navigationView.getMenu().findItem(R.id.nav_administrador).setVisible(false);
+        }
+        else {
+            navigationView.getMenu().findItem(R.id.nav_administrador).setVisible(true);
         }
     }
 

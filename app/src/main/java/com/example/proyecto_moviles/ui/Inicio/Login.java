@@ -100,10 +100,6 @@ public class Login extends Fragment implements View.OnClickListener{
         if (logueado) {
 
             id_usuario = prefs.getInt("id_usuario", -1);
-            if (id_usuario == -1) {
-                Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
-                return;
-            }
 
             activity.ConsultarUsuario(id_usuario, new MainActivity.Callback() {
                 @Override
@@ -151,8 +147,8 @@ public class Login extends Fragment implements View.OnClickListener{
                                     Toast.makeText(getContext(), "Ingreso exitoso", Toast.LENGTH_SHORT).show();
                                     obtenerIdUsuarioBackend(email);
 
-                                    NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                                    navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas); // action_crearCuenta_to_nav_login
+                                    //NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+                                    //navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas); // action_crearCuenta_to_nav_login
                                 } else {
                                     Toast.makeText(getContext(), "Por favor, verifica tu correo antes de ingresar.", Toast.LENGTH_LONG).show();
                                     mAuth.signOut();
@@ -268,7 +264,17 @@ public class Login extends Fragment implements View.OnClickListener{
                         // Log para confirmar guardado
                         Log.d("Login", "Guardado id_usuario en SharedPreferences: " + idUsuarioDelBackend);
 
-                        Toast.makeText(getContext(), "Ingreso exitoso", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Ingreso exitoso ", Toast.LENGTH_SHORT).show();
+
+                        activity.ConsultarUsuario(idUsuarioDelBackend, new MainActivity.Callback() {
+                            @Override
+                            public void onUsuarioCargado(int opc_resumen_finanzas, int opc_presupuesto, int opc_movimientos, int opc_visual, int opc_perfil, int opc_administrador) {
+                                ((MainActivity) getActivity()).actualizarMenu(opc_resumen_finanzas, opc_presupuesto, opc_movimientos, opc_visual, opc_perfil, opc_administrador);
+                                NavController navController = Navigation.findNavController(getView());
+                                navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
+                            }
+                        });
+
                     } else {
                         Toast.makeText(getContext(), "Error al obtener usuario backend", Toast.LENGTH_SHORT).show();
                     }
