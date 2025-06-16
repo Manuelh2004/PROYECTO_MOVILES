@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.example.proyecto_moviles.MainActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -40,6 +41,8 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.security.auth.callback.Callback;
+
 import cz.msebera.android.httpclient.Header;
 
 public class Login extends Fragment implements View.OnClickListener{
@@ -51,7 +54,8 @@ public class Login extends Fragment implements View.OnClickListener{
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
     private TextView txtOlvidarPassword;
-
+    private MainActivity activity;
+    private int id_usuario = 0;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -83,13 +87,35 @@ public class Login extends Fragment implements View.OnClickListener{
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        activity = (MainActivity) getActivity();
+
+        if (activity == null) {
+            Toast.makeText(getActivity(), "Activity nula", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // Aquí chequeamos la sesión y navegamos si ya está logueado
         SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
         boolean logueado = prefs.getBoolean("logueado", false);
         if (logueado) {
+
+            id_usuario = prefs.getInt("id_usuario", -1);
+            if (id_usuario == -1) {
+                Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            activity.ConsultarUsuario(id_usuario, new MainActivity.Callback() {
+                @Override
+                public void onUsuarioCargado(int opc_resumen_finanzas, int opc_presupuesto, int opc_movimientos, int opc_visual, int opc_perfil, int opc_administrador) {
+                    ((MainActivity) getActivity()).actualizarMenu(opc_resumen_finanzas, opc_presupuesto, opc_movimientos, opc_visual, opc_perfil, opc_administrador);
+                    NavController navController = Navigation.findNavController(view);
+                    navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
+                }
+            });
+            /*((MainActivity) getActivity()).actualizarMenu(activity.opc_resumen_finanzas, activity.opc_presupuesto, activity.opc_movimientos, activity.opc_visual, activity.opc_perfil, activity.opc_administrador);
             NavController navController = Navigation.findNavController(view);
-            navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
+            navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);*/
         }
     }
 
