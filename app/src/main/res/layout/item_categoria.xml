@@ -1,0 +1,43 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/textViewCategoria"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Categoría"
+            android:textSize="16sp" />
+
+        <!-- ImageButton para editar -->
+        <ImageButton
+            android:id="@+id/btnEditar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_icono_items"
+            android:contentDescription="Editar"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginEnd="8dp"/>
+
+        <!-- ImageButton para cambiar el estado -->
+        <ImageButton
+            android:id="@+id/btnCambiarEstado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_icono_comentario"
+            android:contentDescription="Cambiar Estado"
+            android:background="?android:attr/selectableItemBackgroundBorderless" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

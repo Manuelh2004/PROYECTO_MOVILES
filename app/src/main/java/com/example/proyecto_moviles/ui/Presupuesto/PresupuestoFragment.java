@@ -62,10 +62,10 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
 
         f_inicio = (EditText) rootView.findViewById(R.id.etFechaInicio);
         f_fin = (EditText) rootView.findViewById(R.id.etFechaFin);
-        mon = (EditText) rootView.findViewById(R.id.etDocumentoEd);
+        mon = (EditText) rootView.findViewById(R.id.etMonto);
         agre = (Button) rootView.findViewById(R.id.btnAgregar);
         mos = (Button) rootView.findViewById(R.id.btnMostrar);
-        cat = (Spinner) rootView.findViewById(R.id.spTipoDocumentoEd);
+        cat = (Spinner) rootView.findViewById(R.id.spCategoria);
 
         // Establecer modo al tocar cada campo
         f_inicio.setOnClickListener(v -> {
@@ -146,9 +146,17 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
     }
 
     private void cargarCategoriasDesdeServidor() {
+        SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
+        id_usuario = prefs.getInt("id_usuario", -1);
+        if (id_usuario == -1) {
+            Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String url = servidor + "obtener_categorias.php";
 
         RequestParams params = new RequestParams();
+        params.put("id_usuario",id_usuario);
 
         AsyncHttpClient client = new AsyncHttpClient();
 

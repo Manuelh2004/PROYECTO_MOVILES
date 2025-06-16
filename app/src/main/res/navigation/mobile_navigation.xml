@@ -26,10 +26,11 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_visualizacion"
-        android:name="com.example.proyecto_moviles.ui.Visualizacion.VisualizacionFragment"
-        android:label="Visualización de Movimientos"
-        tools:layout="@layout/fragment_visualizacion" />
+        android:id="@+id/nav_analisis_visual_egresos"
+        android:name="com.example.proyecto_moviles.ui.AnalisisVisualEgresos.AnalisisVisualEgresosFragment"
+        android:label="Análisis Visual de Egresos"
+        tools:layout="@layout/fragment_analisis_visual_egresos" />
+
     <fragment
         android:id="@+id/nav_perfil"
         android:name="com.example.proyecto_moviles.ui.Perfil.Perfil"
@@ -51,8 +52,8 @@
             android:id="@+id/action_nav_login_to_nav_olvidarPassword"
             app:destination="@id/nav_olvidarPassword" />
         <action
-            android:id="@+id/action_nav_login_to_nav_presupuesto"
-            app:destination="@id/nav_presupuesto" />
+            android:id="@+id/action_nav_login_to_nav_resumen_finanzas"
+            app:destination="@id/nav_resumen_finanzas" />
     </fragment>
     <fragment
         android:id="@+id/nav_crear_cuenta"
@@ -82,11 +83,6 @@
             app:destination="@id/nav_login" />
     </fragment>
     <fragment
-        android:id="@+id/resumenMovimientos"
-        android:name="com.example.proyecto_moviles.ui.Perfil.ResumenMovimientos"
-        android:label="fragment_resumen_movimientos"
-        tools:layout="@layout/fragment_resumen_movimientos" />
-    <fragment
         android:id="@+id/editarPresupuesto"
         android:name="com.example.proyecto_moviles.ui.Presupuesto.EditarPresupuesto"
         android:label="@string/Editar_Presupuesto"
@@ -102,7 +98,14 @@
         android:id="@+id/nav_resumen_finanzas"
         android:name="com.example.proyecto_moviles.ui.Perfil.ResumenFinanzas"
         android:label="Mis finanzas"
-        tools:layout="@layout/fragment_resumen_finanzas" />
+        tools:layout="@layout/fragment_resumen_finanzas" >
+        <action
+            android:id="@+id/action_nav_resumen_finanzas_to_nav_presupuesto"
+            app:destination="@id/nav_presupuesto" />
+        <action
+            android:id="@+id/action_nav_resumen_finanzas_to_nav_movimiento"
+            app:destination="@id/nav_movimiento" />
+    </fragment>
     <fragment
         android:id="@+id/nav_listar_movimientos"
         android:name="com.example.proyecto_moviles.ui.Movimiento.ListarMovimientos"
@@ -116,19 +119,24 @@
         android:id="@+id/nav_editar_perfil"
         android:name="com.example.proyecto_moviles.ui.Perfil.EditarPerfil"
         android:label="Editar Perfil"
-        tools:layout="@layout/fragment_editar_perfil" />
+        tools:layout="@layout/fragment_editar_perfil" >
+        <action
+            android:id="@+id/action_nav_editar_perfil_to_nav_perfil"
+            app:destination="@id/nav_perfil" />
+    </fragment>
     <fragment
         android:id="@+id/nav_verificar_email"
         android:name="com.example.proyecto_moviles.ui.Inicio.VerificacionEmail"
         android:label="VerificacionEmail" >
         <action
-            android:id="@+id/action_nav_verificar_email_to_nav_presupuesto"
-            app:destination="@id/nav_presupuesto" />
+            android:id="@+id/action_nav_verificar_email_to_nav_resumen_finanzas"
+            app:destination="@id/nav_resumen_finanzas" />
     </fragment>
     <fragment
         android:id="@+id/nav_administrador"
         android:name="com.example.proyecto_moviles.ui.Administrador.Administrador"
         android:label="Panel de Administrador"
+<<<<<<< HEAD
         tools:layout="@layout/fragment_administrador" />
 
     <fragment
@@ -141,4 +149,32 @@
             app:destination="@id/nav_listar_movimientos" />
     </fragment>
 
+=======
+        tools:layout="@layout/fragment_administrador" >
+        <action
+            android:id="@+id/action_nav_administrador_to_nav_usuario"
+            app:destination="@id/nav_usuario" />
+        <action
+            android:id="@+id/action_nav_administrador_to_nav_item"
+            app:destination="@id/nav_item" />
+        <action
+            android:id="@+id/action_nav_administrador_to_nav_comentario"
+            app:destination="@id/nav_comentario" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_comentario"
+        android:name="com.example.proyecto_moviles.ui.Administrador.Comentario.ComentarioCRUD"
+        android:label="fragment_comentario"
+        tools:layout="@layout/fragment_comentario" />
+    <fragment
+        android:id="@+id/nav_item"
+        android:name="com.example.proyecto_moviles.ui.Administrador.Item.ItemCRUD"
+        android:label="fragment_items"
+        tools:layout="@layout/fragment_items" />
+    <fragment
+        android:id="@+id/nav_usuario"
+        android:name="com.example.proyecto_moviles.ui.Administrador.Usuario.UsuarioCRUD"
+        android:label="fragment_usuario"
+        tools:layout="@layout/fragment_usuario" />
+>>>>>>> c62486845a625f3188196fec0e7d78ce67d1bf89
 </navigation>

@@ -23,4 +23,9 @@
     <string name="login_failed">"Login failed"</string>
     <string name="Mostrar_Presupuesto">Mostrar Presupuesto</string>
     <string name="Editar_Presupuesto">Editar Presupuesto</string>
+
+    <string-array name="estado_comentarios">
+        <item>No revisado</item>
+        <item>Revisado</item>
+    </string-array>
 </resources>
