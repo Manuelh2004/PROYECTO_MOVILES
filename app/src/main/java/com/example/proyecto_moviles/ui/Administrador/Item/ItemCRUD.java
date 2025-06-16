@@ -158,4 +158,41 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
             }
         });
     }
+    private void agregarGenero() {
+        String url = servidor + "itemsController/genero/agregar_genero.php";
+
+        String nom_categoria = editTextCategoria.getText().toString();
+        Integer est_categoria = 1;
+
+        RequestParams params = new RequestParams();
+        params.put("nom_categoria", nom_categoria);
+        params.put("est_categoria", est_categoria);
+
+        client.post(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                String response = new String(responseBody);
+                if (response.contains("success")) {
+                    // Actualiza la interfaz en el hilo principal
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getActivity(), "Categoría agregada correctamente", Toast.LENGTH_SHORT).show();
+                        // Limpiar el EditText y recargar las categorías
+                        editTextCategoria.setText("");
+                        obtenerCategoriasDesdeServidor();  // Vuelve a obtener las categorías del servidor
+                    });
+                } else {
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getActivity(), "Error al agregar la categoría", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getActivity(), "Error en la conexión", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+    }
 }
