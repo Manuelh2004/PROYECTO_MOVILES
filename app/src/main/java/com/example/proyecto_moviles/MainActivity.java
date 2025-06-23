@@ -99,16 +99,12 @@ public class MainActivity extends BaseActivity {
         if (user != null) {
             // Usuario logueado, actualizar el encabezado
             View headerView = navigationView.getHeaderView(0);
-            TextView navHeaderTitle = headerView.findViewById(R.id.nav_header_title);
-            TextView navHeaderSubtitle = headerView.findViewById(R.id.nav_header_subtitle);
+
             ImageView logoImageView = headerView.findViewById(R.id.logoImageView); // Obtener la ImageView
 
-            // Establecer los valores del usuario en el encabezado
-            navHeaderTitle.setText("Abraham Manuel Hilario Fernández");
-            navHeaderSubtitle.setText(user.getEmail());
 
-            // Cambiar el logo de manera dinámica
-            logoImageView.setImageResource(R.drawable.ic_user_logo); // Cambia el logo a uno nuevo (asegúrate de tener esta imagen en res/drawable)
+
+       // Cambia el logo a uno nuevo (asegúrate de tener esta imagen en res/drawable)
         }
 
         // Manejo de clicks en el menú

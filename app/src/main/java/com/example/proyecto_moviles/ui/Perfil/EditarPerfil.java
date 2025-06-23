@@ -118,7 +118,7 @@ public class EditarPerfil extends Fragment implements View.OnClickListener{
         String telefono = etTelefonoEd.getText().toString();
 
         // Validar que los campos no estén vacíos
-        if (nombres.isEmpty() || apellidos.isEmpty() || documento.isEmpty() || fechaNacimiento.isEmpty() || telefono.isEmpty()) {
+        if (nombres.isEmpty() || apellidos.isEmpty() || fechaNacimiento.isEmpty() || telefono.isEmpty()) {
             Toast.makeText(getActivity(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -146,6 +146,7 @@ public class EditarPerfil extends Fragment implements View.OnClickListener{
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 String response = new String(responseBody);
+                Log.d("ServidorRespuesta", response);  // Añadir esto para ver la respuesta completa
                 if (response.contains("success")) {
                     Toast.makeText(getActivity(), "Perfil actualizado correctamente", Toast.LENGTH_SHORT).show();
                 } else {

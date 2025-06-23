@@ -114,8 +114,8 @@
     <fragment
         android:id="@+id/nav_listar_movimientos"
         android:name="com.example.proyecto_moviles.ui.Movimiento.ListarMovimientos"
-        android:label="fragment_listar_movimientos"
-        tools:layout="@layout/fragment_listar_movimientos" >
+        android:label="Listar Movimientos"
+        tools:layout="@layout/fragment_listar_movimientos">
         <action
             android:id="@+id/action_nav_listar_movimientos_to_nav_editar_movimiento"
             app:destination="@id/nav_editar_movimiento" />
@@ -161,7 +161,11 @@
         android:id="@+id/nav_item"
         android:name="com.example.proyecto_moviles.ui.Administrador.Item.ItemCRUD"
         android:label="Configuración de Items"
-        tools:layout="@layout/fragment_items" />
+        tools:layout="@layout/fragment_items" >
+        <action
+            android:id="@+id/action_nav_item_to_listaCategorias"
+            app:destination="@id/listaCategorias" />
+    </fragment>
     <fragment
         android:id="@+id/nav_usuario"
         android:name="com.example.proyecto_moviles.ui.Administrador.Usuario.UsuarioCRUD"
@@ -175,4 +179,9 @@
             android:id="@+id/action_nav_editar_movimiento_to_nav_listar_movimientos"
             app:destination="@id/nav_listar_movimientos" />
     </fragment>
+    <fragment
+        android:id="@+id/listaCategorias"
+        android:name="com.example.proyecto_moviles.ui.Administrador.Item.Categoria.ListaCategorias"
+        android:label="fragment_lista_categorias"
+        tools:layout="@layout/fragment_lista_categorias" />
 </navigation>

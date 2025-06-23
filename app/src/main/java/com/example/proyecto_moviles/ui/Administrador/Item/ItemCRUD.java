@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,7 +40,7 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
     private CategoriasAdapter categoriasAdapter;
     String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
 
-    Button btnAgregarCategoria, btnAgregarGenero, btnAgregarTipoDocumento;
+    Button btnAgregarCategoria, btnAgregarGenero, btnAgregarTipoDocumento, btnVisualizarCategorias;
     EditText editTextCategoria, editTextGenero, editTextTipoDocumento;
 
     @Override
@@ -61,6 +63,8 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
         editTextTipoDocumento = rootView.findViewById(R.id.editTextTipoDocumento);
         btnAgregarTipoDocumento = rootView.findViewById(R.id.btnAgregarTipoDocumento);
 
+        btnVisualizarCategorias = rootView.findViewById(R.id.btnVisualizarCategorias);
+
         // RecyclerView recyclerViewCategorias = rootView.findViewById(R.id.recyclerViewCategorias);
         CardView cardView1 = rootView.findViewById(R.id.card_view_1);  // Cambiado a CardView
 
@@ -73,6 +77,7 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
         btnAgregarCategoria.setOnClickListener(this);
         btnAgregarGenero.setOnClickListener(this);
         btnAgregarTipoDocumento.setOnClickListener(this);
+        btnVisualizarCategorias.setOnClickListener(this);
 
         obtenerCategoriasDesdeServidor();
 
@@ -128,6 +133,10 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
             } else {
                 Toast.makeText(getContext(), "Ingresa una nueva categoría", Toast.LENGTH_SHORT).show();
             }
+        }
+        if (v == btnVisualizarCategorias) {
+            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.action_nav_administrador_to_nav_item);
         }
 
         if (v == btnAgregarGenero) {

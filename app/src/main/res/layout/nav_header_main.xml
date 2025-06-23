@@ -1,49 +1,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
-    android:background="@drawable/side_nav_bar"
+    android:layout_height="150dp"
+    android:background="@color/color_botones"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="@dimen/activity_horizontal_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     android:weightSum="2">
 
     <!-- Logo más grande y centrado -->
     <ImageView
         android:id="@+id/logoImageView"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:contentDescription="@string/nav_header_desc"
-        app:srcCompat="@mipmap/ic_launcher_round"
-        android:scaleType="centerCrop"
+        android:layout_width="124dp"
+        android:layout_height="110dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="16dp" />
-
-    <!-- Contenedor de Título y Subtítulo -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
-
-        <!-- Título -->
-        <TextView
-            android:id="@+id/nav_header_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/nav_header_title"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:layout_marginTop="8dp"
-            android:gravity="center" />
-
-        <!-- Subtítulo -->
-        <TextView
-            android:id="@+id/nav_header_subtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/nav_header_subtitle"
-            android:layout_marginTop="4dp"
-            android:gravity="center" />
-    </LinearLayout>
+        android:contentDescription="@string/nav_header_desc"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/img" />
 </LinearLayout>
