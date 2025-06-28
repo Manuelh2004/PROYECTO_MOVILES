@@ -167,22 +167,24 @@ public class Perfil extends Fragment implements View.OnClickListener{
                         String nombre = json.getString("nom_usuario");
 
                         // Enviar el saludo con PHPMailer
-                        RequestParams saludoParams = new RequestParams();
-                        saludoParams.put("email", email);
-                        saludoParams.put("nombre", nombre);
+                        RequestParams params = new RequestParams();
+                        params.put("id_usuario", idUsuario);
+                        params.put("email", email);
+                        params.put("nombre", nombre);
 
-                        AsyncHttpClient correoClient = new AsyncHttpClient();
-                        correoClient.post(servidor + "usuarioController/enviar_email.php", saludoParams, new AsyncHttpResponseHandler() {
+                        AsyncHttpClient client = new AsyncHttpClient();
+                        client.post(servidor + "perfilController/generar_excel.php", params, new AsyncHttpResponseHandler() {
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                                Toast.makeText(getActivity(), "Saludo enviado al correo de " + nombre, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Reporte enviado por correo", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                                Toast.makeText(getActivity(), "Error al enviar el saludo", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Error al enviar el reporte", Toast.LENGTH_SHORT).show();
                             }
                         });
+
 
                     } else {
                         Toast.makeText(getActivity(), "No se encontró el usuario", Toast.LENGTH_SHORT).show();

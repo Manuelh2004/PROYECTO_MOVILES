@@ -185,7 +185,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="¿Quieres descargar tu historial de presupuestos?"
+                    android:text="¿Quieres descargar un reporte de tus presupuestos?"
                     android:textColor="@color/color_primario"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -194,7 +194,7 @@
                     android:id="@+id/btnDownloadHistory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Descargar Historial"
+                    android:text="Descargar Reporte"
                     android:textColor="@android:color/white"
                     app:backgroundTint="@color/color_botones"
                     app:cornerRadius="24dp" />
