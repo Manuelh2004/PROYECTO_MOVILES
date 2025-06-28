@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.proyecto_moviles.R;
@@ -62,12 +63,17 @@ public class OlvidarPassword extends Fragment implements View.OnClickListener{
         }
 
         mAuth.sendPasswordResetEmail(email)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(getContext(), "Se envió un correo para restablecer la contraseña", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getContext(), "Error al enviar el correo, verifica que el email sea correcto", Toast.LENGTH_LONG).show();
-                    }
-                });
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getContext(), "Se envió un correo para restablecer la contraseña", Toast.LENGTH_LONG).show();
+
+                    etEmailRecuperar.setText("");
+
+                    NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+                    navController.navigate(R.id.action_nav_olvidarPassword_to_nav_login);
+                } else {
+                    Toast.makeText(getContext(), "Error al enviar el correo, verifica que el email sea correcto", Toast.LENGTH_LONG).show();
+                }
+            });
     }
 }

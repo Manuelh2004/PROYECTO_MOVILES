@@ -32,8 +32,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.util.Date;
+import com.example.proyecto_moviles.R;
+
 
 import javax.security.auth.callback.Callback;
 
@@ -54,13 +54,7 @@ public class MainActivity extends BaseActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(view ->
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null)
-                        .setAnchorView(R.id.fab).show()
-        );
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;

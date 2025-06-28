@@ -26,7 +26,7 @@ import org.json.JSONObject;
 import cz.msebera.android.httpclient.Header;
 
 public class Perfil extends Fragment implements View.OnClickListener{
-    private Button btnEditar, btnEnviarComentario;
+    private Button btnEditar, btnEnviarComentario, btnDownloadHistory;
     private EditText etComentario;
     private TextView txtNombre;  // Cambiar EditText a TextView
     final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
@@ -55,10 +55,13 @@ public class Perfil extends Fragment implements View.OnClickListener{
         etComentario = (EditText) rootView.findViewById(R.id.etComentario);
         btnEditar = (Button) rootView.findViewById(R.id.btnEditar);
         btnEnviarComentario = (Button) rootView.findViewById(R.id.btnEnviarComentario);
+        btnDownloadHistory = (Button) rootView.findViewById(R.id.btnDownloadHistory);
 
         // Establecer los listeners de los botones
         btnEditar.setOnClickListener(this);
         btnEnviarComentario.setOnClickListener(this);
+
+        btnDownloadHistory.setOnClickListener(this);
 
         return rootView;
     }
@@ -131,6 +134,70 @@ public class Perfil extends Fragment implements View.OnClickListener{
             // Enviar el comentario
             enviarComentario(idUsuario, comentario);
         }
+
+        if (v == btnDownloadHistory) {
+            // Obtener id_usuario
+            SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
+            int idUsuario = prefs.getInt("id_usuario", -1);
+
+            if (idUsuario == -1) {
+                Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // Obtener nombre y correo del usuario, y luego enviar saludo
+            obtenerCorreoYNombreYEnviarSaludo(idUsuario);
+        }
+    }
+
+    private void obtenerCorreoYNombreYEnviarSaludo(int idUsuario) {
+        String url = servidor + "perfilController/obtener_datos_perfil.php";
+
+        RequestParams params = new RequestParams();
+        params.put("id_usuario", idUsuario);
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.post(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                try {
+                    String response = new String(responseBody);
+                    if (!response.equalsIgnoreCase("error")) {
+                        JSONObject json = new JSONObject(response);
+                        String email = json.getString("em_usuario");
+                        String nombre = json.getString("nom_usuario");
+
+                        // Enviar el saludo con PHPMailer
+                        RequestParams saludoParams = new RequestParams();
+                        saludoParams.put("email", email);
+                        saludoParams.put("nombre", nombre);
+
+                        AsyncHttpClient correoClient = new AsyncHttpClient();
+                        correoClient.post(servidor + "usuarioController/enviar_email.php", saludoParams, new AsyncHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                                Toast.makeText(getActivity(), "Saludo enviado al correo de " + nombre, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                                Toast.makeText(getActivity(), "Error al enviar el saludo", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    } else {
+                        Toast.makeText(getActivity(), "No se encontró el usuario", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(), "Error al procesar la respuesta", Toast.LENGTH_SHORT).show();
+                    Log.e("CorreoSaludo", "Error JSON", e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(getActivity(), "Error de conexión al obtener datos", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void enviarComentario(int idUsuario, String comentario) {
