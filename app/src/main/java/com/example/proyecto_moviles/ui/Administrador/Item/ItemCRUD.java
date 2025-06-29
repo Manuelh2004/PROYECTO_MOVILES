@@ -1,5 +1,7 @@
 package com.example.proyecto_moviles.ui.Administrador.Item;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -29,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 import cz.msebera.android.httpclient.Header;
@@ -40,7 +43,7 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
     private CategoriasAdapter categoriasAdapter;
     String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
 
-    Button btnAgregarCategoria, btnAgregarGenero, btnAgregarTipoDocumento, btnVisualizarCategorias;
+    Button btnAgregarCategoria, btnAgregarGenero, btnAgregarTipoDocumento, btnVisualizarCategorias, btnVisualizarGeneros, btnVisualizarTipodeDocumentos;
     EditText editTextCategoria, editTextGenero, editTextTipoDocumento;
 
     @Override
@@ -64,6 +67,8 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
         btnAgregarTipoDocumento = rootView.findViewById(R.id.btnAgregarTipoDocumento);
 
         btnVisualizarCategorias = rootView.findViewById(R.id.btnVisualizarCategorias);
+        btnVisualizarGeneros = rootView.findViewById(R.id.visualizarGeneros);
+        btnVisualizarTipodeDocumentos = rootView.findViewById(R.id.visualizarTipodeDocumentos);
 
         // RecyclerView recyclerViewCategorias = rootView.findViewById(R.id.recyclerViewCategorias);
         CardView cardView1 = rootView.findViewById(R.id.card_view_1);  // Cambiado a CardView
@@ -78,6 +83,8 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
         btnAgregarGenero.setOnClickListener(this);
         btnAgregarTipoDocumento.setOnClickListener(this);
         btnVisualizarCategorias.setOnClickListener(this);
+        btnVisualizarGeneros.setOnClickListener(this);
+        btnVisualizarTipodeDocumentos.setOnClickListener(this);
 
         obtenerCategoriasDesdeServidor();
 
@@ -135,8 +142,9 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
             }
         }
         if (v == btnVisualizarCategorias) {
-            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_administrador_to_nav_item);
+            /*NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.action_nav_administrador_to_nav_item);*/
+            obtenerCategoriasDesdeAPI();
         }
 
         if (v == btnAgregarGenero) {
@@ -147,6 +155,9 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
                 Toast.makeText(getContext(), "Ingresa un nuevo genero", Toast.LENGTH_SHORT).show();
             }
         }
+        if (v == btnVisualizarGeneros) {
+            obtenerCategoriasDesdeAPIGenero();
+        }
 
         if (v == btnAgregarTipoDocumento) {
             String nuevoTipoDocumento = editTextTipoDocumento.getText().toString().trim();
@@ -155,6 +166,9 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
             } else {
                 Toast.makeText(getContext(), "Ingresa un nuevo tipo de documento", Toast.LENGTH_SHORT).show();
             }
+        }
+        if (v == btnVisualizarTipodeDocumentos) {
+            obtenerCategoriasDesdeAPIDocumento();
         }
 
     }
@@ -259,5 +273,141 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
                 });
             }
         });
+    }
+
+    private void obtenerCategoriasDesdeAPI() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "http://10.0.2.2/proyecto_moviles/controladores/AdministradorController/visualizar_categorias.php"; // <-- Cambia esto por tu URL real
+
+        client.get(url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                List<String> categorias = new ArrayList<>();
+
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject obj = response.getJSONObject(i);
+                        categorias.add(obj.getString("nom_categoria"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                mostrarDialogoCategorias(categorias);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Toast.makeText(getContext(), "Error al obtener categorías", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void mostrarDialogoCategorias(List<String> listaCategorias) {
+        if (listaCategorias.isEmpty()) {
+            return;
+        }
+
+        String[] categoriasArray = listaCategorias.toArray(new String[0]);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Categorías disponibles")
+                .setItems(categoriasArray, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String seleccion = categoriasArray[which];
+                        Toast.makeText(getContext(), "Seleccionaste: " + seleccion, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cerrar", null)
+                .show();
+    }
+
+    private void  obtenerCategoriasDesdeAPIGenero(){
+        // Aquí puedes implementar la lógica para obtener las categorías desde la API
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "http://10.0.2.2/proyecto_moviles/controladores/AdministradorController/visualizar_genero.php";
+        client.get(url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                // Aquí puedes manejar la respuesta del servidor
+                List<String> generos = new ArrayList<>();
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject obj = response.getJSONObject(i);
+                        generos.add(obj.getString("nom_genero"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                mostrarDialogoGeneros(generos);
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Toast.makeText(getContext(), "Error al obtener genero", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void mostrarDialogoGeneros(List<String> listaGeneros) {
+        if (listaGeneros.isEmpty()) {
+            return;
+        }
+
+        String[] generosArray = listaGeneros.toArray(new String[0]);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Géneros disponibles")
+                .setItems(generosArray, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String seleccion = generosArray[which];
+                        Toast.makeText(getContext(), "Seleccionaste: " + seleccion, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cerrar", null)
+                .show();
+    }
+
+    private void obtenerCategoriasDesdeAPIDocumento(){
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "http://10.0.2.2/proyecto_moviles/controladores/AdministradorController/visualizar_tipo_documento.php";
+        client.get(url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                List<String> documentos = new ArrayList<>();
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject obj = response.getJSONObject(i);
+                        documentos.add(obj.getString("nom_tipo_documento"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                }
+            }
+                mostrarDialogoDocumentos(documentos);
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Toast.makeText(getContext(), "Error al obtener Documento", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void mostrarDialogoDocumentos(List<String> listaDocumentos) {
+        if (listaDocumentos.isEmpty()) {
+            return;
+        }
+        String[] documentosArray = listaDocumentos.toArray(new String[0]);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Documentos disponibles")
+                .setItems(documentosArray, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String seleccion = documentosArray[which];
+                        Toast.makeText(getContext(), "Seleccionaste: " + seleccion, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cerrar", null)
+                .show();
     }
 }
