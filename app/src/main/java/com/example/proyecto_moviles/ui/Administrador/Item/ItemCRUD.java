@@ -225,6 +225,7 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
                     // Actualiza la interfaz en el hilo principal
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getActivity(), "Género agregado correctamente", Toast.LENGTH_SHORT).show();
+                        editTextGenero.setText("");
                     });
                 } else {
                     getActivity().runOnUiThread(() -> {
@@ -258,6 +259,7 @@ public class ItemCRUD extends Fragment implements View.OnClickListener{
                     // Actualiza la interfaz en el hilo principal
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getActivity(), "Tipo Documento agregado correctamente", Toast.LENGTH_SHORT).show();
+                        editTextTipoDocumento.setText("");
                     });
                 } else {
                     getActivity().runOnUiThread(() -> {

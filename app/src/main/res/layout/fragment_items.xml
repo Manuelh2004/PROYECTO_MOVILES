@@ -54,6 +54,7 @@
                     android:id="@+id/btnAgregarCategoria"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:backgroundTint="@color/teal_700"
                     android:text="Agregar" />
             </LinearLayout>
 
@@ -62,6 +63,7 @@
                 android:id="@+id/btnVisualizarCategorias"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:backgroundTint="@color/color_botones"
                 android:text="Visualizar" />
 
         </LinearLayout>
@@ -115,12 +117,14 @@
                     android:id="@+id/btnAgregarGenero"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:backgroundTint="@color/teal_700"
                     android:text="Agregar" />
             </LinearLayout>
             <Button
                 android:id="@+id/visualizarGeneros"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:backgroundTint="@color/color_botones"
                 android:text="Visualizar" />
 
         </LinearLayout>
@@ -173,12 +177,14 @@
                     android:id="@+id/btnAgregarTipoDocumento"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:backgroundTint="@color/teal_700"
                     android:text="Agregar" />
             </LinearLayout>
             <Button
                 android:id="@+id/visualizarTipodeDocumentos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:backgroundTint="@color/color_botones"
                 android:text="Visualizar" />
 
         </LinearLayout>

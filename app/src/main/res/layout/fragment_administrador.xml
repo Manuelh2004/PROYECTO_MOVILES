@@ -76,6 +76,7 @@
                         android:layout_height="wrap_content"
                         android:text="Abrir"
                         android:layout_marginTop="16dp"
+                        app:backgroundTint="@color/color_botones"
                         android:onClick="onSubmodule1Click" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -127,6 +128,7 @@
                         android:layout_height="wrap_content"
                         android:text="Abrir"
                         android:layout_marginTop="16dp"
+                        app:backgroundTint="@color/color_botones"
                         android:onClick="onSubmodule2Click" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -199,11 +201,10 @@
                     android:layout_height="wrap_content"
                     android:text="Gestionar"
                     android:layout_marginTop="8dp"
+                    app:backgroundTint="@color/color_botones"
                     android:onClick="onSubmodule3Click" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-
 
         <!-- Tarjeta completa para dashboard debajo de todo -->
         <androidx.cardview.widget.CardView
