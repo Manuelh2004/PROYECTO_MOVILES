@@ -65,7 +65,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
 
         if (getArguments() != null) {
             idPresupuesto = getArguments().getString("idPresupuesto");
-            Toast.makeText(getContext(), "ID recibido: " + idPresupuesto, Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getContext(), "ID recibido: " + idPresupuesto, Toast.LENGTH_SHORT).show();
         }
 
         monEP = (EditText) rootView.findViewById(R.id.etMontoEP);
@@ -160,6 +160,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
         String url = servidor + "obtener_categorias.php";
 
         RequestParams params = new RequestParams();
+        params.put("id_usuario",id_usuario);
 
         AsyncHttpClient client = new AsyncHttpClient();
 
