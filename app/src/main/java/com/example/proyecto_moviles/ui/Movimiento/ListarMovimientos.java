@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,9 +144,12 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
         }
 
         // Filtro de categoría
-        if (categoriaFiltro != null) {
-            params.put("id_categoria", categoriaFiltro);
+        if (categoriaFiltro != null && !categoriaFiltro.isEmpty()) {
+            params.put("id_categoria", categoriaFiltro);  // Asegúrate de que esto esté aquí
         }
+
+        // Verificar que los parámetros estén bien construidos
+        Log.d("Parametros GET", params.toString());  // Este log te ayudará a verificar los parámetros enviados
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, params, new AsyncHttpResponseHandler() {
@@ -229,10 +233,28 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
         etFechaFiltro.setOnClickListener(v -> openDatePicker());
         // Obtener el id_usuario desde SharedPreferences
         SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
-        int idUsuario = prefs.getInt("id_usuario", -1);  // Obtén el id_usuario desde SharedPreferences
+        int idUsuario = prefs.getInt("id_usuario", -1);
+
+        if (idUsuario == -1) {
+            Log.e("Error", "No se encontró id_usuario en SharedPreferences.");
+            Toast.makeText(getActivity(), "Error: No se encontró el ID de usuario", Toast.LENGTH_SHORT).show();
+            return rootView;
+        }
 
         cargarCategoriasFiltro(idUsuario);
         ListarMovimientos(idUsuario);
+
+        spCategoriaFiltro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                categoriaFiltro = position > 0 ? String.valueOf(position) : null;
+                ListarMovimientos(idUsuario);  // Llama a la función para actualizar la lista con el filtro aplicado
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Opcional: manejar el caso de "ninguna categoría seleccionada"
+            }
+        });
 
         return rootView;
     }
@@ -295,23 +317,45 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
     }
 
     private void cargarCategoriasFiltro(int idUsuario) {
-        String url = servidor + "itemsController/obtener_categoria_presupuesto.php";  // URL correcta
+
+        // Verificar si el id_usuario es válido
+        if (idUsuario == -1) {
+            Log.e("Error", "id_usuario no válido");
+            Toast.makeText(getActivity(), "Error: No se ha encontrado el ID de usuario", Toast.LENGTH_SHORT).show();
+            return;  // No continuar con la solicitud si id_usuario no es válido
+        }
+
+        // Si id_usuario es válido, continuamos con la solicitud
+        String url = servidor + "itemsController/obtener_categoria_presupuesto_mov.php";  // URL correcta
         RequestParams params = new RequestParams();
         params.put("id_usuario", idUsuario);  // El id del usuario se obtiene de SharedPreferences correctamente
+
+        // Verificar que los parámetros estén bien construidos
+        Log.d("Parametros de la solicitud", "id_usuario: " + idUsuario);  // Este log te ayudará a verificar el valor de id_usuario
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 try {
-                    JSONArray jsonArray = new JSONArray(new String(responseBody));
-                    List<String> categorias = new ArrayList<>();
-                    categorias.add("Seleccionar categoría");
+                    // Convertir el cuerpo de la respuesta a String
+                    String responseString = new String(responseBody);
+                    Log.d("Respuesta API", responseString);  // Esto te ayudará a verificar qué estás recibiendo
 
-                    // Recoger las categorías de la respuesta JSON
+                    // Procesar la respuesta JSON como un JSONArray, no JSONObject
+                    JSONArray jsonArray = new JSONArray(responseString);  // Aquí cambiamos a JSONArray
+                    List<String> categorias = new ArrayList<>();
+                    List<Integer> categoriasIds = new ArrayList<>();
+
+                    // Añadir la opción por defecto (Seleccionar categoría)
+                    categorias.add("Seleccionar categoría");
+                    categoriasIds.add(null);  // Usamos null para la opción por defecto
+
+                    // Recoger las categorías y sus IDs
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject obj = jsonArray.getJSONObject(i);
-                        categorias.add(obj.getString("nombre"));  // Asegúrate de que el campo JSON sea 'nombre'
+                        categorias.add(obj.getString("nombre"));
+                        categoriasIds.add(obj.getInt("id_categoria"));
                     }
 
                     // Adaptador para el Spinner
@@ -319,25 +363,26 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spCategoriaFiltro.setAdapter(adapter);
 
-                    // Establecer listener para que al seleccionar una categoría, la aplicación filtre los movimientos
+                    // Establecer el listener para que, al seleccionar una categoría, actualice el filtro
                     spCategoriaFiltro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                            categoriaFiltro = position > 0 ? String.valueOf(position) : null;  // Asignar el filtro de categoría
-                            ListarMovimientos(idUsuario);  // Llamar a la función para actualizar la lista de movimientos
+                            categoriaFiltro = position > 0 ? String.valueOf(categoriasIds.get(position)) : null;
+                            Log.d("Categoria Seleccionada", "ID Categoría: " + categoriaFiltro);
+                            ListarMovimientos(idUsuario);  // Llamamos a la función para actualizar la lista con el filtro
                         }
 
                         @Override
                         public void onNothingSelected(AdapterView<?> parentView) {
-                            // Opcional: manejar el caso de "ninguna categoría seleccionada"
+                            categoriaFiltro = null;  // Si no se selecciona nada, dejamos el filtro vacío
                         }
                     });
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getActivity(), "Error al cargar las categorías", Toast.LENGTH_SHORT).show();
                 }
             }
+
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
