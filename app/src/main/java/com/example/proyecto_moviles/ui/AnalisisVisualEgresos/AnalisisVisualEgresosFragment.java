@@ -72,7 +72,7 @@ public class AnalisisVisualEgresosFragment extends Fragment {
         int idUsuario = prefs.getInt("id_usuario", -1);
 
         // Mostrar el ID en un Toast
-        Toast.makeText(getActivity(), "ID Usuario actual: " + idUsuario, Toast.LENGTH_SHORT).show();
+        // Toast.makeText(getActivity(), "ID Usuario actual: " + idUsuario, Toast.LENGTH_SHORT).show();
 
         // También puedes mostrarlo en Logcat para debugging
         android.util.Log.d("AnalisisVisualEgresos", "ID Usuario leído: " + idUsuario);

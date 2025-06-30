@@ -77,7 +77,7 @@ public class EditarPerfil extends Fragment implements View.OnClickListener{
         params.put("id_usuario", idUsuario);
 
         AsyncHttpClient client = new AsyncHttpClient();
-        client.post(servidor + "perfilController/obtener_datos_perfil.php", params, new AsyncHttpResponseHandler() {
+        client.post(servidor + "perfilController/obtener_datos_perfil2.php", params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 String response = new String(responseBody);
