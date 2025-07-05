@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.ProyectoMoviles"
+    namespace = "com.example.proyecto_moviles"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.rysoft.Pockit"
+        applicationId = "com.example.proyecto_moviles"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
