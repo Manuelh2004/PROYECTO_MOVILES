@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -22,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.proyecto_moviles.MonedaViewModel;
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.ui.Categoria;
 import com.example.proyecto_moviles.ui.Clases.Item;
@@ -232,7 +234,13 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
             // Asignar los valores
             id.setText(presupuesto.id);
             categoria.setText("Categoria: "+ presupuesto.categoria.getNombre());
-            monto.setText("Monto: "+ presupuesto.monto);
+            MonedaViewModel monedaViewModel = new ViewModelProvider(requireActivity()).get(MonedaViewModel.class);
+            monedaViewModel.getMostrarEnDolares().observe(getViewLifecycleOwner(), mostrarEnDolares -> {
+                String simbolo = mostrarEnDolares ? "$ " : "S/ ";
+
+                monto.setText("Monto: "+ simbolo + presupuesto.monto);
+            });
+
 
             return convertView;
         }

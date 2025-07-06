@@ -11,12 +11,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.example.proyecto_moviles.MonedaViewModel;
 import com.example.proyecto_moviles.ui.Movimiento.AgregarMovimiento;
 import com.example.proyecto_moviles.ui.Presupuesto.PresupuestoFragment;
-
+import com.example.proyecto_moviles.MainActivity;
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.databinding.FragmentResumenFinanzasBinding;
 import com.github.mikephil.charting.data.PieData;
@@ -40,6 +42,7 @@ import cz.msebera.android.httpclient.Header;
 public class ResumenFinanzas extends Fragment {
 
     private FragmentResumenFinanzasBinding binding;
+    private MonedaViewModel monedaViewModel;
     private final String URL = "http://10.0.2.2/proyecto_moviles/controladores/ResumenController/funcion_resumen.php";
 
     @Override
@@ -97,9 +100,14 @@ public class ResumenFinanzas extends Fragment {
                         double egresos = json.getDouble("total_egresos");
                         double saldo = json.getDouble("saldo_disponible");
 
-                        binding.tvUltimoIngreso.setText("Total Ingresos: S/ " + ingresos);
-                        binding.tvUltimoEgreso.setText("Total Egresos: S/ " + egresos);
-                        binding.tvTotal.setText("Saldo Disponible: S/ " + saldo);
+                        MonedaViewModel monedaViewModel = new ViewModelProvider(requireActivity()).get(MonedaViewModel.class);
+                        monedaViewModel.getMostrarEnDolares().observe(getViewLifecycleOwner(), mostrarEnDolares -> {
+                            String simbolo = mostrarEnDolares ? "$ " : "S/ ";
+
+                            binding.tvUltimoIngreso.setText("Total Ingresos: " + simbolo + ingresos);
+                            binding.tvUltimoEgreso.setText("Total Egresos: " + simbolo + egresos);
+                            binding.tvTotal.setText("Saldo Disponible: " + simbolo + saldo);
+                        });
                     } else {
                         Toast.makeText(getActivity(), "No hay datos disponibles", Toast.LENGTH_SHORT).show();
                     }

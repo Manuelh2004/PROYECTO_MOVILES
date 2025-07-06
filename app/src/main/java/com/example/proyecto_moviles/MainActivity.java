@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,9 +15,11 @@ import com.example.proyecto_moviles.ui.BaseActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -35,6 +39,7 @@ import org.json.JSONObject;
 import com.example.proyecto_moviles.R;
 
 
+
 import javax.security.auth.callback.Callback;
 
 import cz.msebera.android.httpclient.Header;
@@ -44,14 +49,19 @@ public class MainActivity extends BaseActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
+    private MonedaViewModel monedaViewModel;
     public int opc_resumen_finanzas, opc_presupuesto, opc_movimientos, opc_visual, opc_perfil, opc_administrador;
 
     private String servidor = "http://10.0.2.2/proyecto_moviles/controladores/usuarioController/";
+
+    private boolean modoMoneda = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        monedaViewModel = new ViewModelProvider(this).get(MonedaViewModel.class);
+        monedaViewModel.setMostrarEnDolares(modoMoneda);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolbar);
@@ -146,6 +156,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+
     public void actualizarMenu(int opc_resumen_finanzas, int opc_presupuesto, int opc_movimientos, int opc_visual, int opc_perfil, int opc_administrador) {
         NavigationView navigationView = findViewById(R.id.nav_view);
         if (opc_resumen_finanzas == 0){
@@ -234,9 +245,33 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.main, menu); // inflar tu menú con submenús
+
+        // Buscar el submenú "Cambio de moneda"
+        MenuItem itemCambioMoneda = menu.findItem(R.id.action_cambio_moneda);
+        if (itemCambioMoneda != null && itemCambioMoneda.hasSubMenu()) {
+            SubMenu subMenu = itemCambioMoneda.getSubMenu();
+
+            if (subMenu != null) {
+                subMenu.findItem(R.id.action_soles_a_dolares).setOnMenuItemClickListener(item -> {
+                    monedaViewModel.setMostrarEnDolares(true);
+                    Toast.makeText(this, "Mostrando en dólares", Toast.LENGTH_SHORT).show();
+                    modoMoneda = true;
+                    return true;
+                });
+
+                subMenu.findItem(R.id.action_dolares_a_soles).setOnMenuItemClickListener(item -> {
+                    monedaViewModel.setMostrarEnDolares(false);
+                    Toast.makeText(this, "Mostrando en soles", Toast.LENGTH_SHORT).show();
+                    modoMoneda = false;
+                    return true;
+                });
+            }
+        }
+
         return true;
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);

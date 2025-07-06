@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <!-- Ítem principal con submenú -->
+    <item
+        android:id="@+id/action_cambio_moneda"
+        android:title="Cambio de moneda"
+        app:showAsAction="never">
+
+        <menu>
+            <item
+                android:id="@+id/action_soles_a_dolares"
+                android:title="Cambio a Dolares" />
+
+            <item
+                android:id="@+id/action_dolares_a_soles"
+                android:title="Cambio a Soles" />
+        </menu>
+    </item>
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
