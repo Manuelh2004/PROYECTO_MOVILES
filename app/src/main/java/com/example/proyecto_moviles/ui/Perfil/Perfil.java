@@ -185,7 +185,6 @@ public class Perfil extends Fragment implements View.OnClickListener{
                             }
                         });
 
-
                     } else {
                         Toast.makeText(getActivity(), "No se encontró el usuario", Toast.LENGTH_SHORT).show();
                     }
