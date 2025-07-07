@@ -292,7 +292,7 @@ public class MainActivity extends BaseActivity {
         webView.setWebViewClient(new WebViewClient());
 
         // ID del video de YouTube Shorts
-        String videoId = "G5SKi8Qg2Xk";
+        String videoId = "b10hQPeLOi8";
 
         // HTML limpio para insertar video con <iframe>
         String html = "<html><body style='margin:0;padding:0;'>"
