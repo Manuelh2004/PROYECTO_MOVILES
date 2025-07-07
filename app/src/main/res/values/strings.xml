@@ -26,6 +26,7 @@
     <string name="Editar_Presupuesto">Editar Presupuesto</string>
 
     <string-array name="estado_comentarios">
+        <item>Todos</item>
         <item>No revisado</item>
         <item>Revisado</item>
     </string-array>
