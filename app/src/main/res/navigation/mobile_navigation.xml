@@ -174,7 +174,7 @@
     <fragment
         android:id="@+id/nav_editar_movimiento"
         android:name="com.example.proyecto_moviles.ui.Movimiento.EditarMovimiento"
-        android:label="EditarMovimiento" >
+        android:label="Editar Movimiento">
         <action
             android:id="@+id/action_nav_editar_movimiento_to_nav_listar_movimientos"
             app:destination="@id/nav_listar_movimientos" />

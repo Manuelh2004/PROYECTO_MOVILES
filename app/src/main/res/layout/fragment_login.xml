@@ -147,7 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="¿Olvidaste tu contraseña?"
-                android:textColor="@color/purple_700"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:clickable="true"
