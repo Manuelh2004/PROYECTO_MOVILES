@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -47,18 +46,15 @@ public class ComentarioCRUD extends Fragment {
         recyclerViewComentarios = rootView.findViewById(R.id.recyclerViewComentarios);
         spinnerEstado = rootView.findViewById(R.id.spinner_estado);
 
-        // Configurar el RecyclerView
         recyclerViewComentarios.setLayoutManager(new LinearLayoutManager(getContext()));
         comentarioAdapter = new ComentarioAdapter(comentarios);
         recyclerViewComentarios.setAdapter(comentarioAdapter);
         etFechaInicio = rootView.findViewById(R.id.et_fecha_inicio);
         etFechaFin = rootView.findViewById(R.id.et_fecha_fin);
 
-        // Al hacer clic, mostrar DatePicker
         etFechaInicio.setOnClickListener(v -> mostrarDatePicker(true));
         etFechaFin.setOnClickListener(v -> mostrarDatePicker(false));
 
-        // Cargar los comentarios al inicio
         obtenerComentarios("", "", "");
 
         // Agregar listener para el Spinner (estado)
@@ -70,13 +66,11 @@ public class ComentarioCRUD extends Fragment {
                 if (estadoSeleccionado.equals("Todos")) {
                     estadoSeleccionado = "";
                 }
-                // Llamar a la función para obtener los comentarios filtrados por estado
                 obtenerComentarios(estadoSeleccionado, fechaInicio, fechaFin);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // Si no se selecciona nada, obtener todos los comentarios
                 obtenerComentarios("", fechaInicio, fechaFin);
             }
         });
@@ -97,7 +91,6 @@ public class ComentarioCRUD extends Fragment {
         if (!fechaFin.isEmpty()) {
             parametros.add("fecha_fin=" + fechaFin);
         }
-
         if (!parametros.isEmpty()) {
             url += "?" + String.join("&", parametros);
         }
@@ -156,8 +149,6 @@ public class ComentarioCRUD extends Fragment {
                 fechaFin = fecha;
                 etFechaFin.setText(fecha);
             }
-
-            // Refrescar comentarios cada vez que cambia una fecha
             String estadoSeleccionado = spinnerEstado.getSelectedItem().toString();
             obtenerComentarios(estadoSeleccionado, fechaInicio, fechaFin);
 
