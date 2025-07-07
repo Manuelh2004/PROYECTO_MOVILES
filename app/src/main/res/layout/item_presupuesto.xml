@@ -1,52 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/white">
 
-    <TextView
-        android:id="@+id/tvCategoriaPV"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.047" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/tvMontoPV"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCategoriaPV"
-        app:layout_constraintVertical_bias="0.0" />
+        <!-- Categoría -->
+        <TextView
+            android:id="@+id/tvCategoriaPV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Categoría: Educación"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black" />
 
-    <TextView
-        android:id="@+id/tvIdPV"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:text="TextView"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvMontoPV"
-        app:layout_constraintVertical_bias="0.0" />
+        <!-- Monto -->
+        <TextView
+            android:id="@+id/tvMontoPV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Monto: S/ 150.00"
+            android:textSize="15sp"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/black" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- ID oculto -->
+        <TextView
+            android:id="@+id/tvIdPV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ID"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -74,9 +74,12 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
         FiniEP = (EditText) rootView.findViewById(R.id.etFechaInicioEP);
         catEP = (Spinner) rootView.findViewById(R.id.spCategoriaEP);
 
+        //quiero que se inavilite el etMontoEP
+        monEP.setEnabled(false);
+        catEP.setEnabled(false);
+
         listaCategorias = new ArrayList<>();
         cargarCategoriasDesdeServidor();
-
 
         // Establecer modo al tocar cada campo
         FiniEP.setOnClickListener(v -> {
