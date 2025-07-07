@@ -56,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cornerRadius="24dp"
-                app:backgroundTint="@color/color_botones"
+                app:backgroundTint="@color/teal_700"
                 android:text="Cambiar Estado" />
         </LinearLayout>
 
