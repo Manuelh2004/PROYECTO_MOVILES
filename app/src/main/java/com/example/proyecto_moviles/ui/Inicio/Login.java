@@ -109,9 +109,7 @@ public class Login extends Fragment implements View.OnClickListener{
                     navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
                 }
             });
-            /*((MainActivity) getActivity()).actualizarMenu(activity.opc_resumen_finanzas, activity.opc_presupuesto, activity.opc_movimientos, activity.opc_visual, activity.opc_perfil, activity.opc_administrador);
-            NavController navController = Navigation.findNavController(view);
-            navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);*/
+
         }
     }
 
@@ -143,12 +141,7 @@ public class Login extends Fragment implements View.OnClickListener{
                                     SharedPreferences.Editor editor = prefs.edit();
                                     editor.putBoolean("logueado", true);
                                     editor.apply();
-
-                                    Toast.makeText(getContext(), "Ingreso exitoso", Toast.LENGTH_SHORT).show();
                                     obtenerIdUsuarioBackend(email);
-
-                                    //NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                                    //navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas); // action_crearCuenta_to_nav_login
                                 } else {
                                     Toast.makeText(getContext(), "Por favor, verifica tu correo antes de ingresar.", Toast.LENGTH_LONG).show();
                                     mAuth.signOut();
@@ -168,6 +161,7 @@ public class Login extends Fragment implements View.OnClickListener{
         }
     }
 
+    // *********
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -178,7 +172,8 @@ public class Login extends Fragment implements View.OnClickListener{
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
-                Log.w("LoginFragment", "Google sign in failed", e);
+                Log.w("Google Sign In", "Error en el login con Google", e);
+                Toast.makeText(getContext(), "Error al iniciar sesión con Google", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -189,25 +184,26 @@ public class Login extends Fragment implements View.OnClickListener{
                 .addOnCompleteListener(getActivity(), task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        enviarUsuarioAlServidor(user);
+                        if (user != null) {
+                            String uid = user.getUid();
+                            String nombre = user.getDisplayName();
+                            String correo = user.getEmail();
 
-                        NavController navController = Navigation.findNavController(getView());
-                        navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
+                            // Llamar al backend PHP para registrar/verificar usuario
+                            registrarUsuarioEnBackend(nombre, correo, uid);
+                        }
                     } else {
-                        Log.w("FirebaseAuth", "signInWithCredential:failure", task.getException());
+                        Toast.makeText(getContext(), "Falló autenticación con Firebase", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private void enviarUsuarioAlServidor(FirebaseUser user) {
+    private void registrarUsuarioEnBackend(String nombre, String correo, String uid_firebase) {
         String url = servidor + "crear_usuario_google.php";
-
         RequestParams params = new RequestParams();
-        params.put("nombre", user.getDisplayName() != null ? user.getDisplayName().split(" ")[0] : "");
-        params.put("apellido", user.getDisplayName() != null && user.getDisplayName().split(" ").length > 1 ?
-                user.getDisplayName().split(" ")[1] : "");
-        params.put("email", user.getEmail());
-        params.put("password", "firebase");
+        params.put("nom_usuario", nombre);
+        params.put("em_usuario", correo);
+        params.put("uid_firebase", uid_firebase);
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(url, params, new JsonHttpResponseHandler() {
@@ -216,31 +212,46 @@ public class Login extends Fragment implements View.OnClickListener{
                 try {
                     boolean success = response.getBoolean("success");
                     if (success) {
-                        int idUsuarioDelBackend = response.getInt("id_usuario");
+                        int id_usuario = response.getInt("id_usuario");
 
                         SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
                         SharedPreferences.Editor editor = prefs.edit();
-                        editor.putInt("id_usuario", idUsuarioDelBackend);
                         editor.putBoolean("logueado", true);
+                        editor.putInt("id_usuario", id_usuario);
                         editor.apply();
 
-                        NavController navController = Navigation.findNavController(getView());
-                        navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
+                        activity.ConsultarUsuario(id_usuario, new MainActivity.Callback() {
+                            @Override
+                            public void onUsuarioCargado(int opc_resumen_finanzas, int opc_presupuesto, int opc_movimientos, int opc_visual, int opc_perfil, int opc_administrador) {
+                                ((MainActivity) getActivity()).actualizarMenu(opc_resumen_finanzas, opc_presupuesto, opc_movimientos, opc_visual, opc_perfil, opc_administrador);
+                                NavController navController = Navigation.findNavController(getView());
+                                navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
+
+                                Toast.makeText(getContext(), "Ingreso exitoso", Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+
+                    } else {
+                        Toast.makeText(getContext(), "Error en respuesta del backend", Toast.LENGTH_SHORT).show();
                     }
-                    Toast.makeText(getContext(), response.getString("message"), Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), "Error al parsear respuesta", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Error al parsear JSON", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Toast.makeText(getContext(), "Error de conexión con el servidor", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error de conexión al servidor", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+
+
+
+    // *********
     private void obtenerIdUsuarioBackend(String email) {
         String url = servidor + "login_usuario.php";
 

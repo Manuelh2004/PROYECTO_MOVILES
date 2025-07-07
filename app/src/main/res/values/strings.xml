@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Pockit</string>
+    <string name="default_web_client_id">1086929928640-iht1ht8jp6jm89vga4gv1tts9v1l9col.apps.googleusercontent.com</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -25,6 +26,7 @@
     <string name="Editar_Presupuesto">Editar Presupuesto</string>
 
     <string-array name="estado_comentarios">
+        <item>Todos</item>
         <item>No revisado</item>
         <item>Revisado</item>
     </string-array>

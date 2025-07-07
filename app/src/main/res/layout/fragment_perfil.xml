@@ -69,15 +69,7 @@
                     app:backgroundTint="@color/color_botones"
                     app:cornerRadius="24dp" />
 
-                <!-- Botón de cerrar sesión -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_logout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Cerrar Sesión"
-                    android:textColor="@android:color/white"
-                    app:backgroundTint="@color/color_purple"
-                    app:cornerRadius="24dp" />
+
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
