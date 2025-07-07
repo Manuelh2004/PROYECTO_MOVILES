@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -247,15 +248,28 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
     }
 
     private void mostrarDialogoAlerta(double presupuesto, double monto) {
-        new androidx.appcompat.app.AlertDialog.Builder(getContext())
-                .setTitle("Presupuesto excedido")
-                .setMessage("El monto ingresado (" + monto + ") excede tu presupuesto disponible (" + presupuesto + ").\n\nPor favor, rectifica el monto.")
-                .setCancelable(false) // evita que cierre tocando fuera del cuadro
-                .setPositiveButton("Aceptar", (dialog, which) -> {
-                    etMonto.requestFocus();
-                })
-                .show();
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View view = inflater.inflate(R.layout.dialog_presupuesto_excedido, null);
+
+        TextView tvDialogTitle = view.findViewById(R.id.tvDialogTitle);
+        TextView tvDialogMessage = view.findViewById(R.id.tvDialogMessage);
+        Button btnAceptar = view.findViewById(R.id.btnAceptar);
+
+        tvDialogMessage.setText("El monto ingresado (" + monto + ") excede tu presupuesto disponible (" + presupuesto + ").\n\nPor favor, rectifica el monto.");
+
+        androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(getContext())
+                .setView(view)
+                .setCancelable(false)
+                .create();
+
+        btnAceptar.setOnClickListener(v -> {
+            etMonto.requestFocus();
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
+
 
 
     private void agregarMovimiento() {
