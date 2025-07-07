@@ -66,7 +66,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
-                        android:text="Descripción del submódulo 1"
+                        android:text="Espacio donde se puede agregar y visualizar los items del sistema"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="14sp" />
 
@@ -117,7 +117,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Descripción del submódulo 2"
+                        android:text="Espacio donde se puede los comentarios de los usuarios"
                         android:textSize="14sp"
                         android:gravity="center_horizontal"
                         android:textColor="@android:color/darker_gray" />
@@ -189,7 +189,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Administra los accesos y roles del sistema"
+                            android:text="Espacio donde se puede visualizar a los usuarios con el Rol de Administrador que tienen acceso al sistema"
                             android:textSize="14sp"
                             android:textColor="@android:color/darker_gray" />
                     </LinearLayout>

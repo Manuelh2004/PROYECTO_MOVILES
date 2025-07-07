@@ -18,6 +18,7 @@ import android.widget.Spinner;
 
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.ui.Clases.Comentario;
+import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -37,7 +38,6 @@ public class ComentarioCRUD extends Fragment {
     private Spinner spinnerEstado;
     private EditText etFechaInicio, etFechaFin;
     private String fechaInicio = "", fechaFin = "";
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,14 +80,12 @@ public class ComentarioCRUD extends Fragment {
                 obtenerComentarios("", fechaInicio, fechaFin);
             }
         });
-
         return rootView;
     }
 
     private void obtenerComentarios(String estado, String fechaInicio, String fechaFin) {
         AsyncHttpClient client = new AsyncHttpClient();
-
-        String url = servidor + "comentarioController/listar_comentario.php";
+        String url = ServidorConfig.URL_SERVIDOR + "comentarioController/listar_comentario.php";
 
         List<String> parametros = new ArrayList<>();
         if (!estado.isEmpty()) {
@@ -164,7 +162,6 @@ public class ComentarioCRUD extends Fragment {
             obtenerComentarios(estadoSeleccionado, fechaInicio, fechaFin);
 
         }, anio, mes, dia);
-
         datePicker.show();
     }
 }
