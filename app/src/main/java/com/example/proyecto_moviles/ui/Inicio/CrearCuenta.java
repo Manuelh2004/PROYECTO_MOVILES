@@ -184,7 +184,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
     @Override
     public void onClick(View v) {
         if (v == btnCrearUsuario) {
-            // Solo validaciones básicas (puedes validar los EditText directamente sin guardar en variables)
             if (etNombres.getText().toString().isEmpty() ||
                     etApellidos.getText().toString().isEmpty() ||
                     etTelefono.getText().toString().isEmpty() ||
@@ -193,6 +192,34 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                 Toast.makeText(getActivity(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            // Validar formato de número de teléfono
+            String telefono = etTelefono.getText().toString();
+            if (!telefono.matches("^9\\d{8}$")) {
+                Toast.makeText(getActivity(), "El número debe tener 9 dígitos y comenzar con 9", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Validar que la fecha no sea futura
+            try {
+                String[] fecha = etFechaNa.getText().toString().split("/");
+                int dia = Integer.parseInt(fecha[0]);
+                int mes = Integer.parseInt(fecha[1]) - 1; // Calendar usa 0-11
+                int anio = Integer.parseInt("20" + fecha[2]);
+
+                Calendar fechaNacimiento = Calendar.getInstance();
+                fechaNacimiento.set(anio, mes, dia);
+
+                Calendar hoy = Calendar.getInstance();
+                if (fechaNacimiento.after(hoy)) {
+                    Toast.makeText(getActivity(), "La fecha de nacimiento no puede ser futura", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Formato de fecha inválido", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (idGenero == -1) {
                 Toast.makeText(getActivity(), "Por favor, seleccione un genero", Toast.LENGTH_SHORT).show();
                 return;
@@ -202,7 +229,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                 return;
             }
 
-            // Si todo bien, muestra el diálogo para email y password
             LoginDialogFragment dialog = new LoginDialogFragment();
             dialog.setLoginDialogListener(this);
             dialog.show(getParentFragmentManager(), "LoginDialog");

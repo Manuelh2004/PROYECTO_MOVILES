@@ -163,7 +163,7 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
                 Toast.makeText(getActivity(), "Por favor, seleccione un tipo de movimiento", Toast.LENGTH_SHORT).show();
                 return;
             }
-            agregarMovimiento();
+            verificarPresupuestoYAgregar();
         }
 
         if (v == btnMostrarMovimientos) {
@@ -190,6 +190,73 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
     }
+
+    private void verificarPresupuestoYAgregar() {
+        double monto;
+        try {
+            monto = Double.parseDouble(etMonto.getText().toString());
+        } catch (NumberFormatException e) {
+            Toast.makeText(getActivity(), "Monto inválido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Solo se valida si es un movimiento de gasto (id_tipo_movimiento = 2)
+        if (idTipoMovimiento != 2) {
+            agregarMovimiento();
+            return;
+        }
+
+        SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
+        int idUsuario = prefs.getInt("id_usuario", -1);
+
+        if (idUsuario == -1) {
+            Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String url = servidor + "presupuestoController/obtener_presupuesto_actual.php";
+        RequestParams params = new RequestParams();
+        params.put("id_usuario", idUsuario);
+        params.put("id_categoria", idCategoria);
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.post(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    if (response.getBoolean("success")) {
+                        double presupuestoActual = response.getDouble("presupuesto_actual");
+                        if (monto > presupuestoActual) {
+                            mostrarDialogoAlerta(presupuestoActual, monto);
+                        } else {
+                            agregarMovimiento();
+                        }
+                    } else {
+                        Toast.makeText(getActivity(), "No se encontró presupuesto disponible", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Toast.makeText(getActivity(), "Error al obtener presupuesto", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void mostrarDialogoAlerta(double presupuesto, double monto) {
+        new androidx.appcompat.app.AlertDialog.Builder(getContext())
+                .setTitle("Presupuesto excedido")
+                .setMessage("El monto ingresado (" + monto + ") excede tu presupuesto disponible (" + presupuesto + ").\n\nPor favor, rectifica el monto.")
+                .setCancelable(false) // evita que cierre tocando fuera del cuadro
+                .setPositiveButton("Aceptar", (dialog, which) -> {
+                    etMonto.requestFocus();
+                })
+                .show();
+    }
+
 
     private void agregarMovimiento() {
         String url = servidor + "movimientoController/registrar_movimiento.php";
