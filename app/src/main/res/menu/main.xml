@@ -12,7 +12,7 @@
         <menu>
             <item
                 android:id="@+id/action_soles_a_dolares"
-                android:title="Cambio a Dolares" />
+                android:title="Cambio a Dólares" />
 
             <item
                 android:id="@+id/action_dolares_a_soles"
@@ -21,8 +21,8 @@
     </item>
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_instrucciones"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Instrucciones"
         app:showAsAction="never" />
 </menu>
