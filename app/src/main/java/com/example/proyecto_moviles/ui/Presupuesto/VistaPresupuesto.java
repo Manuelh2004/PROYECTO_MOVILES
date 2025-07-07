@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -320,38 +321,46 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
     }
 
     private void EliminarPresupuesto(String idPresupuesto) {
-        // Mostrar AlertDialog de confirmación
-        new androidx.appcompat.app.AlertDialog.Builder(getContext())
-                .setTitle("Confirmar eliminación")
-                .setMessage("¿Estás seguro de que deseas eliminar este presupuesto?")
-                .setPositiveButton("Sí, eliminar", (dialog, which) -> {
-                    // Si el usuario confirma, procede con la eliminación
-                    String url = servidor + "eliminar_presupuesto.php";
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View dialogView = inflater.inflate(R.layout.dialog_confirm_delete, null);
 
-                    RequestParams params = new RequestParams();
-                    params.put("idPresupuesto", idPresupuesto);
+        androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(getContext())
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
 
-                    AsyncHttpClient presupuesto = new AsyncHttpClient();
+        // Referencias de botones
+        Button btnCancelar = dialogView.findViewById(R.id.btnCancelar);
+        Button btnEliminar = dialogView.findViewById(R.id.btnEliminar);
 
-                    presupuesto.get(url, params, new AsyncHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                            String response = new String(responseBody);
-                            Toast.makeText(getActivity(), "Presupuesto eliminado", Toast.LENGTH_SHORT).show();
-                            MostrarDatos();
-                        }
+        btnCancelar.setOnClickListener(v -> dialog.dismiss());
 
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                            Toast.makeText(getActivity(), "Error al eliminar", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                })
-                .setNegativeButton("Cancelar", (dialog, which) -> {
-                    // Si el usuario cancela, no se hace nada
+        btnEliminar.setOnClickListener(v -> {
+            String url = servidor + "eliminar_presupuesto.php";
+            RequestParams params = new RequestParams();
+            params.put("idPresupuesto", idPresupuesto);
+
+            AsyncHttpClient presupuesto = new AsyncHttpClient();
+
+            presupuesto.get(url, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    String response = new String(responseBody);
+                    Toast.makeText(getActivity(), "Presupuesto eliminado", Toast.LENGTH_SHORT).show();
+                    MostrarDatos();
                     dialog.dismiss();
-                })
-                .show();
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    Toast.makeText(getActivity(), "Error al eliminar", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+            });
+        });
+
+        dialog.show();
     }
+
 
 }

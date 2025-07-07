@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
+    app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardBackgroundColor="@color/white">
 
@@ -17,12 +17,13 @@
         <!-- Categoría -->
         <TextView
             android:id="@+id/tvCategoriaPV"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Categoría: Educación"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/black" />
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="8dp" />
 
         <!-- Monto -->
         <TextView
@@ -30,9 +31,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Monto: S/ 150.00"
-            android:textSize="15sp"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/black" />
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="8dp" />
 
         <!-- ID oculto -->
         <TextView
