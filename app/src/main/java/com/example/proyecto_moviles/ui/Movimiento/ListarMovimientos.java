@@ -140,7 +140,9 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
         // Filtros de fecha
         if (fechaFiltro != null) {
             params.put("fecha_inicio", fechaFiltro);
-            params.put("fecha_fin", fechaFiltro);
+            Log.d("FECHA_ENVIADA", "Fecha enviada al backend: " + fechaFiltro); // ✅ Nuevo log
+        } else {
+            Log.d("FECHA_ENVIADA", "No se seleccionó ninguna fecha.");
         }
 
         // Filtro de categoría
@@ -156,6 +158,7 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 String response = new String(responseBody);
+                Log.d("RESPUESTA_BACKEND", response);
                 try {
                     JSONArray jsonArray = new JSONArray(response);
                     List<Movimiento> movimientos = new ArrayList<>();
@@ -400,7 +403,7 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                 (view, selectedYear, selectedMonth, selectedDay) -> {
-                    String formattedDate = String.format("%02d/%02d/%02d", selectedDay, selectedMonth + 1, selectedYear % 100);
+                    String formattedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
                     etFechaFiltro.setText(formattedDate);
                     fechaFiltro = formattedDate;
                     SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
