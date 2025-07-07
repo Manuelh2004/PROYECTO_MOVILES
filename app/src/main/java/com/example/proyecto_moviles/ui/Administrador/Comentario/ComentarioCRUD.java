@@ -35,9 +35,9 @@ public class ComentarioCRUD extends Fragment {
     private ComentarioAdapter comentarioAdapter;
     private List<Comentario> comentarios = new ArrayList<>();
     private Spinner spinnerEstado;
-
     private EditText etFechaInicio, etFechaFin;
     private String fechaInicio = "", fechaFin = "";
+    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,6 +67,9 @@ public class ComentarioCRUD extends Fragment {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // Obtener el valor seleccionado en el Spinner
                 String estadoSeleccionado = parentView.getItemAtPosition(position).toString();
+                if (estadoSeleccionado.equals("Todos")) {
+                    estadoSeleccionado = "";
+                }
                 // Llamar a la función para obtener los comentarios filtrados por estado
                 obtenerComentarios(estadoSeleccionado, fechaInicio, fechaFin);
             }
@@ -84,7 +87,7 @@ public class ComentarioCRUD extends Fragment {
     private void obtenerComentarios(String estado, String fechaInicio, String fechaFin) {
         AsyncHttpClient client = new AsyncHttpClient();
 
-        String url = "http://10.0.2.2/proyecto_moviles/controladores/comentarioController/listar_comentario.php";
+        String url = servidor + "comentarioController/listar_comentario.php";
 
         List<String> parametros = new ArrayList<>();
         if (!estado.isEmpty()) {

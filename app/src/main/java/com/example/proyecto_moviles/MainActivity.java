@@ -1,5 +1,6 @@
 package com.example.proyecto_moviles;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -269,8 +273,47 @@ public class MainActivity extends BaseActivity {
             }
         }
 
+        MenuItem itemInstrucciones = menu.findItem(R.id.action_instrucciones);
+        if (itemInstrucciones != null) {
+            itemInstrucciones.setOnMenuItemClickListener(item -> {
+                mostrarVideoInstrucciones();
+                return true;
+            });
+        }
         return true;
     }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private void mostrarVideoInstrucciones() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_video_instrucciones, null);
+        WebView webView = dialogView.findViewById(R.id.webViewInstrucciones);
+
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient());
+
+        // ID del video de YouTube Shorts
+        String videoId = "G5SKi8Qg2Xk";
+
+        // HTML limpio para insertar video con <iframe>
+        String html = "<html><body style='margin:0;padding:0;'>"
+                + "<iframe width='100%' height='100%' "
+                + "src='https://www.youtube.com/embed/" + videoId + "?autoplay=1' "
+                + "frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' "
+                + "allowfullscreen></iframe>"
+                + "</body></html>";
+
+        // Cargar el contenido HTML en el WebView
+        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+
+        // Mostrar el diálogo
+        new AlertDialog.Builder(this)
+                .setTitle("Instrucciones")
+                .setView(dialogView)
+                .setPositiveButton("Cerrar", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+
 
     @Override
     public boolean onSupportNavigateUp() {
