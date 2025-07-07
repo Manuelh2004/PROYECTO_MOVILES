@@ -102,9 +102,6 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
             }
         });
 
-        // Cargar los tipos de movimiento y categorías
-        cargarTiposMovimiento();
-        cargarCategorias();
 
         return rootView;
     }
@@ -188,22 +185,6 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
                     // Cargar los Spinners con los datos correspondientes
                     cargarCategorias();
                     cargarTiposMovimiento();
-
-                    // Esperar a que los Spinners se carguen antes de seleccionar un item
-                    spCategoria.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            setSelectedSpinnerItem(spCategoria, idCategoria); // Asignar la categoría al spinner
-                        }
-                    });
-
-                    spTipoMovimiento.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            setSelectedSpinnerItem(spTipoMovimiento, idTipoMovimiento); // Asignar el tipo de movimiento al spinner
-                        }
-                    });
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getActivity(), "Error al parsear los datos del movimiento: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -253,6 +234,7 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
                     ArrayAdapter<Item> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, listaTipoMovimiento);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spTipoMovimiento.setAdapter(adapter);
+                    setSelectedSpinnerItem(spTipoMovimiento, idTipoMovimiento);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -289,6 +271,7 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
                     ArrayAdapter<Item> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, listaCategoria);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spCategoria.setAdapter(adapter);
+                    setSelectedSpinnerItem(spCategoria, idCategoria);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getActivity(), "Error al cargar categorías", Toast.LENGTH_LONG).show();
