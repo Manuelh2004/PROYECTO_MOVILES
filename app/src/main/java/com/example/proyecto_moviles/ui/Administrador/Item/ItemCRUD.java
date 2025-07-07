@@ -2,7 +2,6 @@ package com.example.proyecto_moviles.ui.Administrador.Item;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;

@@ -9,13 +9,12 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.example.proyecto_moviles.R;
-import com.example.proyecto_moviles.ui.Categoria;
+import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -26,20 +25,15 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import cz.msebera.android.httpclient.Header;
 
-public class Administrador extends Fragment implements View.OnClickListener{
-    Button btnCofiguracionItems, btnVisualizacionComentarios, btnGestionUsuarios, btnConfiguracionNotificaciones;
-
+public class Administrador extends Fragment implements View.OnClickListener {
+    Button btnCofiguracionItems, btnVisualizacionComentarios, btnGestionUsuarios;
     private FrameLayout graphContainer;
-
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/AdministradorController/";
+    private BarChart barChart;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,39 +41,25 @@ public class Administrador extends Fragment implements View.OnClickListener{
         View rootView = inflater.inflate(R.layout.fragment_administrador, container, false);
 
         btnCofiguracionItems = rootView.findViewById(R.id.btnCofiguracionItems);
-        btnCofiguracionItems.setOnClickListener(this);
         btnVisualizacionComentarios = rootView.findViewById(R.id.btnVisualizacionComentarios);
-        btnVisualizacionComentarios.setOnClickListener(this);
         btnGestionUsuarios = rootView.findViewById(R.id.btnGestionUsuarios);
+        btnCofiguracionItems.setOnClickListener(this);
+        btnVisualizacionComentarios.setOnClickListener(this);
         btnGestionUsuarios.setOnClickListener(this);
 
         graphContainer = rootView.findViewById(R.id.graphContainer);
-
-        BarChart barChart = new BarChart(getContext());
-
-        // Simulación de datos desde la base de datos
-        /*List<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(0, 4)); // Día 1: 4 logins
-        entries.add(new BarEntry(1, 6)); // Día 2: 6 logins
-        entries.add(new BarEntry(2, 2)); // Día 3: 2 logins
-
-        BarDataSet dataSet = new BarDataSet(entries, "Inicios de sesión");
-        BarData barData = new BarData(dataSet);
-
-        barChart.setData(barData);
-        barChart.getDescription().setEnabled(false);
-        barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        barChart.getAxisRight().setEnabled(false);
-        barChart.invalidate(); // Refresca el gráfico*/
-
-        // Agrega el gráfico al FrameLayout
+        barChart = new BarChart(getContext());
         graphContainer.addView(barChart);
 
+        cargarGraficoLogin();
+        return rootView;
+    }
+
+    private void cargarGraficoLogin() {
         AsyncHttpClient client = new AsyncHttpClient();
+        String url = ServidorConfig.URL_SERVIDOR + "AdministradorController/cantidad_logins.php";
 
-        RequestParams params = new RequestParams();
-
-        client.get(servidor + "cantidad_logins.php", params, new AsyncHttpResponseHandler() {
+        client.get(url, new RequestParams(), new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 try {
@@ -98,15 +78,12 @@ public class Administrador extends Fragment implements View.OnClickListener{
                         labels.add(dia);
                     }
 
-                    // Crear el gráfico
-                    BarChart barChart = new BarChart(getContext());
-
                     BarDataSet dataSet = new BarDataSet(entries, "Inicios de sesión");
-                    dataSet.setColor(getResources().getColor(R.color.teal_700)); // Puedes personalizarlo
-
+                    dataSet.setColor(getResources().getColor(R.color.teal_700));
                     BarData barData = new BarData(dataSet);
                     barChart.setData(barData);
 
+                    // Configuración visual
                     barChart.getDescription().setEnabled(false);
                     barChart.getAxisRight().setEnabled(false);
 
@@ -117,19 +94,11 @@ public class Administrador extends Fragment implements View.OnClickListener{
                         @Override
                         public String getFormattedValue(float value) {
                             int index = (int) value;
-                            if (index >= 0 && index < labels.size()) {
-                                return labels.get(index);
-                            } else {
-                                return "";
-                            }
+                            return (index >= 0 && index < labels.size()) ? labels.get(index) : "";
                         }
                     });
 
-                    barChart.invalidate(); // Redibuja el gráfico
-
-                    // Agrega el gráfico al contenedor
-                    graphContainer.removeAllViews(); // Por si hay otro gráfico antes
-                    graphContainer.addView(barChart);
+                    barChart.invalidate(); // Redibuja
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -139,27 +108,21 @@ public class Administrador extends Fragment implements View.OnClickListener{
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(getContext(), "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error al conectar con el servidor: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
-        return rootView;
     }
 
     @Override
     public void onClick(View v) {
-        if(v == btnCofiguracionItems){
-            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
+
+        if (v == btnCofiguracionItems) {
             navController.navigate(R.id.action_nav_administrador_to_nav_item);
-        }
-        if(v == btnVisualizacionComentarios){
-            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+        } else if (v == btnVisualizacionComentarios) {
             navController.navigate(R.id.action_nav_administrador_to_nav_comentario);
-        }
-        if(v == btnGestionUsuarios){
-            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+        } else if (v == btnGestionUsuarios) {
             navController.navigate(R.id.action_nav_administrador_to_nav_usuario);
         }
-
     }
 }
