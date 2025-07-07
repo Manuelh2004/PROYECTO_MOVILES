@@ -159,11 +159,11 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
 
                     if (item.getItemId() == R.id.opc_editar)
                     {
-                        EditarPaciente(idPresupuesto);
+                        EditarPresupuesto(idPresupuesto);
                     }
                     else if (item.getItemId() == R.id.opc_eliminar)
                     {
-                        EliminarPaciente(idPresupuesto);
+                        EliminarPresupuesto(idPresupuesto);
                     }
                     return false;
                 }
@@ -310,7 +310,7 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
      });
     }
 
-    private void EditarPaciente(String idPresupuesto) {
+    private void EditarPresupuesto(String idPresupuesto) {
 
         Bundle bundle = new Bundle();
         bundle.putString("idPresupuesto", idPresupuesto);
@@ -319,29 +319,39 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
         navController.navigate(R.id.action_vistaPresupuesto_to_editarPresupuesto, bundle);
     }
 
-    private void EliminarPaciente(String idPresupuesto) {
-        // Crear la URL para hacer la solicitud
-        String url = servidor + "eliminar_presupuesto.php";
+    private void EliminarPresupuesto(String idPresupuesto) {
+        // Mostrar AlertDialog de confirmación
+        new androidx.appcompat.app.AlertDialog.Builder(getContext())
+                .setTitle("Confirmar eliminación")
+                .setMessage("¿Estás seguro de que deseas eliminar este presupuesto?")
+                .setPositiveButton("Sí, eliminar", (dialog, which) -> {
+                    // Si el usuario confirma, procede con la eliminación
+                    String url = servidor + "eliminar_presupuesto.php";
 
-        // Crear un objeto RequestParams para almacenar los parámetros
-        RequestParams params = new RequestParams();
-        params.put("idPresupuesto",idPresupuesto);
+                    RequestParams params = new RequestParams();
+                    params.put("idPresupuesto", idPresupuesto);
 
-        // Crear una instancia de AsyncHttpClient
-        AsyncHttpClient presupuesto = new AsyncHttpClient();
+                    AsyncHttpClient presupuesto = new AsyncHttpClient();
 
-        presupuesto.get(url, params, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                String response = new String(responseBody);  // Obtener la respuesta del servidor como String
-                Toast.makeText(getActivity(), "Respuesta: " + response, Toast.LENGTH_LONG).show();
-                MostrarDatos();
-            }
+                    presupuesto.get(url, params, new AsyncHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                            String response = new String(responseBody);
+                            Toast.makeText(getActivity(), "Presupuesto eliminado", Toast.LENGTH_SHORT).show();
+                            MostrarDatos();
+                        }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
-            }
-        });
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                            Toast.makeText(getActivity(), "Error al eliminar", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                })
+                .setNegativeButton("Cancelar", (dialog, which) -> {
+                    // Si el usuario cancela, no se hace nada
+                    dialog.dismiss();
+                })
+                .show();
     }
+
 }

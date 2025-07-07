@@ -169,6 +169,9 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
                     // Parsear el JSON recibido
                     JSONArray jsonArray = new JSONArray(response);
 
+                    listaCategorias.clear(); // Limpiar antes de agregar
+
+                    listaCategorias.add(new Categoria(0, "Seleccione una categoría"));
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -262,8 +265,8 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
         fecha_fin = "";
 
         // Si tienes TextViews donde se muestran las fechas, también límpialos
-        f_inicio.setText("Fecha inicio"); // Usa el ID correcto del TextView
-        f_fin.setText("Fecha fin");
+        f_inicio.setText(""); // Usa el ID correcto del TextView
+        f_fin.setText("");
     }
 
     private void RegistrarPresupuesto(Float montoP, int categoriaP, String fechaInicioP, String fechaFinP) {
