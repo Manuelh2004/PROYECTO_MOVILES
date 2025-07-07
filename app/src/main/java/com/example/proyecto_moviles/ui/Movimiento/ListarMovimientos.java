@@ -62,8 +62,9 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
     private String mParam2;
     Spinner spCategoriaFiltro;
     EditText etFechaFiltro;
+    Button btnIrAgregarMovimiento;
     private String fechaFiltro = null, categoriaFiltro = null;
-    public class MovimientoAdapter extends BaseAdapter {
+    public class MovimientoAdapter extends BaseAdapter{
 
         private Context context;
         private final List<Movimiento> movimientoList;
@@ -259,31 +260,47 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
             }
         });
 
+        btnIrAgregarMovimiento = rootView.findViewById(R.id.btnIrAgregarMovimiento);
+        btnIrAgregarMovimiento.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.action_nav_listar_movimientos_to_nav_movimiento);
+        });
+
+
         return rootView;
     }
 
     private void EliminarMovimiento(String idMovimiento) {
-        // Asegurarse de obtener el contexto correcto (usando getContext() o getActivity())
-        Context context = getActivity(); // Asegúrate de que esto no sea nulo
+        Context context = getActivity();
+        if (context == null) return;
 
-        if (context != null) {
-            new AlertDialog.Builder(context)
-                    .setTitle("Eliminar Movimiento")
-                    .setMessage("¿Estás seguro de que deseas eliminar este movimiento?")
-                    .setPositiveButton("Eliminar", (dialog, which) -> {
-                        // Llamar al método para eliminar el movimiento
-                        eliminarMovimiento(idMovimiento);
-                    })
-                    .setNegativeButton("Cancelar", (dialog, which) -> {
-                        // Si el usuario cancela, no hacer nada
-                        dialog.dismiss();
-                    })
-                    .show();
-        } else {
-            // Si el contexto es nulo, mostrar un error
-            Toast.makeText(getActivity(), "Error: Contexto no disponible", Toast.LENGTH_SHORT).show();
-        }
+        // Inflar el diseño personalizado del diálogo
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_confirmar_eliminacion, null);
+
+        // Referencias a los botones
+        Button btnCancelar = dialogView.findViewById(R.id.btnCancelar);
+        Button btnEliminar = dialogView.findViewById(R.id.btnEliminar);
+
+        // Crear el diálogo
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setView(dialogView)
+                .create();
+
+        // Quitar fondo blanco adicional si lo deseas
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        // Configurar botones
+        btnCancelar.setOnClickListener(v -> dialog.dismiss());
+
+        btnEliminar.setOnClickListener(v -> {
+            dialog.dismiss(); // Cierra el diálogo
+            eliminarMovimiento(idMovimiento); // Ejecuta la eliminación real
+        });
+
+        // Mostrar el diálogo
+        dialog.show();
     }
+
     private void eliminarMovimiento(String idMovimiento) {
         String url = servidor + "movimientoController/eliminar_movimiento.php";
         RequestParams params = new RequestParams();

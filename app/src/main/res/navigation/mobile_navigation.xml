@@ -119,6 +119,9 @@
         <action
             android:id="@+id/action_nav_listar_movimientos_to_nav_editar_movimiento"
             app:destination="@id/nav_editar_movimiento" />
+        <action
+            android:id="@+id/action_nav_listar_movimientos_to_nav_movimiento"
+            app:destination="@id/nav_movimiento" />
     </fragment>
     <fragment
         android:id="@+id/nav_editar_perfil"
