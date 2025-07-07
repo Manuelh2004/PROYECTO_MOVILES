@@ -9,6 +9,7 @@ public class Movimiento {
     String fecha;
     String descripcion;
     String estado;
+
     public Movimiento(String id_movimiento, String usuario, String tipo_movimiento, String categoria,
                       String monto, String fecha, String descripcion, String estado) {
         this.id_movimiento = id_movimiento;
@@ -84,4 +85,5 @@ public class Movimiento {
     public void setEstado(String estado) {
         this.estado = estado;
     }
+
 }
