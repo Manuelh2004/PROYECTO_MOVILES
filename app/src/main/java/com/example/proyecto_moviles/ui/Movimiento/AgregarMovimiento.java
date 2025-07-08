@@ -21,6 +21,7 @@ import androidx.navigation.Navigation;
 
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.ui.Clases.Item;
+import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -31,14 +32,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
 import cz.msebera.android.httpclient.Header;
 
 public class AgregarMovimiento extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
-
     private EditText etDescripcion, etMonto;
     private Spinner spCategoria, spTipoMovimiento;
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
     private Button btnRegistrarMovimiento, btnMostrarMovimientos;
     int idCategoria = -1, idTipoMovimiento = -1;
 
@@ -66,15 +64,14 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
     }
 
     private void obtenerTipoMovimiento() {
-        String url = servidor + "itemsController/obtener_tipo_movimiento.php";
-
+        String url = ServidorConfig.URL_SERVIDOR + "itemsController/obtener_tipo_movimiento.php";
         AsyncHttpClient client = new AsyncHttpClient();
+
         client.get(url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 ArrayList<Item> lista = new ArrayList<>();
                 lista.add(new Item(-1, "Seleccionar un tipo de movimiento"));
-
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject obj = response.getJSONObject(i);
@@ -85,7 +82,6 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
                         e.printStackTrace();
                     }
                 }
-
                 ArrayAdapter<Item> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, lista);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spTipoMovimiento.setAdapter(adapter);
@@ -106,8 +102,7 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
             Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        String url = servidor + "itemsController/obtener_categoria_presupuesto.php";
+        String url = ServidorConfig.URL_SERVIDOR + "itemsController/obtener_categoria_presupuesto.php";
         RequestParams params = new RequestParams();
         params.put("id_usuario", idUsuario);
 
@@ -117,7 +112,6 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 ArrayList<Item> lista = new ArrayList<>();
                 lista.add(new Item(-1, "Seleccionar una categoria"));
-
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject obj = response.getJSONObject(i);
@@ -200,8 +194,6 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
             Toast.makeText(getActivity(), "Monto inválido", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // Solo se valida si es un movimiento de gasto (id_tipo_movimiento = 2)
         if (idTipoMovimiento != 2) {
             agregarMovimiento();
             return;
@@ -214,8 +206,7 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
             Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        String url = servidor + "presupuestoController/obtener_presupuesto_actual.php";
+        String url = ServidorConfig.URL_SERVIDOR + "presupuestoController/obtener_presupuesto_actual.php";
         RequestParams params = new RequestParams();
         params.put("id_usuario", idUsuario);
         params.put("id_categoria", idCategoria);
@@ -270,11 +261,8 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
         dialog.show();
     }
 
-
-
     private void agregarMovimiento() {
-        String url = servidor + "movimientoController/registrar_movimiento.php";
-
+        String url = ServidorConfig.URL_SERVIDOR + "movimientoController/registrar_movimiento.php";
         String descripcion = etDescripcion.getText().toString();
         String montoStr = etMonto.getText().toString();
 
@@ -330,9 +318,8 @@ public class AgregarMovimiento extends Fragment implements View.OnClickListener,
             return;
         }
 
-        String url = servidor + "presupuestoController/actualizar_presupuesto_movimiento.php";
+        String url = ServidorConfig.URL_SERVIDOR + "presupuestoController/actualizar_presupuesto_movimiento.php";
         double operacionPresupuesto = (idTipoMovimiento == 1) ? monto : -monto;
-
         RequestParams params = new RequestParams();
         params.put("id_categoria", idCategoria);
         params.put("id_usuario", idUsuario);

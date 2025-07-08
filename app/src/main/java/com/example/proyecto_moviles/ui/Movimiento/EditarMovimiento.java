@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -23,6 +22,7 @@ import androidx.navigation.Navigation;
 
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.ui.Clases.Item;
+import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -37,53 +37,39 @@ import java.util.Calendar;
 import cz.msebera.android.httpclient.Header;
 
 public class EditarMovimiento extends Fragment implements View.OnClickListener {
-
     private EditText etFecha, etDescripcion, etMonto;
     private Spinner spCategoria, spTipoMovimiento;
     private Button btnActualizarMovimiento;
     private String idMovimiento;
     private int idCategoria = -1, idTipoMovimiento = -1, idUsuario = -1;
-    private double montoAnterior = 0;
-    private int tipoAnterior = -1;
-
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_editar_movimiento, container, false);
-        // Obtener el ID del movimiento pasado desde la actividad anterior
         idMovimiento = getArguments() != null ? getArguments().getString("id_movimiento") : null;
 
-        // Inicializar los campos
         etFecha = rootView.findViewById(R.id.etFecha);
         etDescripcion = rootView.findViewById(R.id.etDescripcion);
         etMonto = rootView.findViewById(R.id.etMonto);
         spCategoria = rootView.findViewById(R.id.spCategoria);
         spTipoMovimiento = rootView.findViewById(R.id.spTipoMovimiento);
         btnActualizarMovimiento = rootView.findViewById(R.id.btnActualizarMovimiento);
-
-        // Establecer listeners
         btnActualizarMovimiento.setOnClickListener(this);
 
-        // Cargar los datos del movimiento
         cargarMovimiento();
 
-        // Obtener el ID del usuario desde SharedPreferences
         SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
         idUsuario = prefs.getInt("id_usuario", -1);
         if (idUsuario == -1) {
             Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
         }
 
-        // Desactivamos edición directa y ponemos listener para abrir DatePicker
         etFecha.setFocusable(false);
         etFecha.setClickable(true);
 
         etFecha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 final Calendar calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
@@ -101,61 +87,42 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
                 datePickerDialog.show();
             }
         });
-
-
         return rootView;
     }
 
     private void cargarMovimiento() {
-        // Recuperar el id_usuario desde SharedPreferences
         SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
-        idUsuario = prefs.getInt("id_usuario", -1);  // Obtener el id_usuario
+        idUsuario = prefs.getInt("id_usuario", -1);
 
-        // Verificar que el id_usuario no sea -1 (significa que no está identificado)
         if (idUsuario == -1) {
             Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
             return;
         }
+        Log.d("ID Usuario", "idUsuario: " + idUsuario);
+        String url = ServidorConfig.URL_SERVIDOR + "movimientoController/consultar_movimiento.php";
 
-        Log.d("ID Usuario", "idUsuario: " + idUsuario);  // Imprimir para verificar el valor
-
-        // Crear la URL para obtener los datos del movimiento
-        String url = servidor + "movimientoController/consultar_movimiento.php";
-
-        // Crear los parámetros para la solicitud
         RequestParams params = new RequestParams();
-        params.put("idMovimiento", idMovimiento);  // Enviar el ID del movimiento
-        params.put("idUsuario", idUsuario);  // Enviar el ID del usuario
+        params.put("idMovimiento", idMovimiento);
+        params.put("idUsuario", idUsuario);
 
-        // Crear el cliente HTTP
         AsyncHttpClient client = new AsyncHttpClient();
 
-        // Hacer la solicitud GET al servidor
         client.get(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                // Convertir la respuesta a un string
                 String response = new String(responseBody);
-
-                // Imprimir la respuesta para depuración
                 Log.d("Respuesta JSON", response);
 
                 try {
-                    // Intentar parsear el JSON de la respuesta
                     JSONObject responseJson = new JSONObject(response);
-
-                    // Si el JSON contiene un error, lo mostramos
                     if (responseJson.has("error")) {
                         Toast.makeText(getActivity(), responseJson.getString("error"), Toast.LENGTH_SHORT).show();
                         return;
                     }
-
-                    // Cargar los datos del movimiento en los EditText y Spinner
                     etFecha.setText(responseJson.getString("fech_movimiento"));
                     etDescripcion.setText(responseJson.getString("des_movimiento"));
                     etMonto.setText(responseJson.getString("mon_movimiento"));
 
-                    // Obtener y configurar los valores de Spinner (Categoría y Tipo de Movimiento)
                     idCategoria = responseJson.getInt("id_categoria");
                     idTipoMovimiento = responseJson.getInt("id_tipo_movimiento");
                     etFecha.setFocusable(false);
@@ -182,7 +149,6 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
                             datePickerDialog.show();
                         }
                     });
-                    // Cargar los Spinners con los datos correspondientes
                     cargarCategorias();
                     cargarTiposMovimiento();
                 } catch (JSONException e) {
@@ -193,7 +159,6 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                // Mostrar el error de conexión si falla la solicitud
                 String errorMsg = (responseBody != null) ? new String(responseBody) : error.getMessage();
                 Toast.makeText(getActivity(), "Error al obtener movimiento: " + errorMsg, Toast.LENGTH_LONG).show();
             }
@@ -202,7 +167,6 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
 
     // Método para seleccionar un ítem en el Spinner
     private void setSelectedSpinnerItem(Spinner spinner, int selectedId) {
-        // Comprobar si el Spinner y el Adapter están inicializados correctamente
         if (spinner != null && spinner.getAdapter() != null) {
             for (int i = 0; i < spinner.getAdapter().getCount(); i++) {
                 Item item = (Item) spinner.getAdapter().getItem(i);
@@ -216,8 +180,9 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
         }
     }
     private void cargarTiposMovimiento() {
-        String url = servidor + "itemsController/obtener_tipo_movimiento.php";
+        String url = ServidorConfig.URL_SERVIDOR + "itemsController/obtener_tipo_movimiento.php";
         AsyncHttpClient client = new AsyncHttpClient();
+
         client.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -250,7 +215,7 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
     }
 
     private void cargarCategorias() {
-        String url = servidor + "itemsController/obtener_categoria_presupuesto.php";
+        String url = ServidorConfig.URL_SERVIDOR + "itemsController/obtener_categoria_presupuesto.php";
         RequestParams params = new RequestParams();
         params.put("id_usuario", idUsuario);
 
@@ -298,21 +263,18 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
             return;
         }
 
-        // Validación de los campos
         if (descripcion.isEmpty() || fecha.isEmpty() || montoStr.isEmpty()) {
             Toast.makeText(getActivity(), "Por favor, complete todos los campos correctamente", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // Convertir el monto a un valor numérico
         double monto;
+
         try {
             monto = Double.parseDouble(montoStr);
         } catch (NumberFormatException e) {
             Toast.makeText(getActivity(), "Monto inválido", Toast.LENGTH_SHORT).show();
             return;
         }
-        // Agregar logs para depuración
         Log.d("PARAMS_DEBUG", "idMovimiento=" + idMovimiento +
                 ", idTipoMovimiento=" + idTipoMovimiento +
                 ", idCategoria=" + idCategoria +
@@ -321,7 +283,7 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
                 ", descripcion=" + descripcion +
                 ", idUsuario=" + idUsuario);
 
-        String url = servidor + "movimientoController/actualizar_movimiento.php";
+        String url = ServidorConfig.URL_SERVIDOR + "movimientoController/actualizar_movimiento.php";
         RequestParams params = new RequestParams();
         params.put("id_movimiento", idMovimiento);
         params.put("id_tipo_movimiento", idTipoMovimiento);
@@ -330,25 +292,20 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
         params.put("fech_movimiento", fecha);
         params.put("des_movimiento", descripcion);
         params.put("id_usuario", idUsuario);
-        params.put("est_movimiento",1);   // Estado del movimiento, asumimos que es "activo"
-
+        params.put("est_movimiento",1);
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 String response = new String(responseBody);
-                Log.d("Respuesta de Actualización", response); // Agregar log para depuración
+                Log.d("Respuesta de Actualización", response);
 
-                // Si la respuesta es "success", mostramos un mensaje de éxito
                 if (response.contains("success")) {
                     Toast.makeText(getActivity(), "Movimiento actualizado correctamente", Toast.LENGTH_SHORT).show();
-
-                    // Navegar de vuelta a la lista de movimientos después de la actualización
                     NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
                     navController.navigate(R.id.action_nav_editar_movimiento_to_nav_listar_movimientos);
                 } else {
-                    // Si hubo un error, mostramos la respuesta completa para depurar
                     Toast.makeText(getActivity(), "Error al actualizar el movimiento: " + response, Toast.LENGTH_LONG).show();
                 }
             }
@@ -356,19 +313,15 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 String errorMsg = (responseBody != null) ? new String(responseBody) : error.getMessage();
-                // Mostrar el error de conexión si falla la solicitud
                 Toast.makeText(getActivity(), "Error en la conexión: " + errorMsg, Toast.LENGTH_LONG).show();
             }
         });
     }
 
-
     @Override
     public void onClick(View v) {
         if (v == btnActualizarMovimiento) {
             actualizarMovimiento();
-
-
         }
     }
 }
