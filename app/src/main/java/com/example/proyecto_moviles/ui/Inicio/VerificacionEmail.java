@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.proyecto_moviles.R;
+import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.loopj.android.http.AsyncHttpClient;
@@ -20,7 +21,6 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONObject;
-
 import cz.msebera.android.httpclient.Header;
 
 public class VerificacionEmail extends Fragment implements View.OnClickListener{
@@ -28,8 +28,6 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
-
-    // Variables para almacenar datos recibidos
     private String nombres, apellidos, telefono, documento, fechaNa, email;
     private int idGenero, idTipoDoc;
 
@@ -40,14 +38,11 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-
         btnRevisarVerificacion = rootView.findViewById(R.id.btnRevisarVerificacion);
         btnReenviarCorreo = rootView.findViewById(R.id.btnReenviarCorreo);
-
         btnRevisarVerificacion.setOnClickListener(this);
         btnReenviarCorreo.setOnClickListener(this);
 
-        // Obtener datos del bundle
         Bundle args = getArguments();
         if (args != null) {
             nombres = args.getString("nombres");
@@ -57,7 +52,6 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
             fechaNa = args.getString("fechaNa");
             idGenero = args.getInt("idGenero", -1);
             idTipoDoc = args.getInt("idTipoDoc", -1);
-            // email no se pasa, lo tomamos del usuario actual para mayor seguridad
         }
 
         return rootView;
@@ -77,10 +71,8 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
 
                         email = currentUser.getEmail();
                         String uid = currentUser.getUid();
-
                         // Llamar al método para registrar en BD
                         RegistrarUsuario(nombres, apellidos, telefono, documento, fechaNa, idGenero, idTipoDoc, email, uid);
-
                     } else {
                         Toast.makeText(getContext(), "Correo no verificado aún. Revisa tu bandeja.", Toast.LENGTH_LONG).show();
                     }
@@ -105,8 +97,7 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
 
     private void RegistrarUsuario(String nombres, String apellidos, String telefono, String documento, String fechaNa,
                                   int idGenero, int idTipoDoc, String email, String uidFirebase) {
-        String url = servidor + "usuarioController/crear_usuario.php";
-
+        String url = ServidorConfig.URL_SERVIDOR + "usuarioController/crear_usuario.php";
         RequestParams params = new RequestParams();
         params.put("nombres", nombres);
         params.put("apellidos", apellidos);
@@ -127,7 +118,6 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
                     String mensaje = response.getString("mensaje");
                     Toast.makeText(getContext(), mensaje, Toast.LENGTH_LONG).show();
                     if (exito) {
-                        // Navegar a la pantalla principal o donde desees
                         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
                         navController.navigate(R.id.action_nav_verificar_email_to_nav_login);
                     }

@@ -10,6 +10,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.proyecto_moviles.MainActivity;
+import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -41,21 +42,19 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.security.auth.callback.Callback;
-
 import cz.msebera.android.httpclient.Header;
 
 public class Login extends Fragment implements View.OnClickListener{
     private Button btnIngresoDirecto, btnCrearCuenta;
     private TextInputEditText Contraseña;
     private EditText Usuario;
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/usuarioController/";
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
     private TextView txtOlvidarPassword;
     private MainActivity activity;
     private int id_usuario = 0;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -94,7 +93,6 @@ public class Login extends Fragment implements View.OnClickListener{
             return;
         }
 
-        // Aquí chequeamos la sesión y navegamos si ya está logueado
         SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
         boolean logueado = prefs.getBoolean("logueado", false);
         if (logueado) {
@@ -109,7 +107,6 @@ public class Login extends Fragment implements View.OnClickListener{
                     navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
                 }
             });
-
         }
     }
 
@@ -160,7 +157,6 @@ public class Login extends Fragment implements View.OnClickListener{
             navController.navigate(R.id.action_nav_login_to_nav_olvidarPassword);
         }
     }
-
     // *********
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -181,25 +177,24 @@ public class Login extends Fragment implements View.OnClickListener{
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(getActivity(), task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null) {
-                            String uid = user.getUid();
-                            String nombre = user.getDisplayName();
-                            String correo = user.getEmail();
+            .addOnCompleteListener(getActivity(), task -> {
+                if (task.isSuccessful()) {
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    if (user != null) {
+                        String uid = user.getUid();
+                        String nombre = user.getDisplayName();
+                        String correo = user.getEmail();
 
-                            // Llamar al backend PHP para registrar/verificar usuario
-                            registrarUsuarioEnBackend(nombre, correo, uid);
-                        }
-                    } else {
-                        Toast.makeText(getContext(), "Falló autenticación con Firebase", Toast.LENGTH_SHORT).show();
+                        registrarUsuarioEnBackend(nombre, correo, uid);
                     }
-                });
+                } else {
+                    Toast.makeText(getContext(), "Falló autenticación con Firebase", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
     private void registrarUsuarioEnBackend(String nombre, String correo, String uid_firebase) {
-        String url = servidor + "crear_usuario_google.php";
+        String url = ServidorConfig.URL_SERVIDOR + "usuarioController/crear_usuario_google.php";
         RequestParams params = new RequestParams();
         params.put("nom_usuario", nombre);
         params.put("em_usuario", correo);
@@ -228,7 +223,6 @@ public class Login extends Fragment implements View.OnClickListener{
                                 navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
 
                                 Toast.makeText(getContext(), "Ingreso exitoso", Toast.LENGTH_SHORT).show();
-
                             }
                         });
 
@@ -247,14 +241,9 @@ public class Login extends Fragment implements View.OnClickListener{
             }
         });
     }
-
-
-
-
     // *********
     private void obtenerIdUsuarioBackend(String email) {
-        String url = servidor + "login_usuario.php";
-
+        String url = ServidorConfig.URL_SERVIDOR + "usuarioController/login_usuario.php";
         RequestParams params = new RequestParams();
         params.put("email", email);
 
@@ -271,10 +260,7 @@ public class Login extends Fragment implements View.OnClickListener{
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.putInt("id_usuario", idUsuarioDelBackend);
                         editor.apply();
-
-                        // Log para confirmar guardado
                         Log.d("Login", "Guardado id_usuario en SharedPreferences: " + idUsuarioDelBackend);
-
                         Toast.makeText(getContext(), "Ingreso exitoso ", Toast.LENGTH_SHORT).show();
 
                         activity.ConsultarUsuario(idUsuarioDelBackend, new MainActivity.Callback() {
@@ -285,7 +271,6 @@ public class Login extends Fragment implements View.OnClickListener{
                                 navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
                             }
                         });
-
                     } else {
                         Toast.makeText(getContext(), "Error al obtener usuario backend", Toast.LENGTH_SHORT).show();
                     }
@@ -301,5 +286,4 @@ public class Login extends Fragment implements View.OnClickListener{
             }
         });
     }
-
 }

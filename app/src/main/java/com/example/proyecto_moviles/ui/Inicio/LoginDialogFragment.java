@@ -10,18 +10,15 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import com.example.proyecto_moviles.R;
 
 public class LoginDialogFragment extends DialogFragment {
     private EditText etEmail, etPassword;
     private Button btnAceptar, btnCancelar;
     private LoginDialogListener listener;
-
     public interface LoginDialogListener {
         void onLoginDataEntered(String email, String password);
     }
-
     public void setLoginDialogListener(LoginDialogListener listener) {
         this.listener = listener;
     }
@@ -43,7 +40,6 @@ public class LoginDialogFragment extends DialogFragment {
             listener.onLoginDataEntered(email, password);
             dismiss();
         });
-
         btnCancelar.setOnClickListener(v -> dismiss());
 
         return view;

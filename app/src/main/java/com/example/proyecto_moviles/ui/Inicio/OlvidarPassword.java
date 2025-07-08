@@ -1,7 +1,6 @@
 package com.example.proyecto_moviles.ui.Inicio;
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.proyecto_moviles.R;
@@ -28,7 +26,6 @@ public class OlvidarPassword extends Fragment implements View.OnClickListener{
         mAuth = FirebaseAuth.getInstance();
 
         etEmailRecuperar = (EditText) rootView.findViewById(R.id.etEmailRecuperar);
-
         btnEnviar = (Button) rootView.findViewById(R.id.btnIngresar);
         btnEnviar.setOnClickListener(this);
         btnCancelar = (Button) rootView.findViewById(R.id.btnCancelar);
@@ -47,6 +44,7 @@ public class OlvidarPassword extends Fragment implements View.OnClickListener{
             navController.navigate(R.id.action_nav_olvidarPassword_to_nav_login);
         }
     }
+
     private void enviarCorreoRestablecimiento() {
         String email = etEmailRecuperar.getText().toString().trim();
 
@@ -66,7 +64,6 @@ public class OlvidarPassword extends Fragment implements View.OnClickListener{
             .addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(getContext(), "Se envió un correo para restablecer la contraseña", Toast.LENGTH_LONG).show();
-
                     etEmailRecuperar.setText("");
 
                     NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
