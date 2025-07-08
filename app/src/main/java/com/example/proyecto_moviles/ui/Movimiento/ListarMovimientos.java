@@ -27,6 +27,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.proyecto_moviles.R;
+import com.example.proyecto_moviles.ui.Clases.Movimiento;
+import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -41,34 +43,15 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ListarMovimientos#newInstance} factory method to
- * create an instance of this fragment.
- */
-
-
 public class ListarMovimientos extends Fragment implements View.OnClickListener{
-
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
-    ListView listaMovimientos;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    Spinner spCategoriaFiltro;
-    EditText etFechaFiltro;
-    Button btnIrAgregarMovimiento;
+    private ListView listaMovimientos;
+    private Spinner spCategoriaFiltro;
+    private EditText etFechaFiltro;
+    private Button btnIrAgregarMovimiento;
     private String fechaFiltro = null, categoriaFiltro = null;
     public class MovimientoAdapter extends BaseAdapter{
-
         private Context context;
         private final List<Movimiento> movimientoList;
-
         public MovimientoAdapter(Context context, List<Movimiento> movimientoList) {
             this.context = context;
             this.movimientoList = movimientoList;
@@ -109,50 +92,37 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
 
             Movimiento mov = movimientoList.get(position);
 
-            tvId.setText("ID: " + mov.id_movimiento);
-            tvUsuario.setText("Usuario: " + mov.usuario);
-            tvTipo.setText("Tipo: " + mov.tipo_movimiento);
-            tvCategoria.setText("Categoría: " + mov.categoria);
-            tvMonto.setText("Monto: " + mov.monto);
-            tvFecha.setText("Fecha: " + mov.fecha);
-            tvDescripcion.setText("Descripción: " + mov.descripcion);
-            tvEstado.setText("Estado: " + (mov.estado.equals("1") ? "Activo" : "Inactivo"));
-            editar.setOnClickListener(v -> EditarMovimiento(mov.id_movimiento));
-            eliminar.setOnClickListener(v -> EliminarMovimiento(mov.id_movimiento));
+            tvId.setText("ID: " + mov.getId_movimiento());
+            tvUsuario.setText("Usuario: " + mov.getUsuario());
+            tvTipo.setText("Tipo: " + mov.getTipo_movimiento());
+            tvCategoria.setText("Categoría: " + mov.getCategoria());
+            tvMonto.setText("Monto: " + mov.getMonto());
+            tvFecha.setText("Fecha: " + mov.getFecha());
+            tvDescripcion.setText("Descripción: " + mov.getDescripcion());
+            tvEstado.setText("Estado: " + (mov.getEstado().equals("1") ? "Activo" : "Inactivo"));
+            editar.setOnClickListener(v -> EditarMovimiento(mov.getId_movimiento()));
+            eliminar.setOnClickListener(v -> EliminarMovimiento(mov.getId_movimiento()));
             return convertView;
         }
     }
-
-    private void showConfirmationDialog(String idMovimiento) {
-        // Crear un cuadro de diálogo de confirmación
-        new AlertDialog.Builder(getActivity())
-                .setTitle("Confirmar Eliminación")
-                .setMessage("¿Estás seguro de que deseas eliminar este movimiento?")
-                .setPositiveButton("Eliminar", (dialog, which) -> EliminarMovimiento(idMovimiento))
-                .setNegativeButton("Cancelar", null)
-                .show();
-    }
     @SuppressLint("NotConstructor")
     private void ListarMovimientos(int idUsuario) {
-        String url = servidor + "movimientoController/mostrar_movimiento.php"; // Asegúrate de que esta URL esté correcta
+        String url = ServidorConfig.URL_SERVIDOR + "movimientoController/mostrar_movimiento.php";
         RequestParams params = new RequestParams();
         params.put("id_usuario", idUsuario);
 
         // Filtros de fecha
         if (fechaFiltro != null) {
             params.put("fecha_inicio", fechaFiltro);
-            Log.d("FECHA_ENVIADA", "Fecha enviada al backend: " + fechaFiltro); // ✅ Nuevo log
+            Log.d("FECHA_ENVIADA", "Fecha enviada al backend: " + fechaFiltro);
         } else {
             Log.d("FECHA_ENVIADA", "No se seleccionó ninguna fecha.");
         }
-
         // Filtro de categoría
         if (categoriaFiltro != null && !categoriaFiltro.isEmpty()) {
-            params.put("id_categoria", categoriaFiltro);  // Asegúrate de que esto esté aquí
+            params.put("id_categoria", categoriaFiltro);
         }
-
-        // Verificar que los parámetros estén bien construidos
-        Log.d("Parametros GET", params.toString());  // Este log te ayudará a verificar los parámetros enviados
+        Log.d("Parametros GET", params.toString());
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, params, new AsyncHttpResponseHandler() {
@@ -178,8 +148,6 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
                         movimientos.add(new Movimiento(id_movimiento, usuario, tipo_movimiento, categoria,
                                 monto, fecha, descripcion, estado));
                     }
-
-                    // Adapter para los movimientos
                     MovimientoAdapter adapter = new MovimientoAdapter(getActivity(), movimientos);
                     listaMovimientos.setAdapter(adapter);
 
@@ -197,34 +165,6 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
         });
     }
 
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ListarPrespuestos.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ListarMovimientos newInstance(String param1, String param2) {
-        ListarMovimientos fragment = new ListarMovimientos();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -235,7 +175,6 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
         etFechaFiltro = rootView.findViewById(R.id.etFechaFiltro);
 
         etFechaFiltro.setOnClickListener(v -> openDatePicker());
-        // Obtener el id_usuario desde SharedPreferences
         SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
         int idUsuario = prefs.getInt("id_usuario", -1);
 
@@ -252,11 +191,10 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 categoriaFiltro = position > 0 ? String.valueOf(position) : null;
-                ListarMovimientos(idUsuario);  // Llama a la función para actualizar la lista con el filtro aplicado
+                ListarMovimientos(idUsuario);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // Opcional: manejar el caso de "ninguna categoría seleccionada"
             }
         });
 
@@ -265,19 +203,13 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_nav_listar_movimientos_to_nav_movimiento);
         });
-
-
         return rootView;
     }
 
     private void EliminarMovimiento(String idMovimiento) {
         Context context = getActivity();
         if (context == null) return;
-
-        // Inflar el diseño personalizado del diálogo
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_confirmar_eliminacion, null);
-
-        // Referencias a los botones
         Button btnCancelar = dialogView.findViewById(R.id.btnCancelar);
         Button btnEliminar = dialogView.findViewById(R.id.btnEliminar);
 
@@ -286,23 +218,18 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
                 .setView(dialogView)
                 .create();
 
-        // Quitar fondo blanco adicional si lo deseas
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-
-        // Configurar botones
         btnCancelar.setOnClickListener(v -> dialog.dismiss());
 
         btnEliminar.setOnClickListener(v -> {
-            dialog.dismiss(); // Cierra el diálogo
-            eliminarMovimiento(idMovimiento); // Ejecuta la eliminación real
+            dialog.dismiss();
+            eliminarMovimiento(idMovimiento);
         });
-
-        // Mostrar el diálogo
         dialog.show();
     }
 
     private void eliminarMovimiento(String idMovimiento) {
-        String url = servidor + "movimientoController/eliminar_movimiento.php";
+        String url = ServidorConfig.URL_SERVIDOR + "movimientoController/eliminar_movimiento.php";
         RequestParams params = new RequestParams();
         params.put("id_movimiento", idMovimiento);
 
@@ -313,7 +240,6 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
                 String response = new String(responseBody);
                 if (response.contains("success")) {
                     Toast.makeText(getActivity(), "Movimiento eliminado correctamente", Toast.LENGTH_SHORT).show();
-                    // Después de eliminar, puedes actualizar la lista de movimientos
                     SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
                     int idUsuario = prefs.getInt("id_usuario", -1);
                     ListarMovimientos(idUsuario);
@@ -330,71 +256,61 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
     }
     private void EditarMovimiento(String idMovimiento) {
         Bundle bundle = new Bundle();
-        bundle.putString("id_movimiento", idMovimiento);  // Pasa el id_movimiento
+        bundle.putString("id_movimiento", idMovimiento);
 
         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
         navController.navigate(R.id.action_nav_listar_movimientos_to_nav_editar_movimiento, bundle);
     }
 
     private void cargarCategoriasFiltro(int idUsuario) {
-
-        // Verificar si el id_usuario es válido
         if (idUsuario == -1) {
             Log.e("Error", "id_usuario no válido");
             Toast.makeText(getActivity(), "Error: No se ha encontrado el ID de usuario", Toast.LENGTH_SHORT).show();
-            return;  // No continuar con la solicitud si id_usuario no es válido
+            return;
         }
 
-        // Si id_usuario es válido, continuamos con la solicitud
-        String url = servidor + "itemsController/obtener_categoria_presupuesto_mov.php";  // URL correcta
+        String url = ServidorConfig.URL_SERVIDOR + "itemsController/obtener_categoria_presupuesto_mov.php";
         RequestParams params = new RequestParams();
-        params.put("id_usuario", idUsuario);  // El id del usuario se obtiene de SharedPreferences correctamente
+        params.put("id_usuario", idUsuario);
 
-        // Verificar que los parámetros estén bien construidos
-        Log.d("Parametros de la solicitud", "id_usuario: " + idUsuario);  // Este log te ayudará a verificar el valor de id_usuario
+        Log.d("Parametros de la solicitud", "id_usuario: " + idUsuario);
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 try {
-                    // Convertir el cuerpo de la respuesta a String
                     String responseString = new String(responseBody);
-                    Log.d("Respuesta API", responseString);  // Esto te ayudará a verificar qué estás recibiendo
+                    Log.d("Respuesta API", responseString);
 
-                    // Procesar la respuesta JSON como un JSONArray, no JSONObject
-                    JSONArray jsonArray = new JSONArray(responseString);  // Aquí cambiamos a JSONArray
+                    JSONArray jsonArray = new JSONArray(responseString);
                     List<String> categorias = new ArrayList<>();
                     List<Integer> categoriasIds = new ArrayList<>();
 
-                    // Añadir la opción por defecto (Seleccionar categoría)
                     categorias.add("Seleccionar categoría");
-                    categoriasIds.add(null);  // Usamos null para la opción por defecto
+                    categoriasIds.add(null);
 
-                    // Recoger las categorías y sus IDs
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject obj = jsonArray.getJSONObject(i);
                         categorias.add(obj.getString("nombre"));
                         categoriasIds.add(obj.getInt("id_categoria"));
                     }
 
-                    // Adaptador para el Spinner
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, categorias);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spCategoriaFiltro.setAdapter(adapter);
 
-                    // Establecer el listener para que, al seleccionar una categoría, actualice el filtro
                     spCategoriaFiltro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                             categoriaFiltro = position > 0 ? String.valueOf(categoriasIds.get(position)) : null;
                             Log.d("Categoria Seleccionada", "ID Categoría: " + categoriaFiltro);
-                            ListarMovimientos(idUsuario);  // Llamamos a la función para actualizar la lista con el filtro
+                            ListarMovimientos(idUsuario);
                         }
 
                         @Override
                         public void onNothingSelected(AdapterView<?> parentView) {
-                            categoriaFiltro = null;  // Si no se selecciona nada, dejamos el filtro vacío
+                            categoriaFiltro = null;
                         }
                     });
                 } catch (JSONException e) {
@@ -403,14 +319,12 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
                 }
             }
 
-
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 Toast.makeText(getActivity(), "Error al obtener categorías", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
 
     private void openDatePicker() {
         final Calendar calendar = Calendar.getInstance();

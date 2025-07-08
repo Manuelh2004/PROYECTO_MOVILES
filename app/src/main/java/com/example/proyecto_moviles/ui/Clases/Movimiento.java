@@ -1,4 +1,4 @@
-package com.example.proyecto_moviles.ui.Movimiento;
+package com.example.proyecto_moviles.ui.Clases;
 
 public class Movimiento {
     String id_movimiento;
