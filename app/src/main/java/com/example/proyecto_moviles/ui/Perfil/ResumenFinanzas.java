@@ -10,17 +10,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.proyecto_moviles.MonedaViewModel;
-import com.example.proyecto_moviles.ui.Movimiento.AgregarMovimiento;
-import com.example.proyecto_moviles.ui.Presupuesto.PresupuestoFragment;
-import com.example.proyecto_moviles.MainActivity;
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.databinding.FragmentResumenFinanzasBinding;
+import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -36,14 +33,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import androidx.navigation.NavOptions;
-
 import cz.msebera.android.httpclient.Header;
 
 public class ResumenFinanzas extends Fragment {
-
     private FragmentResumenFinanzasBinding binding;
-    private MonedaViewModel monedaViewModel;
-    private final String URL = "http://10.0.2.2/proyecto_moviles/controladores/ResumenController/funcion_resumen.php";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,7 +46,6 @@ public class ResumenFinanzas extends Fragment {
         obtenerResumenFinanzas();
         mostrarGraficoPresupuestos();
 
-        // Ir a MovimientoFragment manualmente
         binding.btnIrMovimiento.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
             NavOptions navOptions = new NavOptions.Builder()
@@ -63,7 +55,6 @@ public class ResumenFinanzas extends Fragment {
             navController.navigate(R.id.nav_movimiento, null, navOptions);
         });
 
-        // Ir a PresupuestoFragment manualmente
         binding.btnIrPresupuesto.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
             NavOptions navOptions = new NavOptions.Builder()
@@ -72,7 +63,6 @@ public class ResumenFinanzas extends Fragment {
                     .build();
             navController.navigate(R.id.nav_presupuesto, null, navOptions);
         });
-
         return root;
     }
 
@@ -84,8 +74,7 @@ public class ResumenFinanzas extends Fragment {
             Toast.makeText(getActivity(), "Usuario no autenticado", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        String url = URL + "?id_usuario=" + idUsuario;
+        String url = ServidorConfig.URL_SERVIDOR + "ResumenController/funcion_resumen.php?id_usuario=" + idUsuario;
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(url, null, new AsyncHttpResponseHandler() {
@@ -128,8 +117,7 @@ public class ResumenFinanzas extends Fragment {
         int idUsuario = prefs.getInt("id_usuario", -1);
 
         if (idUsuario == -1) return;
-
-        String url = "http://10.0.2.2/proyecto_moviles/controladores/ResumenController/obtener_presupuestos_grafica.php?id_usuario=" + idUsuario;
+        String url = ServidorConfig.URL_SERVIDOR + "ResumenController/obtener_presupuestos_grafica.php?id_usuario=" + idUsuario;
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, null, new AsyncHttpResponseHandler() {
@@ -178,7 +166,6 @@ public class ResumenFinanzas extends Fragment {
             }
         });
     }
-
 
     @Override
     public void onDestroyView() {
