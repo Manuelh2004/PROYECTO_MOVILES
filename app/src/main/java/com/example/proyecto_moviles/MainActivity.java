@@ -1,7 +1,6 @@
 package com.example.proyecto_moviles;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,16 +10,13 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.proyecto_moviles.ui.BaseActivity;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -40,24 +36,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.example.proyecto_moviles.R;
-
-
-
-import javax.security.auth.callback.Callback;
-
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends BaseActivity {
-
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-
     private MonedaViewModel monedaViewModel;
     public int opc_resumen_finanzas, opc_presupuesto, opc_movimientos, opc_visual, opc_perfil, opc_administrador;
-
-    private String servidor = "http://10.0.2.2/proyecto_moviles/controladores/usuarioController/";
-
     private boolean modoMoneda = false;
 
     @Override
@@ -72,26 +57,6 @@ public class MainActivity extends BaseActivity {
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
-
-        /*if (opc_resumen_finanzas == 0){
-            navigationView.getMenu().findItem(R.id.nav_resumen_finanzas).setVisible(false);
-        }
-        if (opc_presupuesto == 0){
-            navigationView.getMenu().findItem(R.id.nav_presupuesto).setVisible(false);
-        }
-        if (opc_movimientos == 0){
-            navigationView.getMenu().findItem(R.id.nav_movimiento).setVisible(false);
-        }
-        if (opc_visual == 0){
-            navigationView.getMenu().findItem(R.id.nav_analisis_visual_egresos).setVisible(false);
-        }
-        if (opc_perfil == 0){
-            navigationView.getMenu().findItem(R.id.nav_perfil).setVisible(false);
-        }
-        if (opc_administrador == 0){
-            navigationView.getMenu().findItem(R.id.nav_administrador).setVisible(false);
-        }*/
-
         // Configura top level destinations
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_resumen_finanzas,R.id.nav_movimiento, R.id.nav_presupuesto, R.id.nav_analisis_visual_egresos, R.id.nav_perfil, R.id.nav_administrador)
@@ -102,43 +67,28 @@ public class MainActivity extends BaseActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        // Obtener el usuario logueado y actualizar el header
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            // Usuario logueado, actualizar el encabezado
             View headerView = navigationView.getHeaderView(0);
-
-            ImageView logoImageView = headerView.findViewById(R.id.logoImageView); // Obtener la ImageView
-
-
-
-       // Cambia el logo a uno nuevo (asegúrate de tener esta imagen en res/drawable)
+            ImageView logoImageView = headerView.findViewById(R.id.logoImageView);
         }
 
-        // Manejo de clicks en el menú
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
             if (id == R.id.nav_logout) {
-                // Limpiar SharedPreferences
                 SharedPreferences prefs = getSharedPreferences("MisPreferencias", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.clear();
                 editor.apply();
 
-                // Cerrar sesión Firebase
                 FirebaseAuth.getInstance().signOut();
-
-                // Navegar a login manualmente
                 navController.navigate(R.id.nav_login);
-
-                // Cerrar drawer
                 drawer.closeDrawer(GravityCompat.START);
                 return true;
             }
 
             else {
-                // Para otros items, usar navegación normal
                 boolean handled = NavigationUI.onNavDestinationSelected(item, navController);
                 if (handled) {
                     drawer.closeDrawer(GravityCompat.START);
@@ -147,7 +97,6 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        // Control de visibilidad toolbar según fragmento
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() == R.id.nav_login ||
                     destination.getId() == R.id.nav_crear_cuenta ||
@@ -201,26 +150,17 @@ public class MainActivity extends BaseActivity {
     }
 
     public void ConsultarUsuario(int id_usuario, final Callback callback){
-
-        String url = servidor + "consultar_usuario.php";
-
-        // Crear un objeto RequestParams para almacenar los parámetros
+        String url = ServidorConfig.URL_SERVIDOR + "usuarioController/consultar_usuario.php";
         RequestParams params = new RequestParams();
         params.put("id_usuario",id_usuario);
-
-        // Crear una instancia de AsyncHttpClient
         AsyncHttpClient usuario = new AsyncHttpClient();
 
         usuario.get(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                String response = new String(responseBody);  // Obtener la respuesta del servidor como String
-
+                String response = new String(responseBody);
                 try {
-                    // Parsear el JSON recibido
                     JSONArray jsonArray = new JSONArray(response);
-
-
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                          opc_resumen_finanzas = jsonObject.getInt("opc_resumen_finanzas");
@@ -230,7 +170,6 @@ public class MainActivity extends BaseActivity {
                          opc_perfil = jsonObject.getInt("opc_perfil");
                          opc_administrador = jsonObject.getInt("opc_administrador");
                     }
-
                     callback.onUsuarioCargado(opc_resumen_finanzas, opc_presupuesto, opc_movimientos, opc_visual, opc_perfil, opc_administrador);
 
                 } catch (JSONException e) {
@@ -241,17 +180,13 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
             }
         });
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu); // inflar tu menú con submenús
-
-        // Buscar el submenú "Cambio de moneda"
+        getMenuInflater().inflate(R.menu.main, menu);
         MenuItem itemCambioMoneda = menu.findItem(R.id.action_cambio_moneda);
         if (itemCambioMoneda != null && itemCambioMoneda.hasSubMenu()) {
             SubMenu subMenu = itemCambioMoneda.getSubMenu();
@@ -312,8 +247,6 @@ public class MainActivity extends BaseActivity {
                 .setPositiveButton("Cerrar", (dialog, which) -> dialog.dismiss())
                 .show();
     }
-
-
 
     @Override
     public boolean onSupportNavigateUp() {

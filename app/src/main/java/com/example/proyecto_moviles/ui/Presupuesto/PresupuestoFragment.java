@@ -8,11 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,7 +19,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.proyecto_moviles.R;
-import com.example.proyecto_moviles.ui.Categoria;
+import com.example.proyecto_moviles.ui.Clases.Categoria;
+import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -30,19 +29,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import cz.msebera.android.httpclient.Header;
 
 public class PresupuestoFragment extends Fragment implements View.OnClickListener {
-
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/presupuestoController/";
     private EditText f_inicio, f_fin;
     private EditText mon;
     private Button agre, mos;
@@ -101,14 +96,12 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
                                 fecha_inicio = formatoMySQL.format(selectedDate.getTime());
                             }
                         }, year, month, day);
-
                 datePickerDialog.show();
             }
         });
 
         f_fin.setFocusable(false);
         f_fin.setClickable(true);
-
         f_fin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,13 +122,9 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
                                 fecha_fin = formatoMySQL.format(selectedDate.getTime());
                             }
                         }, year, month, day);
-
                 datePickerDialog.show();
             }
         });
-
-        //String[] elementos = {"Categoria", "Academia"};
-
         listaCategorias = new ArrayList<>();
         cargarCategoriasDesdeServidor();
 
@@ -152,25 +141,19 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
             Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        String url = servidor + "obtener_categorias.php";
-
+        String url = ServidorConfig.URL_SERVIDOR + "presupuestoController/obtener_categorias.php";
         RequestParams params = new RequestParams();
         params.put("id_usuario",id_usuario);
-
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                String response = new String(responseBody);  // Obtener la respuesta del servidor como String
+                String response = new String(responseBody);
 
                 try {
-                    // Parsear el JSON recibido
                     JSONArray jsonArray = new JSONArray(response);
-
-                    listaCategorias.clear(); // Limpiar antes de agregar
-
+                    listaCategorias.clear();
                     listaCategorias.add(new Categoria(0, "Seleccione una categoría"));
 
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -213,7 +196,6 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
             String fechaInicioP = fecha_inicio;
             String fechaFinP = fecha_fin;
 
-            //Toast.makeText(getContext(), "id categoria: " + categoriaP, Toast.LENGTH_SHORT).show();
             RegistrarPresupuesto(montoP, categoriaP, fechaInicioP, fechaFinP);
             limpiarCampos();
         }
@@ -224,13 +206,11 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
             Toast.makeText(getContext(), "Seleccione una categoría", Toast.LENGTH_SHORT).show();
             return false;
         }
-
         String montoTexto = mon.getText().toString().trim();
         if (montoTexto.isEmpty()) {
             Toast.makeText(getContext(), "Ingrese un monto válido", Toast.LENGTH_SHORT).show();
             return false;
         }
-
         try {
             float monto = Float.parseFloat(montoTexto);
             if (monto <= 0) {
@@ -241,46 +221,34 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
             Toast.makeText(getContext(), "Monto no válido", Toast.LENGTH_SHORT).show();
             return false;
         }
-
         if (fecha_inicio == null || fecha_inicio.isEmpty() || fecha_fin == null || fecha_fin.isEmpty()) {
             Toast.makeText(getContext(), "Seleccione las fechas de inicio y fin", Toast.LENGTH_SHORT).show();
             return false;
         }
-
-        // Validar que fecha de inicio sea menor o igual a fecha fin (opcional)
         if (fecha_inicio.compareTo(fecha_fin) > 0) {
             Toast.makeText(getContext(), "La fecha de inicio no puede ser mayor que la fecha de fin", Toast.LENGTH_SHORT).show();
             return false;
         }
-
         return true;
     }
 
     private void limpiarCampos() {
-        mon.setText("");  // Limpiar el campo de monto
-        cat.setSelection(0);  // Seleccionar la primera categoría (índice 0)
-
-        // Reiniciar las variables de fecha
+        mon.setText("");
+        cat.setSelection(0);
         fecha_inicio = "";
         fecha_fin = "";
-
-        // Si tienes TextViews donde se muestran las fechas, también límpialos
-        f_inicio.setText(""); // Usa el ID correcto del TextView
+        f_inicio.setText("");
         f_fin.setText("");
     }
 
     private void RegistrarPresupuesto(Float montoP, int categoriaP, String fechaInicioP, String fechaFinP) {
-
-
-        // Obtener id_usuario numérico guardado en SharedPreferences
         SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
         id_usuario = prefs.getInt("id_usuario", -1);
         if (id_usuario == -1) {
             Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        String url = servidor + "presupuesto_registrar.php";
+        String url = ServidorConfig.URL_SERVIDOR + "presupuestoController/presupuesto_registrar.php";
 
         RequestParams params = new RequestParams();
         params.put("id_usuario", id_usuario);
@@ -294,13 +262,13 @@ public class PresupuestoFragment extends Fragment implements View.OnClickListene
         client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                String response = new String(responseBody);  // Obtener la respuesta del servidor como String
+                String response = new String(responseBody);
                 Toast.makeText(getActivity(), "Respuesta: " + response, Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                String response = new String(responseBody);  // Obtener la respuesta del servidor como String
+                String response = new String(responseBody);
                 Toast.makeText(getActivity(), "Error: " + response, Toast.LENGTH_LONG).show();
             }
         });

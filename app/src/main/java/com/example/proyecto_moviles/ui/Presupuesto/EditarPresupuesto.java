@@ -13,15 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.proyecto_moviles.R;
-import com.example.proyecto_moviles.ui.Categoria;
+import com.example.proyecto_moviles.ui.Clases.Categoria;
+import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -41,13 +40,11 @@ import java.util.Locale;
 import cz.msebera.android.httpclient.Header;
 
 public class EditarPresupuesto extends Fragment implements View.OnClickListener {
-
     private Button act;
     private EditText monEP;
     private EditText FiniEP, FfinEP;
     private Spinner catEP;
     private String idPresupuesto = "";
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/presupuestoController/";
     private String modoSeleccion = "";
     private String fechaSeleccionada = "";
     private String fecha_inicio="", fecha_fin="";
@@ -60,12 +57,10 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_editar_presupuesto, container, false);
 
         if (getArguments() != null) {
             idPresupuesto = getArguments().getString("idPresupuesto");
-            // Toast.makeText(getContext(), "ID recibido: " + idPresupuesto, Toast.LENGTH_SHORT).show();
         }
 
         monEP = (EditText) rootView.findViewById(R.id.etMontoEP);
@@ -73,15 +68,12 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
         FfinEP = (EditText) rootView.findViewById(R.id.etFechaFinEP);
         FiniEP = (EditText) rootView.findViewById(R.id.etFechaInicioEP);
         catEP = (Spinner) rootView.findViewById(R.id.spCategoriaEP);
-
-        //quiero que se inavilite el etMontoEP
         monEP.setEnabled(false);
         catEP.setEnabled(false);
 
         listaCategorias = new ArrayList<>();
         cargarCategoriasDesdeServidor();
 
-        // Establecer modo al tocar cada campo
         FiniEP.setOnClickListener(v -> {
             modoSeleccion = "inicio";
             Toast.makeText(getContext(),"Selecciona la nueva fecha de Incio",Toast.LENGTH_SHORT).show();
@@ -160,23 +152,18 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
     }
 
     private void cargarCategoriasDesdeServidor() {
-        String url = servidor + "obtener_categorias.php";
-
+        String url = ServidorConfig.URL_SERVIDOR + "presupuestoController/obtener_categorias.php";
         RequestParams params = new RequestParams();
         params.put("id_usuario",id_usuario);
-
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                String response = new String(responseBody);  // Obtener la respuesta del servidor como String
+                String response = new String(responseBody);
 
                 try {
-                    // Parsear el JSON recibido
                     JSONArray jsonArray = new JSONArray(response);
-
-
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         int id_categoria = jsonObject.getInt("id_categoria");
@@ -189,7 +176,6 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
                     adapterCategoria = new ArrayAdapter<>( getContext(),android.R.layout.simple_spinner_item,listaCategorias);
                     adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     catEP.setAdapter(adapterCategoria);
-
                     ConsultarPresupuesto(idPresupuesto);
 
                 } catch (JSONException e) {
@@ -206,25 +192,17 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
     }
 
     private void ConsultarPresupuesto(String idPresupuesto) {
-        // Crear la URL para hacer la solicitud
-        String url = servidor + "consultar_presupuesto.php";
-
-        // Crear un objeto RequestParams para almacenar los parámetros
+        String url = ServidorConfig.URL_SERVIDOR + "presupuestoController/consultar_presupuesto.php";
         RequestParams params = new RequestParams();
         params.put("idPresupuesto",idPresupuesto);
-
-        // Crear una instancia de AsyncHttpClient
         AsyncHttpClient presupuesto = new AsyncHttpClient();
 
         presupuesto.get(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                String response = new String(responseBody);  // Obtener la respuesta del servidor como String
-
+                String response = new String(responseBody);
                 try {
-                    // Parsear el JSON recibido
                     JSONArray jsonArray = new JSONArray(response);
-
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -237,7 +215,6 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
                         Date fechaInicio = formatoMySQLEP.parse(fini_presupuesto);
                         Date fechaFin = formatoMySQLEP.parse(ffin_presupuesto);
 
-                        //Colocar datos en los EditText
                         monEP.setText(pres_presupuesto);
                         FfinEP.setText(formatoDeseadoEP.format(fechaFin));
                         FiniEP.setText(formatoDeseadoEP.format(fechaInicio));
@@ -246,7 +223,6 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
                         fecha_inicio =  fini_presupuesto;
                         fecha_fin = ffin_presupuesto;
                     }
-
                 } catch (JSONException | ParseException e) {
                     e.printStackTrace();
                     Toast.makeText(getActivity(), "Error al parsear el JSON", Toast.LENGTH_LONG).show();
@@ -263,9 +239,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         if(v == act){
-
             if (!validarCampos()) return;
-
             Categoria categoriaSeleccionada = (Categoria) catEP.getSelectedItem();
             Float montop = Float.parseFloat(monEP.getText().toString());
             Float montoActualp = Float.parseFloat(monEP.getText().toString());
@@ -305,7 +279,6 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
             return false;
         }
 
-        // Validar que fecha de inicio sea menor o igual a fecha fin (opcional)
         if (fecha_inicio.compareTo(fecha_fin) > 0) {
             Toast.makeText(getContext(), "La fecha de inicio no puede ser mayor que la fecha de fin", Toast.LENGTH_SHORT).show();
             return false;
@@ -315,8 +288,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
     }
 
     private void ActualizarPresupuesto(String idPresupuesto, int idUsuario, int categoriaP, Float montoP, Float montoActualp, String fechaInicioP, String fechaFinP) {
-        String url = servidor + "presupuesto_actualizar.php";
-
+        String url = ServidorConfig.URL_SERVIDOR + "presupuestoController/presupuesto_actualizar.php";
         RequestParams params = new RequestParams();
         params.put("idPresupuesto", idPresupuesto);
         params.put("idUsuario", idUsuario);
@@ -325,13 +297,12 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
         params.put("montoActualp", montoActualp);
         params.put("fechaInicioP", fechaInicioP);
         params.put("fechaFinP", fechaFinP);
-
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                String response = new String(responseBody);  // Obtener la respuesta del servidor como String
+                String response = new String(responseBody);
                 Toast.makeText(getActivity(), "Respuesta: " + response, Toast.LENGTH_LONG).show();
 
                 NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
@@ -340,7 +311,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                String response = new String(responseBody);  // Obtener la respuesta del servidor como String
+                String response = new String(responseBody);
                 Toast.makeText(getActivity(), "Error: " + response, Toast.LENGTH_LONG).show();
             }
         });

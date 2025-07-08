@@ -1,4 +1,4 @@
-package com.example.proyecto_moviles.ui;
+package com.example.proyecto_moviles.ui.Clases;
 
 public class Categoria {
     private int id;
@@ -19,6 +19,6 @@ public class Categoria {
 
     @Override
     public String toString() {
-        return nombre; // Esto mostrará el nombre en el Spinner
+        return nombre;
     }
 }

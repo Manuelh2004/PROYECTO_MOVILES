@@ -1,7 +1,6 @@
 package com.example.proyecto_moviles.ui.Presupuesto;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -26,49 +25,38 @@ import android.widget.Toast;
 
 import com.example.proyecto_moviles.MonedaViewModel;
 import com.example.proyecto_moviles.R;
-import com.example.proyecto_moviles.ui.Categoria;
-import com.example.proyecto_moviles.ui.Clases.Item;
+import com.example.proyecto_moviles.ui.Clases.Categoria;
+import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 
 public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClickListener{
-
     private ListView lista;
-
     private List<Presupuesto> listaOriginal = new ArrayList<>();
     private Spinner categoria;
-    ArrayAdapter<Categoria> adapterCategoria;
-    List<Categoria> listaCategorias;
+    private ArrayAdapter<Categoria> adapterCategoria;
+    private List<Categoria> listaCategorias;
     private int id_usuario = 0;
-
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/presupuestoController/";
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_vista_presupuesto, container, false);
-        // Inflate the layout for this fragment
         lista = (ListView) rootView.findViewById(R.id.lstPresupuestoMostrar);
         categoria = (Spinner) rootView.findViewById(R.id.spCategoriaM);
 
         listaCategorias = new ArrayList<>();
         listaCategorias.add(new Categoria(0, "Todos las Categorias"));
-
 
         adapterCategoria = new ArrayAdapter<>( getContext(),android.R.layout.simple_spinner_item,listaCategorias);
         adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -99,23 +87,17 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
         return rootView;
     }
     private void cargarCategoriasDesdeServidor() {
-        String url = servidor + "obtener_categorias_pre.php";
-
+        String url = ServidorConfig.URL_SERVIDOR + "presupuestoController/obtener_categorias_pre.php";
         RequestParams params = new RequestParams();
         params.put("id_usuario",id_usuario);
-
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                String response = new String(responseBody);  // Obtener la respuesta del servidor como String
-
+                String response = new String(responseBody);
                 try {
-                    // Parsear el JSON recibido
                     JSONArray jsonArray = new JSONArray(response);
-
-
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         int id_categoria = jsonObject.getInt("id_categoria");
@@ -124,11 +106,9 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
                         Categoria categoria = new Categoria(id_categoria, nombre_categoria);
                         listaCategorias.add(categoria);
                     }
-
                     adapterCategoria = new ArrayAdapter<>( getContext(),android.R.layout.simple_spinner_item,listaCategorias);
                     adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     categoria.setAdapter(adapterCategoria);
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getActivity(), "Error al parsear el JSON", Toast.LENGTH_LONG).show();
@@ -144,7 +124,7 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if(parent==lista) //si estoy usando el listview lista
+        if(parent==lista)
         {
             PopupMenu popupMenu = new PopupMenu(getActivity(),view);
             popupMenu.getMenuInflater().inflate(R.menu.opciones, popupMenu.getMenu());
@@ -193,10 +173,8 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
     }
 
     public class ContactAdapter extends BaseAdapter {
-
         private Context context;
         private List<Presupuesto> presupuestoList;
-
         public ContactAdapter(Context context, List<Presupuesto> contactList) {
             this.context = context;
             this.presupuestoList = contactList;
@@ -224,52 +202,36 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
                 convertView = inflater.inflate(R.layout.item_presupuesto, null);
             }
 
-            // Obtener los elementos de la vista
             TextView id = convertView.findViewById(R.id.tvIdPV);
             TextView monto = convertView.findViewById(R.id.tvMontoPV);
             TextView categoria = convertView.findViewById(R.id.tvCategoriaPV);
-
-            // Obtener el contacto
             Presupuesto presupuesto = presupuestoList.get(position);
 
-            // Asignar los valores
             id.setText(presupuesto.id);
             categoria.setText("Categoria: "+ presupuesto.categoria.getNombre());
             MonedaViewModel monedaViewModel = new ViewModelProvider(requireActivity()).get(MonedaViewModel.class);
             monedaViewModel.getMostrarEnDolares().observe(getViewLifecycleOwner(), mostrarEnDolares -> {
                 String simbolo = mostrarEnDolares ? "$ " : "S/ ";
-
                 monto.setText("Monto: "+ simbolo + presupuesto.monto);
             });
-
 
             return convertView;
         }
     }
 
     private void MostrarDatos() {
-
-        // Crear la URL para hacer la solicitud
-        String url = servidor + "mostrar_presupuesto.php";
-
-        // Crear un objeto RequestParams para almacenar los parámetros
+        String url = ServidorConfig.URL_SERVIDOR + "presupuestoController/mostrar_presupuesto.php";
         RequestParams params = new RequestParams();
         params.put("id_Usuario",id_usuario);
-
-        // Crear una instancia de AsyncHttpClient
         AsyncHttpClient client = new AsyncHttpClient();
 
-        // Hacer la solicitud GET
         client.get(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                String response = new String(responseBody);  // Obtener la respuesta del servidor como String
-                //Toast.makeText(getApplicationContext(), "Respuesta: " + response, Toast.LENGTH_LONG).show();
-
+                String response = new String(responseBody);
                 try {
-                    // Parsear el JSON recibido
                     JSONArray jsonArray = new JSONArray(response);
-                    listaOriginal.clear(); // <- limpiar lista original
+                    listaOriginal.clear();
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -287,20 +249,11 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
 
                         listaOriginal.add(presupuesto);
                     }
-
-                    // Mostrar todos al inicio
                     actualizarLista(listaOriginal);
-
-                    // Crear el adaptador y asignarlo al ListView
-                    /*VistaPresupuesto.ContactAdapter adapter = new VistaPresupuesto.ContactAdapter(getActivity(), presupuestos);
-                    // Asegúrate de que tu ListView tenga el ID correcto
-                    lista.setAdapter(adapter);*/
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getActivity(), "Error al parsear el JSON", Toast.LENGTH_LONG).show();
                 }
-
             }
 
             @Override
@@ -312,7 +265,6 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
     }
 
     private void EditarPresupuesto(String idPresupuesto) {
-
         Bundle bundle = new Bundle();
         bundle.putString("idPresupuesto", idPresupuesto);
 
@@ -329,17 +281,15 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
                 .setCancelable(false)
                 .create();
 
-        // Referencias de botones
         Button btnCancelar = dialogView.findViewById(R.id.btnCancelar);
         Button btnEliminar = dialogView.findViewById(R.id.btnEliminar);
 
         btnCancelar.setOnClickListener(v -> dialog.dismiss());
 
         btnEliminar.setOnClickListener(v -> {
-            String url = servidor + "eliminar_presupuesto.php";
+            String url = ServidorConfig.URL_SERVIDOR + "presupuestoController/eliminar_presupuesto.php";
             RequestParams params = new RequestParams();
             params.put("idPresupuesto", idPresupuesto);
-
             AsyncHttpClient presupuesto = new AsyncHttpClient();
 
             presupuesto.get(url, params, new AsyncHttpResponseHandler() {
@@ -361,6 +311,4 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
 
         dialog.show();
     }
-
-
 }

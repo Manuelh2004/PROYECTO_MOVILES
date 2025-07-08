@@ -1,6 +1,6 @@
 package com.example.proyecto_moviles.ui.Presupuesto;
 
-import com.example.proyecto_moviles.ui.Categoria;
+import com.example.proyecto_moviles.ui.Clases.Categoria;
 
 public class Presupuesto {
 
