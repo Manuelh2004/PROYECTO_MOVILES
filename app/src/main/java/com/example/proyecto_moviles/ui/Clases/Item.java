@@ -11,6 +11,6 @@ public class Item {
 
     @Override
     public String toString() {
-        return nombre; // Esto es lo que se muestra en el Spinner
+        return nombre;
     }
 }

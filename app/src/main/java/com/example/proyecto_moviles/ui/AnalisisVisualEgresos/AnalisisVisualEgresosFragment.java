@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.databinding.FragmentAnalisisVisualEgresosBinding;
+import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -44,13 +45,10 @@ import java.util.Random;
 import cz.msebera.android.httpclient.Header;
 
 public class AnalisisVisualEgresosFragment extends Fragment {
-
     private BarChart barChartEgresosMensuales;
     private PieChart pieChartEgresos;
     private FragmentAnalisisVisualEgresosBinding binding;
     private LinearLayout leyendaPersonalizada;
-
-    private String servidor = "http://10.0.2.2/proyecto_moviles/controladores/EgresosController/";
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentAnalisisVisualEgresosBinding.inflate(inflater, container, false);
@@ -58,23 +56,16 @@ public class AnalisisVisualEgresosFragment extends Fragment {
 
         barChartEgresosMensuales = root.findViewById(R.id.barChartEgresosMensuales);
         pieChartEgresos = root.findViewById(R.id.pieChartEgresos);
-
+        
         obtenerDatosEgresos();
-
-        binding.btnActualizarGraficos.setOnClickListener(v -> obtenerDatosEgresos()); // Actualizar gráficos al presionar el botón
+        binding.btnActualizarGraficos.setOnClickListener(v -> obtenerDatosEgresos());
         leyendaPersonalizada = root.findViewById(R.id.leyendaPersonalizada);
 
         return root;
     }
     private void obtenerDatosEgresos() {
-        // Leer ID del usuario desde SharedPreferences (misma forma que en EditarPresupuesto)
         SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
         int idUsuario = prefs.getInt("id_usuario", -1);
-
-        // Mostrar el ID en un Toast
-        // Toast.makeText(getActivity(), "ID Usuario actual: " + idUsuario, Toast.LENGTH_SHORT).show();
-
-        // También puedes mostrarlo en Logcat para debugging
         android.util.Log.d("AnalisisVisualEgresos", "ID Usuario leído: " + idUsuario);
 
         if (idUsuario == -1) {
@@ -82,7 +73,7 @@ public class AnalisisVisualEgresosFragment extends Fragment {
             return;
         }
 
-        String url = servidor + "obtener_egresos.php?id_usuario=" + idUsuario;
+        String url = ServidorConfig.URL_SERVIDOR + "EgresosController/obtener_egresos.php?id_usuario=" + idUsuario;
         RequestParams params = new RequestParams();
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -98,7 +89,6 @@ public class AnalisisVisualEgresosFragment extends Fragment {
                         JSONObject obj = jsonArray.getJSONObject(i);
                         String categoria = obj.getString("categoria");
                         float monto = (float) obj.getDouble("monto");
-
                         datosAgrupados.put(categoria, datosAgrupados.getOrDefault(categoria, 0f) + monto);
                     }
 
@@ -121,11 +111,9 @@ public class AnalisisVisualEgresosFragment extends Fragment {
                         colores.add(Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
                     }
 
-                    // TÍTULOS
                     binding.tvTituloPie.setVisibility(View.VISIBLE);
                     binding.tvTituloBar.setVisibility(View.VISIBLE);
 
-                    // Configurar PieChart
                     PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
                     pieDataSet.setColors(colores);
                     pieDataSet.setValueTextSize(16f);
@@ -138,12 +126,11 @@ public class AnalisisVisualEgresosFragment extends Fragment {
                     pieChartEgresos.setUsePercentValues(true);
                     pieChartEgresos.setData(pieData);
                     pieChartEgresos.getDescription().setEnabled(false);
-                    pieChartEgresos.getLegend().setEnabled(false); // Desactivar leyenda nativa
+                    pieChartEgresos.getLegend().setEnabled(false);
                     pieChartEgresos.setExtraBottomOffset(10f);
                     pieChartEgresos.animateY(1000);
                     pieChartEgresos.invalidate();
 
-                    // Configurar BarChart
                     List<IBarDataSet> barDataSets = new ArrayList<>();
                     for (int i = 0; i < barEntries.size(); i++) {
                         BarEntry entry = barEntries.get(i);
@@ -166,7 +153,7 @@ public class AnalisisVisualEgresosFragment extends Fragment {
                     barChartEgresosMensuales.setData(barData);
                     barChartEgresosMensuales.setFitBars(true);
                     barChartEgresosMensuales.getDescription().setEnabled(false);
-                    barChartEgresosMensuales.getLegend().setEnabled(false); // Desactivar leyenda nativa
+                    barChartEgresosMensuales.getLegend().setEnabled(false);
                     barChartEgresosMensuales.getXAxis().setValueFormatter(new IndexAxisValueFormatter(barLabels));
                     barChartEgresosMensuales.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
                     barChartEgresosMensuales.getXAxis().setGranularity(1f);
@@ -175,11 +162,8 @@ public class AnalisisVisualEgresosFragment extends Fragment {
                     barChartEgresosMensuales.getAxisRight().setEnabled(false);
                     barChartEgresosMensuales.animateY(1000);
                     barChartEgresosMensuales.invalidate();
+                    barChartEgresosMensuales.getXAxis().setLabelRotationAngle(-35f);
 
-                    barChartEgresosMensuales.getXAxis().setLabelRotationAngle(-35f); // etiquetas
-
-
-                    // LEYENDA PERSONALIZADA
                     binding.leyendaPersonalizada.removeAllViews();
                     for (int i = 0; i < barLabels.size(); i++) {
                         LinearLayout itemLayout = new LinearLayout(getContext());
@@ -201,8 +185,6 @@ public class AnalisisVisualEgresosFragment extends Fragment {
                         itemLayout.addView(label);
                         binding.leyendaPersonalizada.addView(itemLayout);
                     }
-
-
 
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.ui.Clases.Item;
+import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.loopj.android.http.AsyncHttpClient;
@@ -36,18 +37,15 @@ import cz.msebera.android.httpclient.Header;
 
 public class CrearCuenta extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, LoginDialogFragment.LoginDialogListener{
     private FirebaseAuth mAuth;
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
     private EditText etNombres, etApellidos, etTelefono, etFechaNa, etDocumento;
-    private Button btnCrearUsuario, btnCancelar;
+    private Button btnCrearUsuario;
     private Spinner spGenero;
     private Spinner spTipoDoc;
     int idGenero = -1, idTipoDoc;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_crear_cuenta, container, false);
         mAuth = FirebaseAuth.getInstance();
 
@@ -61,11 +59,9 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         spGenero.setOnItemSelectedListener(this);
         spTipoDoc = (Spinner) rootView.findViewById(R.id.spTipoDocumento);
         spTipoDoc.setOnItemSelectedListener(this);
-
         btnCrearUsuario = (Button) rootView.findViewById(R.id.btnCrearUsuario);
         btnCrearUsuario.setOnClickListener(this);
 
-        // Desactivamos edición directa y ponemos listener para abrir DatePicker
         etFechaNa.setFocusable(false);
         etFechaNa.setClickable(true);
 
@@ -85,11 +81,9 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                                 etFechaNa.setText(formattedDate);
                             }
                         }, year, month, day);
-
                 datePickerDialog.show();
             }
         });
-
         obtenerGenero();
         obtenerTipoDoc();
 
@@ -97,18 +91,15 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
     }
 
     private void obtenerTipoDoc() {
-        String url =  servidor+"itemsController/obtener_tipo_doc.php";
-
+        String url = ServidorConfig.URL_SERVIDOR + "itemsController/obtener_tipo_doc.php";
         AsyncHttpClient client = new AsyncHttpClient();
+
         client.get(url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-
                 ArrayList<Item> lista = new ArrayList<>();
-
                 lista.add(new Item(-1, "Seleccionar Tipo de Documento"));
 
-                //Respuesta del servidor
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject obj = response.getJSONObject(i);
@@ -119,8 +110,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                         e.printStackTrace();
                     }
                 }
-
-                //Llena el Spinner
                 ArrayAdapter<Item> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, lista);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spTipoDoc.setAdapter(adapter);
@@ -134,18 +123,15 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
     }
 
     private void obtenerGenero() {
-        String url =  servidor+"itemsController/obtener_genero.php";
-
+        String url = ServidorConfig.URL_SERVIDOR + "itemsController/obtener_genero.php";
         AsyncHttpClient client = new AsyncHttpClient();
+
         client.get(url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-
                 ArrayList<Item> lista = new ArrayList<>();
-
                 lista.add(new Item(-1, "Seleccionar genero"));
 
-                //Respuesta del servidor
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject obj = response.getJSONObject(i);
@@ -156,8 +142,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                         e.printStackTrace();
                     }
                 }
-
-                //Llena el Spinner
                 ArrayAdapter<Item> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, lista);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spGenero.setAdapter(adapter);
@@ -168,17 +152,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                 Toast.makeText(getActivity(), "Error al cargar datos", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-    private void LimpiarCampos()
-    {
-        etNombres.setText("");
-        etApellidos.setText("");
-        etTelefono.setText("");
-        etFechaNa.setText("");
-        etDocumento.setText("");
-        spGenero.setSelection(0);
-        spTipoDoc.setSelection(0);
-        etNombres.requestFocus();
     }
 
     @Override
@@ -193,18 +166,16 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                 return;
             }
 
-            // Validar formato de número de teléfono
             String telefono = etTelefono.getText().toString();
             if (!telefono.matches("^9\\d{8}$")) {
                 Toast.makeText(getActivity(), "El número debe tener 9 dígitos y comenzar con 9", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Validar que la fecha no sea futura
             try {
                 String[] fecha = etFechaNa.getText().toString().split("/");
                 int dia = Integer.parseInt(fecha[0]);
-                int mes = Integer.parseInt(fecha[1]) - 1; // Calendar usa 0-11
+                int mes = Integer.parseInt(fecha[1]) - 1;
                 int anio = Integer.parseInt("20" + fecha[2]);
 
                 Calendar fechaNacimiento = Calendar.getInstance();
@@ -228,7 +199,6 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                 Toast.makeText(getActivity(), "Por favor, seleccione un tipo de documento", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             LoginDialogFragment dialog = new LoginDialogFragment();
             dialog.setLoginDialogListener(this);
             dialog.show(getParentFragmentManager(), "LoginDialog");
@@ -240,36 +210,24 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         if(parent==spGenero)
         {
             Item selectedItem = (Item) parent.getItemAtPosition(position);
-
-            // Verifica si es el item "Seleccionar categoría"
             if (selectedItem.id == -1) {
-                // No hacer nada si es la opción "Seleccionar categoría"
-                //Toast.makeText(getActivity(), "Por favor, seleccione una categoría", Toast.LENGTH_SHORT).show();
             } else {
-                // Si no es el item ficticio, maneja la selección normalmente
+
                 int selectedId = selectedItem.id;
                 String selectedNombre = selectedItem.nombre;
-                //Toast.makeText(getActivity(), "Seleccionado: " + selectedId + " - " + selectedNombre, Toast.LENGTH_SHORT).show();
                 idGenero = selectedId;
             }
         }
         if(parent==spTipoDoc)
         {
             Item selectedItem = (Item) parent.getItemAtPosition(position);
-
-            // Verifica si es el item "Seleccionar marca"
             if (selectedItem.id == -1) {
-                // No hacer nada si es la opción "Seleccionar marca"
-                //Toast.makeText(getActivity(), "Por favor, seleccione una marca", Toast.LENGTH_SHORT).show();
             } else {
-                // Si no es el item ficticio, maneja la selección normalmente
                 int selectedId = selectedItem.id;
                 String selectedNombre = selectedItem.nombre;
-                //Toast.makeText(getActivity(), "Seleccionado: " + selectedId + " - " + selectedNombre, Toast.LENGTH_SHORT).show();
                 idTipoDoc = selectedId;
             }
         }
-
     }
 
     @Override
@@ -286,33 +244,33 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
         String fechaNa = etFechaNa.getText().toString();
 
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        if (firebaseUser != null) {
-                            firebaseUser.sendEmailVerification().addOnCompleteListener(verifyTask -> {
-                                if (verifyTask.isSuccessful()) {
-                                    Toast.makeText(getContext(), "Correo de verificación enviado", Toast.LENGTH_LONG).show();
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                    if (firebaseUser != null) {
+                        firebaseUser.sendEmailVerification().addOnCompleteListener(verifyTask -> {
+                            if (verifyTask.isSuccessful()) {
+                                Toast.makeText(getContext(), "Correo de verificación enviado", Toast.LENGTH_LONG).show();
 
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("nombres", nombres);
-                                    bundle.putString("apellidos", apellidos);
-                                    bundle.putInt("idGenero", idGenero);
-                                    bundle.putInt("idTipoDoc", idTipoDoc);
-                                    bundle.putString("telefono", telefono);
-                                    bundle.putString("documento", documento);
-                                    bundle.putString("fechaNa", fechaNa);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("nombres", nombres);
+                                bundle.putString("apellidos", apellidos);
+                                bundle.putInt("idGenero", idGenero);
+                                bundle.putInt("idTipoDoc", idTipoDoc);
+                                bundle.putString("telefono", telefono);
+                                bundle.putString("documento", documento);
+                                bundle.putString("fechaNa", fechaNa);
 
-                                    NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                                    navController.navigate(R.id.action_nav_crear_cuenta_to_nav_verificar_email, bundle);
-                                } else {
-                                    Toast.makeText(getContext(), "No se pudo enviar el correo de verificación.", Toast.LENGTH_LONG).show();
-                                }
-                            });
-                        }
-                    } else {
-                        Toast.makeText(getContext(), "Error al registrar usuario: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+                                navController.navigate(R.id.action_nav_crear_cuenta_to_nav_verificar_email, bundle);
+                            } else {
+                                Toast.makeText(getContext(), "No se pudo enviar el correo de verificación.", Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
-                });
+                } else {
+                    Toast.makeText(getContext(), "Error al registrar usuario: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
     }
 }

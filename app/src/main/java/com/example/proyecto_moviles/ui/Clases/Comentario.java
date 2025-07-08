@@ -1,5 +1,4 @@
 package com.example.proyecto_moviles.ui.Clases;
-
 public class Comentario {
     private int id_comentario;
     private String men_comentario;
