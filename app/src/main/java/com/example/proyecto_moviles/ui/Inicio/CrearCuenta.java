@@ -176,7 +176,14 @@ public class CrearCuenta extends Fragment implements View.OnClickListener, Adapt
                 String[] fecha = etFechaNa.getText().toString().split("/");
                 int dia = Integer.parseInt(fecha[0]);
                 int mes = Integer.parseInt(fecha[1]) - 1;
-                int anio = Integer.parseInt("20" + fecha[2]);
+                int anio;
+                if (fecha[2].length() == 2) {
+                    int anioCorto = Integer.parseInt(fecha[2]);
+                    // Si es menor a 50, asumimos 2000+X, si no, 1900+X
+                    anio = (anioCorto <= 50) ? 2000 + anioCorto : 1900 + anioCorto;
+                } else {
+                    anio = Integer.parseInt(fecha[2]); // Para fechas como "1990" o "2005"
+                }
 
                 Calendar fechaNacimiento = Calendar.getInstance();
                 fechaNacimiento.set(anio, mes, dia);

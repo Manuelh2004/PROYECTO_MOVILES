@@ -27,7 +27,6 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
     private Button btnRevisarVerificacion, btnReenviarCorreo;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
-    final String servidor = "http://10.0.2.2/proyecto_moviles/controladores/";
     private String nombres, apellidos, telefono, documento, fechaNa, email;
     private int idGenero, idTipoDoc;
 
