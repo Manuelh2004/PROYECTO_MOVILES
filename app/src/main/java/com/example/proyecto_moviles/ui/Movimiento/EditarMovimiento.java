@@ -56,6 +56,9 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
         btnActualizarMovimiento = rootView.findViewById(R.id.btnActualizarMovimiento);
         btnActualizarMovimiento.setOnClickListener(this);
 
+        spCategoria.setEnabled(false);
+        spTipoMovimiento.setEnabled(false);
+
         cargarMovimiento();
 
         SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);

@@ -273,22 +273,19 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
         RequestParams params = new RequestParams();
         params.put("id_usuario", idUsuario);
 
-        Log.d("Parametros de la solicitud", "id_usuario: " + idUsuario);
-
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 try {
                     String responseString = new String(responseBody);
-                    Log.d("Respuesta API", responseString);
-
                     JSONArray jsonArray = new JSONArray(responseString);
                     List<String> categorias = new ArrayList<>();
                     List<Integer> categoriasIds = new ArrayList<>();
 
-                    categorias.add("Seleccionar categoría");
-                    categoriasIds.add(null);
+                    // Opción 0
+                    categorias.add("Todas las categorías");
+                    categoriasIds.add(0); // O usa null si tu backend lo permite
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject obj = jsonArray.getJSONObject(i);
@@ -303,8 +300,11 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
                     spCategoriaFiltro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                            categoriaFiltro = position > 0 ? String.valueOf(categoriasIds.get(position)) : null;
-                            Log.d("Categoria Seleccionada", "ID Categoría: " + categoriaFiltro);
+                            if (position == 0) {
+                                categoriaFiltro = null; // No enviar categoría
+                            } else {
+                                categoriaFiltro = String.valueOf(categoriasIds.get(position));
+                            }
                             ListarMovimientos(idUsuario);
                         }
 
@@ -314,8 +314,7 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
                         }
                     });
                 } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getActivity(), "Error al cargar las categorías", Toast.LENGTH_SHORT).show();
+                    Log.e("JSONError", "Error al parsear categorías: " + e.getMessage());
                 }
             }
 
