@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.proyecto_moviles.MainActivity;
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.google.firebase.auth.FirebaseAuth;
@@ -124,6 +125,17 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putInt("id_usuario", idUsuario);
                         editor.apply();
+
+                        // Llamar a MainActivity para cargar los permisos y actualizar el menú
+                        MainActivity activity = (MainActivity) getActivity();
+                        if (activity != null) {
+                            activity.ConsultarUsuario(idUsuario, new MainActivity.Callback() {
+                                @Override
+                                public void onUsuarioCargado(int resumen, int presupuesto, int movimientos, int visual, int perfil, int administrador) {
+                                    activity.actualizarMenu(resumen, presupuesto, movimientos, visual, perfil, administrador);
+                                }
+                            });
+                        }
 
                         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
                         //navController.navigate(R.id.action_nav_verificar_email_to_nav_login);

@@ -107,6 +107,17 @@ public class MainActivity extends BaseActivity {
                 binding.appBarMain.toolbar.setVisibility(View.VISIBLE);
             }
         });
+
+        SharedPreferences prefs = getSharedPreferences("MisPreferencias", MODE_PRIVATE);
+        int idUsuario = prefs.getInt("id_usuario", -1);
+        if (idUsuario != -1) {
+            ConsultarUsuario(idUsuario, new Callback() {
+                @Override
+                public void onUsuarioCargado(int resumen, int presupuesto, int movimientos, int visual, int perfil, int administrador) {
+                    actualizarMenu(resumen, presupuesto, movimientos, visual, perfil, administrador);
+                }
+            });
+        }
     }
 
 
