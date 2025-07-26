@@ -108,12 +108,27 @@
                     android:textColor="@color/black"
                     android:layout_marginBottom="16dp"/>
 
-                <!-- PieChart -->
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/pieChartPresupuestos"
+                <!-- Contenedor del gráfico y mensaje -->
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="16dp">
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChartPresupuestos"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:id="@+id/tvSinDatosPresupuesto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="¡Bienvenido, aún no tienes presupuestos!\nRegistra uno para ver tu gráfico 📊"
+                        android:gravity="center"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:visibility="gone"/>
+                </FrameLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnIrPresupuesto"

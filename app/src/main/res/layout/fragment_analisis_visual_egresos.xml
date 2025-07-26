@@ -51,12 +51,27 @@
                     android:textColor="@color/black"
                     android:layout_marginBottom="8dp" />
 
-                <!-- PieChart -->
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/pieChartEgresos"
+                <!-- Contenedor PieChart + Mensaje -->
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="16dp">
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChartEgresos"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:id="@+id/tvSinDatosPie"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="No hay datos de distribución de egresos.\nRegistra movimientos para ver el gráfico 📊"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:visibility="gone"/>
+                </FrameLayout>
 
                 <!-- Título del gráfico BarChart -->
                 <TextView
@@ -70,12 +85,27 @@
                     android:textColor="@color/black"
                     android:layout_marginBottom="8dp" />
 
-                <!-- BarChart -->
-                <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/barChartEgresosMensuales"
+                <!-- Contenedor BarChart + Mensaje -->
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="16dp">
+
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/barChartEgresosMensuales"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:id="@+id/tvSinDatosBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="No hay datos de egresos mensuales.\nAgrega movimientos para analizar por mes 📈"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:visibility="gone"/>
+                </FrameLayout>
 
                 <!-- Leyenda personalizada debajo de los gráficos -->
                 <LinearLayout

@@ -126,34 +126,42 @@ public class ResumenFinanzas extends Fragment {
                 try {
                     JSONArray jsonArray = new JSONArray(new String(responseBody));
 
-                    ArrayList<PieEntry> entries = new ArrayList<>();
-                    ArrayList<Integer> colores = new ArrayList<>();
-                    Random random = new Random();
+                    if (jsonArray.length() == 0) {
+                        binding.pieChartPresupuestos.setVisibility(View.GONE);
+                        binding.tvSinDatosPresupuesto.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.pieChartPresupuestos.setVisibility(View.VISIBLE);
+                        binding.tvSinDatosPresupuesto.setVisibility(View.GONE);
 
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject obj = jsonArray.getJSONObject(i);
-                        String categoria = obj.getString("categoria");
-                        float monto = (float) obj.getDouble("monto");
+                        ArrayList<PieEntry> entries = new ArrayList<>();
+                        ArrayList<Integer> colores = new ArrayList<>();
+                        Random random = new Random();
 
-                        entries.add(new PieEntry(monto, categoria));
-                        colores.add(Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject obj = jsonArray.getJSONObject(i);
+                            String categoria = obj.getString("categoria");
+                            float monto = (float) obj.getDouble("monto");
+
+                            entries.add(new PieEntry(monto, categoria));
+                            colores.add(Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
+                        }
+
+                        PieDataSet dataSet = new PieDataSet(entries, "");
+                        dataSet.setColors(colores);
+                        dataSet.setValueTextSize(14f);
+                        dataSet.setValueTextColor(Color.BLACK);
+                        dataSet.setSliceSpace(3f);
+
+                        PieData pieData = new PieData(dataSet);
+                        pieData.setValueFormatter(new PercentFormatter(binding.pieChartPresupuestos));
+
+                        binding.pieChartPresupuestos.setUsePercentValues(true);
+                        binding.pieChartPresupuestos.setData(pieData);
+                        binding.pieChartPresupuestos.getDescription().setEnabled(false);
+                        binding.pieChartPresupuestos.getLegend().setEnabled(false);
+                        binding.pieChartPresupuestos.animateY(1000);
+                        binding.pieChartPresupuestos.invalidate();
                     }
-
-                    PieDataSet dataSet = new PieDataSet(entries, "");
-                    dataSet.setColors(colores);
-                    dataSet.setValueTextSize(14f);
-                    dataSet.setValueTextColor(Color.BLACK);
-                    dataSet.setSliceSpace(3f);
-
-                    PieData pieData = new PieData(dataSet);
-                    pieData.setValueFormatter(new PercentFormatter(binding.pieChartPresupuestos));
-
-                    binding.pieChartPresupuestos.setUsePercentValues(true);
-                    binding.pieChartPresupuestos.setData(pieData);
-                    binding.pieChartPresupuestos.getDescription().setEnabled(false);
-                    binding.pieChartPresupuestos.getLegend().setEnabled(false);
-                    binding.pieChartPresupuestos.animateY(1000);
-                    binding.pieChartPresupuestos.invalidate();
 
                 } catch (JSONException e) {
                     Toast.makeText(getActivity(), "Error al procesar datos del gráfico", Toast.LENGTH_SHORT).show();
