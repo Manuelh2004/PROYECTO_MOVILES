@@ -23,9 +23,11 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONObject;
+
 import cz.msebera.android.httpclient.Header;
 
-public class Perfil extends Fragment implements View.OnClickListener{
+public class Perfil extends Fragment implements View.OnClickListener {
+
     private Button btnEditar, btnEnviarComentario, btnDownloadHistory;
     private EditText etComentario;
     private TextView txtNombre;
@@ -45,10 +47,10 @@ public class Perfil extends Fragment implements View.OnClickListener{
             Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
         }
 
-        etComentario = (EditText) rootView.findViewById(R.id.etComentario);
-        btnEditar = (Button) rootView.findViewById(R.id.btnEditar);
-        btnEnviarComentario = (Button) rootView.findViewById(R.id.btnEnviarComentario);
-        btnDownloadHistory = (Button) rootView.findViewById(R.id.btnDownloadHistory);
+        etComentario = rootView.findViewById(R.id.etComentario);
+        btnEditar = rootView.findViewById(R.id.btnEditar);
+        btnEnviarComentario = rootView.findViewById(R.id.btnEnviarComentario);
+        btnDownloadHistory = rootView.findViewById(R.id.btnDownloadHistory);
 
         btnEditar.setOnClickListener(this);
         btnEnviarComentario.setOnClickListener(this);
@@ -66,7 +68,6 @@ public class Perfil extends Fragment implements View.OnClickListener{
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 try {
                     String response = new String(responseBody);
-                    Log.d("PerfilFragment", "Respuesta del servidor: " + response);
                     JSONObject jsonResponse = new JSONObject(response);
                     String status = jsonResponse.getString("status");
 
@@ -91,16 +92,18 @@ public class Perfil extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        if (v == btnEditar){
+        if (v == btnEditar) {
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_nav_perfil_to_editarPerfil);
         }
+
         if (v == btnEnviarComentario) {
             String comentario = etComentario.getText().toString();
             if (comentario.isEmpty()) {
                 Toast.makeText(getActivity(), "Por favor, ingresa un comentario", Toast.LENGTH_SHORT).show();
                 return;
             }
+
             SharedPreferences prefs = getActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
             int idUsuario = prefs.getInt("id_usuario", -1);
 
@@ -108,6 +111,7 @@ public class Perfil extends Fragment implements View.OnClickListener{
                 Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
                 return;
             }
+
             enviarComentario(idUsuario, comentario);
         }
 
@@ -119,16 +123,47 @@ public class Perfil extends Fragment implements View.OnClickListener{
                 Toast.makeText(getActivity(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
                 return;
             }
-            enviarExcel(idUsuario);
+
+            verificarPresupuestoYDescargar(idUsuario);
         }
     }
 
+    /**
+     * Primero verifica si tiene presupuesto registrado antes de generar el Excel
+     */
+    private void verificarPresupuestoYDescargar(int idUsuario) {
+        String url = ServidorConfig.URL_SERVIDOR + "perfilController/validar_presupuesto.php?id_usuario=" + idUsuario;
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.get(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                String response = new String(responseBody).trim();
+                Log.d("ValidarPresupuesto", "Respuesta: " + response);
+
+                if (response.equalsIgnoreCase("existe")) {
+                    enviarExcel(idUsuario);
+                } else {
+                    Toast.makeText(getActivity(), "TÚ NO TIENES PRESUPUESTOS REGISTRADOS", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(getActivity(), "Error al validar presupuesto", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Genera el reporte solo si el usuario tiene presupuesto registrado
+     */
     private void enviarExcel(int idUsuario) {
         String url = ServidorConfig.URL_SERVIDOR + "perfilController/obtener_datos_perfil.php";
         RequestParams params = new RequestParams();
         params.put("id_usuario", idUsuario);
-        AsyncHttpClient client = new AsyncHttpClient();
 
+        AsyncHttpClient client = new AsyncHttpClient();
         client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -139,14 +174,15 @@ public class Perfil extends Fragment implements View.OnClickListener{
                         String email = json.getString("em_usuario");
                         String nombre = json.getString("nom_usuario");
 
-                        RequestParams params = new RequestParams();
-                        params.put("id_usuario", idUsuario);
-                        params.put("email", email);
-                        params.put("nombre", nombre);
-                        AsyncHttpClient client = new AsyncHttpClient();
-                        String url = ServidorConfig.URL_SERVIDOR + "perfilController/generar_excel.php";
+                        RequestParams params2 = new RequestParams();
+                        params2.put("id_usuario", idUsuario);
+                        params2.put("email", email);
+                        params2.put("nombre", nombre);
 
-                        client.post(url, params, new AsyncHttpResponseHandler() {
+                        AsyncHttpClient client2 = new AsyncHttpClient();
+                        String url2 = ServidorConfig.URL_SERVIDOR + "perfilController/generar_excel.php";
+
+                        client2.post(url2, params2, new AsyncHttpResponseHandler() {
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                                 Toast.makeText(getActivity(), "Reporte enviado por correo", Toast.LENGTH_SHORT).show();
@@ -162,7 +198,7 @@ public class Perfil extends Fragment implements View.OnClickListener{
                     }
                 } catch (Exception e) {
                     Toast.makeText(getActivity(), "Error al procesar la respuesta", Toast.LENGTH_SHORT).show();
-                    Log.e("CorreoSaludo", "Error JSON", e);
+                    Log.e("Perfil", "Error JSON", e);
                 }
             }
 
@@ -173,6 +209,9 @@ public class Perfil extends Fragment implements View.OnClickListener{
         });
     }
 
+    /**
+     * Envía un comentario
+     */
     private void enviarComentario(int idUsuario, String comentario) {
         RequestParams params = new RequestParams();
         params.put("id_usuario", idUsuario);

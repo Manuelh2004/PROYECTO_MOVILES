@@ -1,5 +1,6 @@
 package com.example.proyecto_moviles.ui.Inicio;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -117,8 +118,16 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
                     String mensaje = response.getString("mensaje");
                     Toast.makeText(getContext(), mensaje, Toast.LENGTH_LONG).show();
                     if (exito) {
+                        int idUsuario = response.getInt("id_usuario");
+                        // GUARDAR EN SHARED PREFERENCES
+                        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt("id_usuario", idUsuario);
+                        editor.apply();
+
                         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                        navController.navigate(R.id.action_nav_verificar_email_to_nav_login);
+                        //navController.navigate(R.id.action_nav_verificar_email_to_nav_login);
+                        navController.navigate(R.id.action_nav_verificar_email_to_nav_resumen_finanzas);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
