@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,6 +100,19 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
     private void RegistrarUsuario(String nombres, String apellidos, String telefono, String documento, String fechaNa,
                                   int idGenero, int idTipoDoc, String email, String uidFirebase) {
         String url = ServidorConfig.URL_SERVIDOR + "usuarioController/crear_usuario.php";
+
+        // 🔽 Aquí agregas el Log para ver qué datos estás enviando
+        Log.d("RegistrarUsuario", "Enviando datos al servidor:");
+        Log.d("RegistrarUsuario", "nombres=" + nombres);
+        Log.d("RegistrarUsuario", "apellidos=" + apellidos);
+        Log.d("RegistrarUsuario", "telefono=" + telefono);
+        Log.d("RegistrarUsuario", "documento=" + documento);
+        Log.d("RegistrarUsuario", "fechaNa=" + fechaNa);
+        Log.d("RegistrarUsuario", "idGenero=" + idGenero);
+        Log.d("RegistrarUsuario", "idTipoDoc=" + idTipoDoc);
+        Log.d("RegistrarUsuario", "email=" + email);
+        Log.d("RegistrarUsuario", "uidFirebase=" + uidFirebase);
+
         RequestParams params = new RequestParams();
         params.put("nombres", nombres);
         params.put("apellidos", apellidos);
@@ -149,6 +163,11 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.e("ERROR", "Status: " + statusCode);
+                Log.e("ERROR", "Throwable: " + throwable.getMessage());
+                if (errorResponse != null) {
+                    Log.e("ERROR", "Response: " + errorResponse.toString());
+                }
                 Toast.makeText(getContext(), "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
             }
         });

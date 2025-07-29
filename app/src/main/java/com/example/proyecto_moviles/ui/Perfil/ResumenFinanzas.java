@@ -74,7 +74,7 @@ public class ResumenFinanzas extends Fragment {
             Toast.makeText(getActivity(), "Usuario no autenticado", Toast.LENGTH_SHORT).show();
             return;
         }
-        String url = ServidorConfig.URL_SERVIDOR + "ResumenController/funcion_resumen.php?id_usuario=" + idUsuario;
+        String url = ServidorConfig.URL_SERVIDOR + "resumenController/funcion_resumen.php?id_usuario=" + idUsuario;
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(url, null, new AsyncHttpResponseHandler() {
@@ -117,7 +117,7 @@ public class ResumenFinanzas extends Fragment {
         int idUsuario = prefs.getInt("id_usuario", -1);
 
         if (idUsuario == -1) return;
-        String url = ServidorConfig.URL_SERVIDOR + "ResumenController/obtener_presupuestos_grafica.php?id_usuario=" + idUsuario;
+        String url = ServidorConfig.URL_SERVIDOR + "resumenController/obtener_presupuestos_grafica.php?id_usuario=" + idUsuario;
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, null, new AsyncHttpResponseHandler() {

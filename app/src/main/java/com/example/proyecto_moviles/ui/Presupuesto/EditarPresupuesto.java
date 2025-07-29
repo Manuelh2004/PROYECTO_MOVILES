@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.ui.Clases.Categoria;
+import com.example.proyecto_moviles.ui.Clases.Item;
 import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -48,7 +50,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
     private String modoSeleccion = "";
     private String fechaSeleccionada = "";
     private String fecha_inicio="", fecha_fin="";
-    private int id_usuario = 0;
+    private int id_usuario = 0, id_categoria = -1;
     private List<Categoria> listaCategorias;
     private ArrayAdapter<Categoria> adapterCategoria;
     SimpleDateFormat formatoMySQLEP = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -68,9 +70,11 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
         FfinEP = (EditText) rootView.findViewById(R.id.etFechaFinEP);
         FiniEP = (EditText) rootView.findViewById(R.id.etFechaInicioEP);
         catEP = (Spinner) rootView.findViewById(R.id.spCategoriaEP);
+
+        /*
         monEP.setEnabled(false);
         catEP.setEnabled(false);
-
+        */
         listaCategorias = new ArrayList<>();
         cargarCategoriasDesdeServidor();
 
@@ -152,7 +156,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
     }
 
     private void cargarCategoriasDesdeServidor() {
-        String url = ServidorConfig.URL_SERVIDOR + "presupuestoController/obtener_categorias.php";
+        String url = ServidorConfig.URL_SERVIDOR + "presupuestoController/obtener_categorias_pre.php";
         RequestParams params = new RequestParams();
         params.put("id_usuario",id_usuario);
         AsyncHttpClient client = new AsyncHttpClient();
@@ -166,7 +170,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
                     JSONArray jsonArray = new JSONArray(response);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        int id_categoria = jsonObject.getInt("id_categoria");
+                        id_categoria = jsonObject.getInt("id_categoria");
                         String nombre_categoria = jsonObject.getString("nom_categoria");
 
                         Categoria categoria = new Categoria(id_categoria, nombre_categoria);
@@ -176,7 +180,8 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
                     adapterCategoria = new ArrayAdapter<>( getContext(),android.R.layout.simple_spinner_item,listaCategorias);
                     adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     catEP.setAdapter(adapterCategoria);
-                    ConsultarPresupuesto(idPresupuesto);
+                    setSelectedSpinnerItem(catEP, id_categoria);
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -190,7 +195,19 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
             }
         });
     }
-
+    private void setSelectedSpinnerItem(Spinner spinner, int selectedId) {
+        if (spinner != null && spinner.getAdapter() != null) {
+            for (int i = 0; i < spinner.getAdapter().getCount(); i++) {
+                Item item = (Item) spinner.getAdapter().getItem(i);
+                if (item.id == selectedId) {
+                    spinner.setSelection(i);
+                    break;
+                }
+            }
+        } else {
+            Log.d("Spinner", "El Spinner o el Adapter son nulos");
+        }
+    }
     private void ConsultarPresupuesto(String idPresupuesto) {
         String url = ServidorConfig.URL_SERVIDOR + "presupuestoController/consultar_presupuesto.php";
         RequestParams params = new RequestParams();
@@ -218,7 +235,7 @@ public class EditarPresupuesto extends Fragment implements View.OnClickListener 
                         monEP.setText(pres_presupuesto);
                         FfinEP.setText(formatoDeseadoEP.format(fechaFin));
                         FiniEP.setText(formatoDeseadoEP.format(fechaInicio));
-                        catEP.setSelection(id_categoria-1);
+                       // catEP.setSelection(id_categoria-1); // Considerando que todos los ids son correlativos
 
                         fecha_inicio =  fini_presupuesto;
                         fecha_fin = ffin_presupuesto;
