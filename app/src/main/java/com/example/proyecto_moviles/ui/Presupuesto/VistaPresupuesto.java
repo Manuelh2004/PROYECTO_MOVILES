@@ -114,7 +114,6 @@ public class VistaPresupuesto extends Fragment implements AdapterView.OnItemClic
                     Toast.makeText(getActivity(), "Error al parsear el JSON", Toast.LENGTH_LONG).show();
                 }
             }
-
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 Toast.makeText(getContext(), "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();

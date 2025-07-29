@@ -99,12 +99,41 @@ public class Login extends Fragment implements View.OnClickListener{
 
             id_usuario = prefs.getInt("id_usuario", -1);
 
-            activity.ConsultarUsuario(id_usuario, new MainActivity.Callback() {
+            // 🔎 Verificar con el servidor si el usuario sigue existiendo
+            String url = ServidorConfig.URL_SERVIDOR + "usuarioController/verificar_usuario_por_id.php";
+            RequestParams params = new RequestParams();
+            params.put("id_usuario", id_usuario);
+
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.get(url, params, new JsonHttpResponseHandler() {
                 @Override
-                public void onUsuarioCargado(int opc_resumen_finanzas, int opc_presupuesto, int opc_movimientos, int opc_visual, int opc_perfil, int opc_administrador) {
-                    ((MainActivity) getActivity()).actualizarMenu(opc_resumen_finanzas, opc_presupuesto, opc_movimientos, opc_visual, opc_perfil, opc_administrador);
-                    NavController navController = Navigation.findNavController(view);
-                    navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        boolean existe = response.getBoolean("existe");
+                        if (existe) {
+                            activity.ConsultarUsuario(id_usuario, new MainActivity.Callback() {
+                                @Override
+                                public void onUsuarioCargado(int opc_resumen_finanzas, int opc_presupuesto, int opc_movimientos, int opc_visual, int opc_perfil, int opc_administrador) {
+                                    ((MainActivity) getActivity()).actualizarMenu(opc_resumen_finanzas, opc_presupuesto, opc_movimientos, opc_visual, opc_perfil, opc_administrador);
+                                    NavController navController = Navigation.findNavController(view);
+                                    navController.navigate(R.id.action_nav_login_to_nav_resumen_finanzas);
+                                }
+                            });
+                        } else {
+                            // 🧹 Usuario no existe en el servidor, limpiamos preferencias y mostramos login
+                            prefs.edit().clear().apply();
+                            FirebaseAuth.getInstance().signOut();
+                            Toast.makeText(getContext(), "Tu cuenta ha sido eliminada. Inicia sesión nuevamente.", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Error al procesar datos del servidor", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    Toast.makeText(getContext(), "Error al verificar usuario en el servidor", Toast.LENGTH_SHORT).show();
                 }
             });
         }

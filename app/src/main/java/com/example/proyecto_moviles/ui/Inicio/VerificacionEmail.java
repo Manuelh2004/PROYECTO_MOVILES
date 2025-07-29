@@ -1,17 +1,20 @@
 package com.example.proyecto_moviles.ui.Inicio;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.proyecto_moviles.MainActivity;
 import com.example.proyecto_moviles.R;
 import com.example.proyecto_moviles.ui.Clases.ServidorConfig;
 import com.google.firebase.auth.FirebaseAuth;
@@ -97,6 +100,19 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
     private void RegistrarUsuario(String nombres, String apellidos, String telefono, String documento, String fechaNa,
                                   int idGenero, int idTipoDoc, String email, String uidFirebase) {
         String url = ServidorConfig.URL_SERVIDOR + "usuarioController/crear_usuario.php";
+
+        // 🔽 Aquí agregas el Log para ver qué datos estás enviando
+        Log.d("RegistrarUsuario", "Enviando datos al servidor:");
+        Log.d("RegistrarUsuario", "nombres=" + nombres);
+        Log.d("RegistrarUsuario", "apellidos=" + apellidos);
+        Log.d("RegistrarUsuario", "telefono=" + telefono);
+        Log.d("RegistrarUsuario", "documento=" + documento);
+        Log.d("RegistrarUsuario", "fechaNa=" + fechaNa);
+        Log.d("RegistrarUsuario", "idGenero=" + idGenero);
+        Log.d("RegistrarUsuario", "idTipoDoc=" + idTipoDoc);
+        Log.d("RegistrarUsuario", "email=" + email);
+        Log.d("RegistrarUsuario", "uidFirebase=" + uidFirebase);
+
         RequestParams params = new RequestParams();
         params.put("nombres", nombres);
         params.put("apellidos", apellidos);
@@ -117,8 +133,27 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
                     String mensaje = response.getString("mensaje");
                     Toast.makeText(getContext(), mensaje, Toast.LENGTH_LONG).show();
                     if (exito) {
+                        int idUsuario = response.getInt("id_usuario");
+                        // GUARDAR EN SHARED PREFERENCES
+                        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MisPreferencias", getActivity().MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt("id_usuario", idUsuario);
+                        editor.apply();
+
+                        // Llamar a MainActivity para cargar los permisos y actualizar el menú
+                        MainActivity activity = (MainActivity) getActivity();
+                        if (activity != null) {
+                            activity.ConsultarUsuario(idUsuario, new MainActivity.Callback() {
+                                @Override
+                                public void onUsuarioCargado(int resumen, int presupuesto, int movimientos, int visual, int perfil, int administrador) {
+                                    activity.actualizarMenu(resumen, presupuesto, movimientos, visual, perfil, administrador);
+                                }
+                            });
+                        }
+
                         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                        navController.navigate(R.id.action_nav_verificar_email_to_nav_login);
+                        //navController.navigate(R.id.action_nav_verificar_email_to_nav_login);
+                        navController.navigate(R.id.action_nav_verificar_email_to_nav_resumen_finanzas);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -128,6 +163,11 @@ public class VerificacionEmail extends Fragment implements View.OnClickListener{
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.e("ERROR", "Status: " + statusCode);
+                Log.e("ERROR", "Throwable: " + throwable.getMessage());
+                if (errorResponse != null) {
+                    Log.e("ERROR", "Response: " + errorResponse.toString());
+                }
                 Toast.makeText(getContext(), "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
             }
         });

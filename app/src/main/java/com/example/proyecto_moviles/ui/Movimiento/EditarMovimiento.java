@@ -15,9 +15,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import com.example.proyecto_moviles.R;
@@ -41,6 +43,7 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
     private Spinner spCategoria, spTipoMovimiento;
     private Button btnActualizarMovimiento;
     private String idMovimiento;
+    Bundle bundle = new Bundle();
     private int idCategoria = -1, idTipoMovimiento = -1, idUsuario = -1;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -55,6 +58,9 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
         spTipoMovimiento = rootView.findViewById(R.id.spTipoMovimiento);
         btnActualizarMovimiento = rootView.findViewById(R.id.btnActualizarMovimiento);
         btnActualizarMovimiento.setOnClickListener(this);
+
+        spCategoria.setEnabled(false);
+        spTipoMovimiento.setEnabled(false);
 
         cargarMovimiento();
 
@@ -303,8 +309,13 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
 
                 if (response.contains("success")) {
                     Toast.makeText(getActivity(), "Movimiento actualizado correctamente", Toast.LENGTH_SHORT).show();
-                    NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                    navController.navigate(R.id.action_nav_editar_movimiento_to_nav_listar_movimientos);
+                    NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
+                    navController.navigate(R.id.nav_listar_movimientos,
+                            null,
+                            new androidx.navigation.NavOptions.Builder()
+                                    .setPopUpTo(R.id.nav_editar_movimiento, true)
+                                    .build()
+                    );
                 } else {
                     Toast.makeText(getActivity(), "Error al actualizar el movimiento: " + response, Toast.LENGTH_LONG).show();
                 }
@@ -318,10 +329,12 @@ public class EditarMovimiento extends Fragment implements View.OnClickListener {
         });
     }
 
+
     @Override
     public void onClick(View v) {
         if (v == btnActualizarMovimiento) {
             actualizarMovimiento();
         }
     }
+
 }

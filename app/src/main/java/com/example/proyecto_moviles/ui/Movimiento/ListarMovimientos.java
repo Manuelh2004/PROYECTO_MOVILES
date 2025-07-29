@@ -40,7 +40,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
+import androidx.activity.OnBackPressedCallback;
 import cz.msebera.android.httpclient.Header;
 
 public class ListarMovimientos extends Fragment implements View.OnClickListener{
@@ -203,6 +203,20 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_nav_listar_movimientos_to_nav_movimiento);
         });
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
+                navController.navigate(R.id.nav_listar_movimientos,
+                        null,
+                        new androidx.navigation.NavOptions.Builder()
+                                .setPopUpTo(R.id.nav_editar_movimiento, true) // Esto borra Editar del back stack
+                                .build()
+                );
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
         return rootView;
     }
 
@@ -259,7 +273,11 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
         bundle.putString("id_movimiento", idMovimiento);
 
         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-        navController.navigate(R.id.action_nav_listar_movimientos_to_nav_editar_movimiento, bundle);
+        navController.navigate(R.id.nav_editar_movimiento, bundle,
+                new androidx.navigation.NavOptions.Builder()
+                        .setPopUpTo(R.id.nav_listar_movimientos, true)
+                        .build()
+        );
     }
 
     private void cargarCategoriasFiltro(int idUsuario) {
@@ -273,22 +291,19 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
         RequestParams params = new RequestParams();
         params.put("id_usuario", idUsuario);
 
-        Log.d("Parametros de la solicitud", "id_usuario: " + idUsuario);
-
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 try {
                     String responseString = new String(responseBody);
-                    Log.d("Respuesta API", responseString);
-
                     JSONArray jsonArray = new JSONArray(responseString);
                     List<String> categorias = new ArrayList<>();
                     List<Integer> categoriasIds = new ArrayList<>();
 
-                    categorias.add("Seleccionar categoría");
-                    categoriasIds.add(null);
+                    // Opción 0
+                    categorias.add("Todas las categorías");
+                    categoriasIds.add(0); // O usa null si tu backend lo permite
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject obj = jsonArray.getJSONObject(i);
@@ -303,8 +318,11 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
                     spCategoriaFiltro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                            categoriaFiltro = position > 0 ? String.valueOf(categoriasIds.get(position)) : null;
-                            Log.d("Categoria Seleccionada", "ID Categoría: " + categoriaFiltro);
+                            if (position == 0) {
+                                categoriaFiltro = null; // No enviar categoría
+                            } else {
+                                categoriaFiltro = String.valueOf(categoriasIds.get(position));
+                            }
                             ListarMovimientos(idUsuario);
                         }
 
@@ -314,8 +332,7 @@ public class ListarMovimientos extends Fragment implements View.OnClickListener{
                         }
                     });
                 } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getActivity(), "Error al cargar las categorías", Toast.LENGTH_SHORT).show();
+                    Log.e("JSONError", "Error al parsear categorías: " + e.getMessage());
                 }
             }
 
